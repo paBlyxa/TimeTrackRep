@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	
+	<definition name="base" template="/WEB-INF/layout/page.jsp">
+		<put-attribute name="header" value="/WEB-INF/layout/header.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/layout/footer.jsp" />
+ 		<put-attribute name="menu" value="/WEB-INF/layout/menu.jsp" />
+	</definition>
+	
+	<definition name="home" template="/WEB-INF/layout/loginTemplate.jsp">
+		<put-attribute name="body" value="/WEB-INF/views/home.jsp" />
+	</definition>
+	
+	<definition name="login" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/login.jsp" />
+	</definition>
+	
+	<definition name="timesheet" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/timesheet.jsp" />
+	</definition>
+	
+	<definition name="projects" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/projects.jsp" />
+	</definition>
+	
+	<definition name="tasks" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/tasks.jsp" />
+	</definition>
+	
+	<definition name="project" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/project.jsp" />
+	</definition>	
+	
+	<definition name="employees" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/employees.jsp" />
+	</definition>	
+	
+	<definition name="employee" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/employee.jsp" />
+	</definition>	
+</tiles-definitions>

@@ -1,0 +1,214 @@
+body {
+	font-family: sans-serif;
+	margin: 1px;
+	padding: 1px;
+}
+
+.header{
+	height: 40px;
+	margin: 10px;
+}
+.menuForm {
+	height: 60px;
+}
+.pageBody{
+	margin: 5px;
+}
+
+.timesheetList h1 {
+	font-size: 16pt;
+}
+
+.timesheetTable,
+.mainTable,
+.newTable {
+  width: 100%;
+  border: 1px solid #999;
+}
+
+/* Столбцы таблицы timesheet */
+.colDate {
+	witdh: 13%;
+}
+.colProject {
+	width: 23%;
+}
+.colTask {
+	width: 21%;
+}
+.colCount {
+	width: 6%;
+}
+.colHours {
+	width: 6%;
+}
+.colComment {
+	width: 23%;
+}
+
+/* Стоблец Employee для таблицы Проекта, вместо столбца имени проекта */
+.colEmployee {
+	width: 23%;
+}
+
+.colTaskName {
+	width: 35%;
+}
+.colProjectName {
+	width: 30%;
+}
+.colProjectActive {
+	width: 30%;
+}
+.colProjectComment {
+	width: 30%;
+}
+#colLast {
+	border: none;
+	background: white;
+	width: 10%;
+	layout:
+}
+
+.timesheetTable th,.mainTable th, .newTable th, #header-fixed th {
+  background: #333; 
+  color: white; 
+  font-weight: bold; 
+}
+.timesheetTable td,
+.timesheetTable th,
+.mainTable td,
+.mainTable th,
+.newTable td,
+.newTable th,
+#header-fixed th {
+  text-align: left;
+  padding: 5px 10px;
+  border: 1px solid #999;
+}
+
+#header-fixed {
+    position: fixed;
+    top: 50px;
+    display:none;
+}
+.mainTable tr:nth-child(even),
+.even {
+	background-color : #eee;
+}
+
+.mainTable tbody tr:hover,
+.timesheetTable tbody tr:hover {
+	background:#BDC3C7;
+	color:#FFFFFF;
+}
+
+.timesheetForm h1 {
+	font-size: 16pt;
+}
+
+.projectForm h1 {
+	font-size: 16pt;
+}
+
+.taskForm h1 {
+	font-size: 16pt;
+}
+
+.input {
+	 border: 0;
+	 width: 100%;
+}
+
+label.error {
+	color: red;
+}
+
+input.error {
+	background-color: #ffcccc;
+}
+
+div.errors {
+	background-color: #ffcccc;
+	border: 2px solid red;
+}
+
+
+
+.login-container {
+    margin-top: 100px;
+    background-color: floralwhite;
+    width: 40%;
+    left: 30%;
+    position: absolute;
+}
+
+.login-card {
+    width: 80%;
+    margin: auto;
+}
+
+.login-form {
+    padding: 10%;
+}
+
+#loginTemp {
+	background: #D0D0D0;
+}
+
+/* Главное меню*/
+.menu {
+ 	list-style-type: none; /*Удаляем маркеры в списке */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    background-color: #606060;
+    width: 100%;
+}
+.menu li {
+    float: left;
+}
+.menuItem {
+	display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.activeMenuItem {
+	display: block;
+    color: white;
+	background-color: #4CAF50;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+.menu li a:hover:not(.activeMenuItem) {
+    background-color: #101010;
+}
+.fixed {
+	position:fixed;
+	top:0;
+}
+
+.chartContainer {
+	width: 100%;
+	border: 1px solid gray;
+}
+
+
+.leftChart {
+	float: left;
+	width: 30%;
+}
+
+.rightChart {
+	float: left;
+	width: 70%;
+}
+
+.myChart {
+    height:                             auto;
+    width:                              30%;
+}
