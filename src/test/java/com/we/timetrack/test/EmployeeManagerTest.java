@@ -3,6 +3,7 @@ package com.we.timetrack.test;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -32,10 +33,12 @@ public class EmployeeManagerTest {
 	@Test
 	@Transactional
 	public void testGetEmployeeById() {
-		EmployeeRepository employeeManager = new HibernateEmployeeRepository(sessionFactory);
-		Employee employee = employeeManager.getEmployee(3);
+		EmployeeRepository employeeRepository = new HibernateEmployeeRepository(sessionFactory);
+		List<Employee> employees = employeeRepository.getEmployees();
+		UUID employeeId = employees.get(0).getEmployeeId();
+		Employee employee = employeeRepository.getEmployee(employeeId);
 		assertNotNull(employee);
-		assertTrue(employee.getEmployeeId() == 3);
+		assertTrue(employee.getEmployeeId() == employeeId);
 		System.out.println("Сотрдуник: id = " + employee.getEmployeeId() +
 				" Фамилия = " + employee.getSurname());
 	}
@@ -51,30 +54,6 @@ public class EmployeeManagerTest {
 			assertNotNull(employee);
 			System.out.println(">>>>>>>>Сотрудник: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName());
 		}
-	}
-	
-	@Test
-	@Transactional
-	public void testSaveEmployee(){
-		EmployeeRepository employeeRepository = new HibernateEmployeeRepository(sessionFactory);
-		int countEmployees = employeeRepository.getEmployees().size();
-		System.out.println(">>>>>>>>Количество записей сотрудников до сохранения нового: " + countEmployees);
-		Employee newEmployee = new Employee();
-		newEmployee.setName("Петр");
-		newEmployee.setSurname("Иванов");
-		newEmployee.setUsername("p.ivanov");
-		newEmployee.setPassword("123ivanov");
-		newEmployee.setMail("p.ivanov@west-e.ru");
-		newEmployee.setDepartment("ОПиК");
-		newEmployee.setPost("Инженер");
-		employeeRepository.saveEmployee(newEmployee);
-		countEmployees = employeeRepository.getEmployees().size();
-		System.out.println(">>>>>>>>Количество записей сотрудников после сохранения нового: " + countEmployees);
-		Employee employee = employeeRepository.getEmployee("p.ivanov");
-		assertTrue(employee.equals(newEmployee));
-		employeeRepository.removeEmployee(newEmployee);
-		countEmployees = employeeRepository.getEmployees().size();
-		System.out.println(">>>>>>>>Количество записей сотрудников после удаления нового: " + countEmployees);
 	}
 
 }

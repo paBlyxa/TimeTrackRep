@@ -5,11 +5,11 @@ drop table if exists timesheet;
 
 
 create table employee (
-	employeeId		identity			,
+	employeeId		UUID			,
 	surname			VARCHAR(64)	NOT NULL,
 	name			VARCHAR(32)	NOT NULL,
 	mail			VARCHAR(64)		,
-	chief			integer			,
+	chief			UUID			,
 	post			VARCHAR(64)	NOT NULL,
 	department		VARCHAR(255)	NOT NULL,
 	username		VARCHAR(64)	NOT NULL,

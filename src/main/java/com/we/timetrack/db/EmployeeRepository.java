@@ -1,6 +1,7 @@
 package com.we.timetrack.db;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.we.timetrack.model.Employee;
 
@@ -13,7 +14,7 @@ public interface EmployeeRepository {
 	/**
      * Gets employee record with matching employeeId
      */
-	public Employee getEmployee(int employeeId);
+	public Employee getEmployee(UUID employeeId);
 	
 	/**
 	 * Gets employee record with matching username
@@ -25,15 +26,6 @@ public interface EmployeeRepository {
 	 */
 	public List<Employee> getEmployees();
 	
-	/**
-     * Saves a Employee object
-     */
-	public void saveEmployee(Employee employee);
-	
-	/**
-	 * Remove a Employee object
-	 */
-	public void removeEmployee(Employee employee);
 	
 	/**
 	 * Get employee record with matching username
@@ -42,4 +34,11 @@ public interface EmployeeRepository {
 	 * @throws UsernameNotFoundException
 	 */
 	//public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+	
+	/**
+	 * Gets direct reports of employee
+	 * @param employee
+	 * @return List<Employee> - direct reports
+	 */
+	public List<Employee> getDirectReports(Employee employee);
 }

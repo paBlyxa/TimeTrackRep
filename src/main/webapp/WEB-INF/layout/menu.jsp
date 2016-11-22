@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <head>
 	<script src="<c:url value="/resources/script/jquery-3.0.0.min.js" />"></script>
 </head>
@@ -27,7 +28,8 @@
 			</c:choose>		
 			href="<c:url value="/timesheet" />">Учет</a>
 		</li>
-		<li><a
+		
+		<li class="dropdown"><a
 			<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'projects')}">
 					class="activeMenuItem"
@@ -37,8 +39,17 @@
 				</c:otherwise>
 			</c:choose>
 			href="<c:url value="/projects" />">Проекты</a>
+			
+			<sec:authorize access="hasAuthority('Операторы архива Projects')">
+				<div id="dropdown-content">
+					<a href="<c:url value="/projects/new" />">Новый проект</a>
+<%-- 					<a href="<c:url value="/projects" />">Мои проекты</a> --%>
+				</div>
+			</sec:authorize>
+			
 		</li>
-		<li><a 
+		<sec:authorize access="hasAuthority('Операторы архива Projects')">
+		<li><a
 	 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'tasks')}">
 					class="activeMenuItem"
@@ -49,7 +60,8 @@
 			</c:choose>
 	 		href="<c:url value="/tasks" />">Задачи</a>
 	 	</li>
-		<li><a 
+	 	</sec:authorize>
+		<li><a
 	 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'employees')}">
 					class="activeMenuItem"
@@ -59,5 +71,30 @@
 				</c:otherwise>
 			</c:choose>
 	 		href="<c:url value="/employees" />">Сотрудники</a>
+	 	</li>
+	 	<li><a
+	 		<c:choose>
+				<c:when test="${fn:contains(currentUrl, 'stat')}">
+					class="activeMenuItem"
+				</c:when>
+				<c:otherwise>
+					class="menuItem" 
+				</c:otherwise>
+			</c:choose>
+	 		href="<c:url value="/stat" />">Статистика</a>
+	 	</li>
+	 	<li id="currentUser">
+	 		<a
+	 		<c:choose>
+				<c:when test="${fn:contains(currentUrl, 'account')}">
+					class="activeMenuItem"
+				</c:when>
+				<c:otherwise>
+					class="menuItem" 
+				</c:otherwise>
+			</c:choose>
+	 			href="<c:url value="/employees/account" />">
+	 			<sec:authentication property="principal.username"/>
+	 		</a>
 	 	</li>
 </ul>

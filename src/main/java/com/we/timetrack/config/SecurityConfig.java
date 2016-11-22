@@ -6,18 +6,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import com.we.timetrack.service.ActiveDirectoryUserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	UserDetailsService userDetailsService;
+	private ActiveDirectoryUserService adUserService;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -47,8 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		
 		auth
-		.userDetailsService(userDetailsService);
+			.authenticationProvider(adUserService);
 	}
 	
 	private CsrfTokenRepository csrfTokenRepository() { 
@@ -56,4 +58,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    repository.setSessionAttributeName("_csrf");
 	    return repository; 
 	}
+	
 }

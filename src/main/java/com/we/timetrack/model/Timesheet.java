@@ -1,8 +1,10 @@
 package com.we.timetrack.model;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.UUID;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,8 @@ import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.we.timetrack.converter.LocalDateAttributeConverter;
+
 @Entity
 @Table(name = "timesheet")
 public class Timesheet {
@@ -22,8 +26,8 @@ public class Timesheet {
 	private int id;
 	private Project project;
 	private Task task;
-	private Employee employee;
-	private Date dateTask;
+	private UUID employeeId;
+	private LocalDate dateTask;
 	private float countTime;
 	private String comment;
 
@@ -54,20 +58,22 @@ public class Timesheet {
 	public void setTask(Task task) {
 		this.task = task;
 	}
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "employeeid")
-	public Employee getEmployee() {
-		return employee;
+//	@ManyToOne(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "employeeid")
+	@Column(name = "employeeid")
+	public UUID getEmployeeId() {
+		return employeeId;
 	}
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+	public void setEmployeeId(UUID employeeId) {
+		this.employeeId = employeeId;
 	}
 	@Column(name = "datetask")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	public Date getDateTask() {
+	@DateTimeFormat(pattern = "dd.MM.YYYY")
+	@Convert(converter = LocalDateAttributeConverter.class)
+	public LocalDate getDateTask() {
 		return dateTask;
 	}
-	public void setDateTask(Date dateTask) {
+	public void setDateTask(LocalDate dateTask) {
 		this.dateTask = dateTask;
 	}
 	@Column(name = "counttime")

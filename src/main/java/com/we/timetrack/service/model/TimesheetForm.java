@@ -1,14 +1,10 @@
-package com.we.timetrack.service;
-
-import java.util.Date;
-
-import org.springframework.format.annotation.DateTimeFormat;
+package com.we.timetrack.service.model;
 
 public class TimesheetForm {
 
 	private String projectId;
 	private String taskId;
-	private Date dateTask;
+	private String dates;
 	private float countTime;
 	private String comment;
 
@@ -26,14 +22,12 @@ public class TimesheetForm {
 		this.taskId = taskId;
 	}
 
-
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	public Date getDateTask() {
-		return dateTask;
+	public String getDates() {
+		return dates;
 	}
 	
-	public void setDateTask(Date dateTask) {
-		this.dateTask = dateTask;
+	public void setDates(String dates) {
+		this.dates = dates;
 	}
 	
 	public float getCountTime() {

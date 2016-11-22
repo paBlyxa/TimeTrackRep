@@ -5,39 +5,7 @@
 	<script src="<c:url value="/resources/script/clickableRow.js" />"></script>
 </head>
 
-<div>
-	<h1>Новый сотрудник</h1>
-	<form:form method="POST" modelAttribute="employee">
-		<table class="newTable">
-			<thead>
-				<tr>
-					<th>Имя пользователя</th>
-					<th>Пароль</th>
-					<th>Имя</th>
-					<th>Фамилия</th>
-					<th>Адрес почты</th>
-					<th>Должность</th>
-					<th>Отдел</th>					
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><input class="input" type="text" name="username" /></td>
-					<td><input class="input" type="password" name="password" /></td>
-					<td><input class="input" type="text" name="name" /></td>
-					<td><input class="input" type="text" name="surname" /></td>
-					<td><input class="input" type="text" name="mail" /></td>
-					<td><input class="input" type="text" name="post" /></td>
-					<td><input class="input" type="text" name="department" /></td>
-				</tr>
-			</tbody>
-		</table>
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-    	<input type="submit" value="Добавить" />
-	</form:form>
-</div>
-
-<div>
+<div class="divWithBorder">
 	<h1>Сотрудники</h1>
 		<table class="mainTable">
 			<thead>

@@ -1,11 +1,13 @@
 package com.we.timetrack.db.hibernate;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,5 +70,18 @@ public class HibernateProjectRepository implements ProjectRepository {
 	public void deleteProject(Project project){
 		
 		currentSession().delete(project);
+	}
+	
+	/**
+	 * Returns list of all project databse records
+	 * with matching employee as leader
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Project> getProjects(UUID employeeId){
+		List<Project> projects = currentSession().createCriteria(Project.class)
+				.createAlias("projectLeaders", "p")
+				.add(Restrictions.eq("p.elements", employeeId))
+				.list();
+		return projects;
 	}
 }

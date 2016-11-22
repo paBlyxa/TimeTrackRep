@@ -1,6 +1,7 @@
 package com.we.timetrack.db.hibernate;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
@@ -16,7 +17,7 @@ import com.we.timetrack.model.Employee;
  * Manages database operations for Employee table.
  * @author pablo
  */
-@Repository
+@Repository(value="hibernateEmployeeRepository")
 @Transactional
 public class HibernateEmployeeRepository implements EmployeeRepository {
 
@@ -34,7 +35,7 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 	/**
      * Gets employee record with matching employeeId
      */
-	public Employee getEmployee(int employeeId){
+	public Employee getEmployee(UUID employeeId){
 		
 		Employee employee = null;
 
@@ -72,21 +73,11 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 		
 		return employees;
 	}
-	
-    /**
-     * Saves a Employee object
-     */
-	public void saveEmployee(Employee employee){
-		
-		currentSession().saveOrUpdate(employee);
-	}
-	
-	/**
-	 * Remove a Employee object
-	 */
-	public void removeEmployee(Employee employee){
-		
-		currentSession().delete(employee);
+
+	@Override
+	public List<Employee> getDirectReports(Employee employee) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/**

@@ -15,26 +15,53 @@ body {
 	margin: 5px;
 }
 
+.divWithBorder,
+.listTimesheet,
+.timesheetForm,
+.projectForm,
+.taskForm {
+	margin-bottom: 20px;
+	margin-right: 10px;
+	
+	box-shadow: 10px 10px 5px #888888;
+	border: solid 1px black;
+} 
+.divWithBorder,
+.listTimesheet {
+	overflow: auto;
+}
+
+.divWithBorder h1,
+.divWithBorder h2 {
+	padding-left: 10px;
+}
+
 .timesheetList h1 {
 	font-size: 16pt;
 }
 
 .timesheetTable,
-.mainTable,
-.newTable {
+.mainTable {
   width: 100%;
   border: 1px solid #999;
+}
+
+.newRecordTable {
+	width: 100%;
+	border: 1px solid #999;
 }
 
 /* Столбцы таблицы timesheet */
 .colDate {
 	witdh: 13%;
+/* 	-webkit-column-width: 100px; Chrome, Safari, Opera */
+/*     -moz-column-width: 100px;  */
 }
 .colProject {
-	width: 23%;
+	width: 25%;
 }
 .colTask {
-	width: 21%;
+	width: 23%;
 }
 .colCount {
 	width: 6%;
@@ -43,34 +70,41 @@ body {
 	width: 6%;
 }
 .colComment {
-	width: 23%;
+	width: 25%;
 }
 
 /* Стоблец Employee для таблицы Проекта, вместо столбца имени проекта */
-.colEmployee {
-	width: 23%;
+.colProjectLeaders {
+	width: 35%;
 }
-
 .colTaskName {
 	width: 35%;
 }
 .colProjectName {
-	width: 30%;
+	width: 25%;
 }
 .colProjectActive {
-	width: 30%;
+	width: 10%;
 }
 .colProjectComment {
 	width: 30%;
 }
+/* Столбцы для таблицы Task */
+.colTaskActive {
+	width: 10%;
+}
+.colTaskComment {
+	width: 50%;
+}
+
+/* Столбец с кнопкой удалить во всех таблицах */
 #colLast {
 	border: none;
 	background: white;
-	width: 10%;
 	layout:
 }
 
-.timesheetTable th,.mainTable th, .newTable th, #header-fixed th {
+.timesheetTable th,.mainTable th, .newRecordTable th, #header-fixed th {
   background: #333; 
   color: white; 
   font-weight: bold; 
@@ -79,8 +113,8 @@ body {
 .timesheetTable th,
 .mainTable td,
 .mainTable th,
-.newTable td,
-.newTable th,
+.newRecordTable td,
+.newRecordTable th,
 #header-fixed th {
   text-align: left;
   padding: 5px 10px;
@@ -93,7 +127,8 @@ body {
     display:none;
 }
 .mainTable tr:nth-child(even),
-.even {
+.even,
+.even input {
 	background-color : #eee;
 }
 
@@ -102,26 +137,50 @@ body {
 	background:#BDC3C7;
 	color:#FFFFFF;
 }
-
-.timesheetForm h1 {
-	font-size: 16pt;
+.timesheetTable tbody tr:hover input {
+	background:#BDC3C7;
+	color:#FFFFFF;
 }
 
-.projectForm h1 {
-	font-size: 16pt;
-}
-
+.timesheetForm h1,
+.projectForm h1,
 .taskForm h1 {
 	font-size: 16pt;
+	padding-left: 10px;
 }
 
-.input {
+.listTimesheet h1 {
+	padding-left: 10px;
+}
+
+#moreUrl {
+	padding: 10px;
+}
+
+.buttonAdd {
+	margin: 5px;
+	font-family: sans-serif;
+	font-size: 12pt;
+}
+
+.input, #datepickerTS {
 	 border: 0;
 	 width: 100%;
 }
+.input {
+	font-family: sans-serif;
+	font-size: 12pt;
+	height: 100%;
+}
 
-label.error {
+label.error,
+.errorMessage {
 	color: red;
+}
+
+.errorMessage {
+	font-size: 14pt;
+	margin: 0px;
 }
 
 input.error {
@@ -133,8 +192,42 @@ div.errors {
 	border: 2px solid red;
 }
 
+/* Форма сохранения отчета */
 
+#saveContainer {
+	background-color: #A9A9A9;
+	height: 45px;
+	width: 380px;
+	margin-bottom: 20px;
+}
+#saveContainer form {
+	height: 100%;
+	vertical-align:middle;
+    padding: 10px 10px;
+}
+#saveContainer form label {
+	font-family: sans-serif;
+	font-size: 12pt;
+	vertical-align:middle;
+}
+#saveContainer form input {
+	font-family: sans-serif;
+	font-size: 12pt;
+	vertical-align:middle;
+}
+#saveContainer form select {
+	font-family: sans-serif;
+	font-size: 12pt;
+	vertical-align:middle;
+}
+#saveInnerContainer {
+	margin: auto;
+	height: 100%;
+	vertical-align:middle;
+	display: inline;
+}
 
+/* Регистрация пользователя */
 .login-container {
     margin-top: 100px;
     background-color: floralwhite;
@@ -142,16 +235,13 @@ div.errors {
     left: 30%;
     position: absolute;
 }
-
 .login-card {
     width: 80%;
     margin: auto;
 }
-
 .login-form {
     padding: 10%;
 }
-
 #loginTemp {
 	background: #D0D0D0;
 }
@@ -191,23 +281,41 @@ div.errors {
 	position:fixed;
 	top:0;
 }
+#currentUser {
+	float: right;
+}
+#dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #737373;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+#dropdown-content a {
+	color: white;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+#dropdown-content a:hover {background-color: #101010;}
+.dropdown:hover #dropdown-content {
+	display: block;
+}
 
+
+/* Настройки диаграмм и графиков */
 .chartContainer {
-	width: 100%;
+	width: 99%;
 	border: 1px solid gray;
 }
-
-
 .leftChart {
 	float: left;
-	width: 30%;
+	width: 29%;
 }
-
 .rightChart {
 	float: left;
 	width: 70%;
 }
-
 .myChart {
     height:                             auto;
     width:                              30%;

@@ -9,7 +9,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<link rel="stylesheet" type="text/css" href="<s:url value="/resources/style.css" />" >
 		<script src="<c:url value="/resources/script/jquery-3.0.0.min.js" />"></script>
-		<script src="<c:url value="/resources/script/Chart.js" />"></script>
+		
 	</head>
 	<body>
 		<div class="header">

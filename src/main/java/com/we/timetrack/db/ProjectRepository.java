@@ -1,6 +1,7 @@
 package com.we.timetrack.db;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.we.timetrack.model.Project;
 
@@ -25,4 +26,10 @@ public interface ProjectRepository {
      * Deletes Project record 
      */
 	public void deleteProject(Project project);
+	
+	/**
+	 * Returns list of all project databse records
+	 * with matching employee as leader
+	 */
+	public List<Project> getProjects(UUID employeeId);
 }
