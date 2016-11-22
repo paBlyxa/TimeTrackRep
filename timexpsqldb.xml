@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+ <!DOCTYPE xml>
+
+<project name="timexdb">
+  <property name="hjar" value="lib/postgresql-9.4.1208.jar"/>
+  <property name="halias" value="timex"/>
+  <property name="hport" value="5432"/>
+    
+  <target name="createdb">
+      <sql classpath="${hjar}"
+         driver="org.postgresql.Driver" 
+         url="jdbc:postgresql://localhost/template1" 
+         userid="postgres" password="gfDkeynbq" 
+         print="yes"
+ 	 autocommit="true">
+
+-- SQL script for TimeX
+-- Step 1: Drop databese if they exist
+DROP DATABASE timex;
+
+-- Step 2: Create database
+CREATE DATABASE timex;
+
+      </sql>
+  </target>
+
+
+  <target name="execddl">
+      <sql classpath="${hjar}"
+         driver="org.postgresql.Driver" 
+         url="jdbc:postgresql://localhost:${hport}/${halias}" 
+         userid="postgres" password="gfDkeynbq" 
+         print="yes"
+	 autocommit="true">
+
+-- SQL script for TimeX
+-- Step 1: Drop tables if they exist
+DROP TABLE IF EXISTS ProjectLeader;
+DROP TABLE IF EXISTS Timesheet;
+DROP TABLE IF EXISTS Project;
+DROP TABLE IF EXISTS Employee;
+DROP TABLE IF EXISTS Task;
+      	
+-- Step 2: Create tables
+CREATE TABLE Project
+(
+	projectId		serial			,
+	name			VARCHAR(255)	NOT NULL UNIQUE,
+	comment			VARCHAR(255)		,
+	CONSTRAINT		project_pk PRIMARY KEY(projectId)		
+);
+
+CREATE TABLE Employee
+(
+	employeeId		UUID NOT NULL UNIQUE,
+	surname			VARCHAR(64)	NOT NULL,
+	name			VARCHAR(32)	NOT NULL,
+	mail			VARCHAR(64)		,
+	chief			UUID			,
+	post			VARCHAR(64)	,
+	department		VARCHAR(255)	,
+	username		VARCHAR(64)	NOT NULL UNIQUE,
+	password		VARCHAR(32)	,
+	CONSTRAINT		employee_pk PRIMARY KEY(employeeId),
+    CONSTRAINT		employee_chief_fk FOREIGN KEY(chief) REFERENCES Employee(employeeId)
+);
+
+CREATE TABLE Task
+(
+	taskId			serial			,
+	name			VARCHAR(255)	NOT NULL UNIQUE,
+	comment			VARCHAR(255)		,
+	CONSTRAINT		task_pk PRIMARY KEY(taskId)
+);
+
+CREATE TABLE Timesheet
+(
+	id				serial			,
+	projectId		integer		NOT NULL,
+	taskId			integer		NOT NULL,
+	employeeId		UUID		NOT NULL,
+	dateTask		date		NOT NULL,
+	countTime		numeric(7,2)	NOT NULL,
+	comment			VARCHAR(255)		,
+	CONSTRAINT		timesheet_pk PRIMARY KEY(id),
+	CONSTRAINT		timesheet_projectId_fk FOREIGN KEY(projectId) REFERENCES Project(projectId),
+	CONSTRAINT		timesheet_taskId_fk FOREIGN KEY(taskId) REFERENCES Task(taskId)
+);
+      	
+CREATE TABLE ProjectLeader
+(
+      	id			serial			,
+      	projectId	integer		NOT NULL,
+      	employeeId	UUID		NOT NULL,
+      	CONSTRAINT	projectleader_pk PRIMARY KEY(id),
+      	CONSTRAINT	projectleader_projectId_fk FOREIGN KEY(projectId) REFERENCES Project(projectId)
+);
+      	
+-- Step 3: Insert some reference and test data
+      	--INSERT INTO Project (name) 
+      	--       VALUES ('GHK IGK-6');
+      	--INSERT INTO Project (name) 
+      	--        VALUES ('GHK ARM RTK');
+      	--INSERT INTO Project (name) 
+      	--       VALUES ('LAES2 SAU DG');
+
+      	--INSERT INTO Employee (surname, name, mail, post, department, username, password)
+      	--       VALUES ('Idolov', 'Michael', 'm.idolov@west-e.ru', 'Leading engineer', 'Scheme', 'm.idolov', '123idolov');
+      	--INSERT INTO Employee (surname, name, mail, post, department, username, password)
+      	--       VALUES ('Muhutdinov', 'Roman', 'r.muhutdinov@west-e.ru', 'Menedger', 'Menedgers', 'r.muhutdinov', '123muhutdinov');
+      	--INSERT INTO Employee (surname, name, mail, post, department, username, password)
+      	--      VALUES ('Fakadey', 'Pavel', 'p.fakadey@west-e.ru', 'Leading programmer', 'Programmeers', 'fakadey', '123fakadey');
+      	
+      	
+      	--INSERT INTO Task (name)
+      	--	VALUES ('Make scheme');
+      	--INSERT INTO Task (name)
+      	--	VALUES ('Make document');
+      	--INSERT INTO Task (name)
+      	--	VALUES ('PO');
+
+
+      	--INSERT INTO ProjectLeader (projectId, employeeId)
+      	--	VALUES (1, 1);
+      	--INSERT INTO ProjectLeader (projectId, employeeId)
+      	--	VALUES (1, 2);
+      	
+-- Step 4: Verify tables and test data look ok
+      	--SELECT * FROM Project;
+      	--SELECT * FROM Task;
+      	--SELECT * FROM Employee;
+      	--SELECT * FROM Timesheet;
+      	
+      </sql>
+  </target>
+</project>
