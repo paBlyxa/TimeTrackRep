@@ -8,6 +8,9 @@ import java.util.UUID;
  */
 public class UuidUtils {
 	
+	private UuidUtils(){
+		
+	}
 	/*
 	 * Convert binary form GUID to UUID.class
 	 */
