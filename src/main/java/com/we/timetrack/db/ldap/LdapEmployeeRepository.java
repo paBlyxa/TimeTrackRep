@@ -36,7 +36,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	@Override
 	public Employee getEmployee(UUID employeeId) {
 		List<Employee> employees = getLdapTemplate().search(query()
-				.base("OU=Проектирования и конструирования,dc=we,dc=ru")
+				.base("OU=РџСЂРѕРµРєС‚РёСЂРѕРІР°РЅРёСЏ Рё РєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРёСЏ,dc=we,dc=ru")
 				.filter("(&(objectClass=person)(objectGUID=" + UuidUtils.convertToByteString(employeeId) + "))"),
 				getContextMapper());
 		return employees.isEmpty() ? null : employees.get(0);
@@ -45,7 +45,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	@Override
 	public Employee getEmployee(String username) {
 		List<Employee> employees = getLdapTemplate().search(query()
-				.base("OU=Проектирования и конструирования,dc=we,dc=ru")
+				.base("OU=РџСЂРѕРµРєС‚РёСЂРѕРІР°РЅРёСЏ Рё РєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРёСЏ,dc=we,dc=ru")
 				.where("sAMAccountName").is(username),
 				getContextMapper());
 		return employees.get(0);
@@ -54,7 +54,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	@Override
 	public List<Employee> getEmployees() {
 		LdapQuery query = query()
-				.base("OU=Проектирования и конструирования,dc=we,dc=ru")
+				.base("OU=РџСЂРѕРµРєС‚РёСЂРѕРІР°РЅРёСЏ Рё РєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРёСЏ,dc=we,dc=ru")
 				//.attributes("givenName", "sn", "sAMAccountName", "department", "mail", "title", "memberOf")
 				.where("objectclass").is("person");
 		
@@ -77,7 +77,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		
 		if (!checked.contains(employee)){
 			DirContextOperations context = getLdapTemplate().searchForContext(query()
-					.base("OU=Проектирования и конструирования,dc=we,dc=ru")
+					.base("OU=РџСЂРѕРµРєС‚РёСЂРѕРІР°РЅРёСЏ Рё РєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРёСЏ,dc=we,dc=ru")
 					.where("sAMAccountName").is(employee.getUsername()));
 			String[] strDirectReports = context.getStringAttributes("directReports");
 			checked.add(employee);

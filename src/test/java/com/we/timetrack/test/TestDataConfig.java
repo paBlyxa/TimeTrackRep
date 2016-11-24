@@ -30,7 +30,7 @@ public class TestDataConfig implements TransactionManagementConfigurer {
 
 
 	@Bean
-	@Profile("development")
+	@Profile("dataSourceDevelopment")
 	public DataSource dataSource() {
 
 		EmbeddedDatabaseBuilder edb = new EmbeddedDatabaseBuilder();
@@ -43,7 +43,7 @@ public class TestDataConfig implements TransactionManagementConfigurer {
 	    return embeddedDatabase;
 	}
 
-	@Profile("development")
+	@Profile("dataSourceDevelopment")
 	public PlatformTransactionManager annotationDrivenTransactionManager() {
 
 		System.out.println(sessionFactory);
@@ -53,7 +53,7 @@ public class TestDataConfig implements TransactionManagementConfigurer {
 	}
 
 	@Bean
-	@Profile("development")
+	@Profile("dataSourceDevelopment")
 	public SessionFactory sessionFactoryBean() {
 		try {
 			LocalSessionFactoryBean lsfb = new LocalSessionFactoryBean();

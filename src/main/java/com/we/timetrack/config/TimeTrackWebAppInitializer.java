@@ -28,7 +28,7 @@ public class TimeTrackWebAppInitializer extends AbstractAnnotationConfigDispatch
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
-		servletContext.setInitParameter("spring.profiles.active", "production");
+		servletContext.setInitParameter("spring.profiles.active", "securityConfigProduction, dataSourceProduction");
 	}
 	
 }

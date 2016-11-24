@@ -28,7 +28,7 @@ public class DataConfig {
 	private Environment env;
 	
 	@Bean
-	@Profile("production")
+	@Profile("dataSourceProduction")
 	public DataSource dataSource() {
     	BasicDataSource dataSource = new BasicDataSource();
     	dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
@@ -39,7 +39,7 @@ public class DataConfig {
 	}
 	
 	@Bean
-	@Profile("production")
+	@Profile("dataSourceProduction")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());
