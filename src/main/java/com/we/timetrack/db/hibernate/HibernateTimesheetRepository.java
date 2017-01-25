@@ -1,22 +1,27 @@
 package com.we.timetrack.db.hibernate;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.hibernate.Criteria;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.we.timetrack.db.TimesheetRepository;
+import com.we.timetrack.model.Project;
+import com.we.timetrack.model.Task;
 import com.we.timetrack.model.Timesheet;
 
 /**
@@ -84,6 +89,25 @@ public class HibernateTimesheetRepository implements TimesheetRepository {
 				.add(Restrictions.between("dateTask", beginDate, endDate))
 				.list();
 	}
+	
+	/**
+     * Returns list of all timesheet database records with matching
+     * employeeId and later task than beginDate and early then endDate,
+     * and matching project's id.
+     */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Timesheet> getTimesheets(UUID employeeId, LocalDate beginDate, LocalDate endDate,
+			List<Integer> projects) {
+
+		Criteria criteria = currentSession().createCriteria(Timesheet.class)
+				.add(Restrictions.eq("employeeId", employeeId))
+				.add(Restrictions.between("dateTask", beginDate, endDate));
+		if (projects != null){
+			criteria.add(Restrictions.in("project.projectId", projects));
+		}
+		return criteria.list();
+	}	
 	
 	/**
 	 * Returns list of all timesheet database records with matching
@@ -182,6 +206,7 @@ public class HibernateTimesheetRepository implements TimesheetRepository {
 	 * with mathcing employeeId
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
 	public List<Map> getEmployeeSummary(UUID employeeId){
 		
 		List<Map> result = null;
@@ -196,6 +221,76 @@ public class HibernateTimesheetRepository implements TimesheetRepository {
 			
 		result = query.list();
 
+		return result;
+	}
+	
+	@Override
+	public Map<String, Float> getEmployeeSummaryByProjects(UUID employeeId, LocalDate beginDate, LocalDate endDate,
+			List<Task> tasks) {
+
+		Criteria criteria = currentSession().createCriteria(Timesheet.class)
+				.setProjection(Projections.projectionList()
+						.add(Projections.groupProperty("project"))
+						.add(Projections.sum("countTime")));
+				
+		if (employeeId != null){
+			criteria.add(Restrictions.eq("employeeId", employeeId));
+		}
+		if (beginDate != null){
+			criteria.add(Restrictions.ge("dateTask", beginDate));
+		}
+		if (endDate != null) {
+			criteria.add(Restrictions.le("dateTask", endDate));
+		}
+		if (tasks != null){
+			criteria.add(Restrictions.in("task", tasks));
+		}
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = criteria.list();
+		return resultToMap(result);
+	}
+	
+	@Override
+	public Map<String, Float> getEmployeeSummaryByTasks(UUID employeeId, LocalDate beginDate, LocalDate endDate, 
+			List<Project> projects) {
+
+		Criteria criteria = currentSession().createCriteria(Timesheet.class)
+				.setProjection(Projections.projectionList()
+						.add(Projections.groupProperty("task"))
+						.add(Projections.sum("countTime")));
+				
+		if (employeeId != null){
+			criteria.add(Restrictions.eq("employeeId", employeeId));
+		}
+		if (beginDate != null){
+			criteria.add(Restrictions.ge("dateTask", beginDate));
+		}
+		if (endDate != null) {
+			criteria.add(Restrictions.le("dateTask", endDate));
+		}
+		if (projects != null){
+			criteria.add(Restrictions.in("project", projects));
+		}
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = criteria.list();
+		return resultToMap(result);
+	}
+	
+	private Map<String, Float> resultToMap(List<Object[]> arrayList){
+		Map<String, Float> result = new HashMap<>();
+		for (Object[] array : arrayList){
+			if (array.length != 2){
+				return null;
+			}
+			String name = "";
+			if (array[0] instanceof Project){
+				name = ((Project)array[0]).getName();
+			}
+			if (array[0] instanceof Task){
+				name = ((Task)array[0]).getName();
+			}
+			result.put(name, (float)(double)array[1]);
+		}
 		return result;
 	}
 }

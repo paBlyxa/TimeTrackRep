@@ -44,38 +44,37 @@ public class HibernateTest {
 		Transaction tx = session.beginTransaction();
 //		Employee employee;
 //		
-//		//Запрос одной записи
+//		//Get employee
 //		employee = session.get(Employee.class, 1);
-//		System.out.println("Сотрудник: " + employee.getSurname() + " " + employee.getName());
+//		System.out.println("Employee: " + employee.getSurname() + " " + employee.getName());
 //		
 //		
-//		//Запрос всех записей сотрудников
+//		//Get employee's list
 //		List<Employee> employeeList = session.createCriteria(Employee.class).list();
 //		for (Employee empl : employeeList){
-//			System.out.println("EmployeeId = " + empl.getEmployeeId() + " Фамилия: " + empl.getSurname());			
+//			System.out.println("EmployeeId = " + empl.getEmployeeId() + " surname: " + empl.getSurname());			
 //		}
 		
-		//Запрос всех записей проектов
+		//Get project's list
 		List<Project> projectList = session.createQuery("from Project").list();
 		for (Project prj : projectList){
-			System.out.println("ProjectId = " + prj.getProjectId() + " Название проекта: " + prj.getName());
+			System.out.println("ProjectId = " + prj.getProjectId() + " project.name: " + prj.getName());
 			Set<UUID> leaders = prj.getProjectLeaders();
 			for (UUID lead : leaders){
 				System.out.println(lead);
 			}
 		}
 		
-		//Запрос всех записей задач
+		//Get task's list
 		List<Task> taskList = session.createQuery("from Task").list();
 		for (Task task : taskList){
-			System.out.println("TaskId = " + task.getTaskId() + " Название задачи: " + task.getName());
+			System.out.println("TaskId = " + task.getTaskId() + " task.name: " + task.getName());
 		}
 		
-		//Запрос всех записей событий
+		//Get timesheet's list
 		List<Timesheet> timesheetList = session.createQuery("from Timesheet").list();
 		for (Timesheet timesheet : timesheetList){
-			System.out.println("Id = " + timesheet.getId() + " Проект: " + timesheet.getProject().getName() +
-					" Работа: " + timesheet.getTask().getName() + " Сотрудник: " + timesheet.getEmployeeId());
+			print(timesheet);
 		}
 		
 		Query query = session.createQuery("select p.name as project, t.name as task, SUM(s.countTime) as sumHours"
@@ -92,10 +91,15 @@ public class HibernateTest {
 			String projectName = (String)map.get("project");
 			String taskName = (String)map.get("task");
 			double count = (double)map.get("sumHours");
-			System.out.println(">>>>>>>>>Результаты: Проект - " + projectName + ", Задача - " + taskName + ", Часы - " + count);
+			System.out.println(">>>>>>>>>Timesheet: prjoect - " + projectName + ", task - " + taskName + ", hours - " + count);
 		}
-		
+				
 		tx.commit();
 		sessionFactory.close();
+	}
+	
+	private static void print(Timesheet timesheet){
+		System.out.println("Id = " + timesheet.getId() + " project: " + timesheet.getProject().getName() +
+				" task: " + timesheet.getTask().getName() + " Employee: " + timesheet.getEmployeeId());
 	}
 }

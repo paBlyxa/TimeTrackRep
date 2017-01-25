@@ -1,5 +1,6 @@
 package com.we.timetrack.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.we.timetrack.db.EmployeeRepository;
+import com.we.timetrack.db.ProjectRepository;
+import com.we.timetrack.db.TaskRepository;
 import com.we.timetrack.db.TimesheetRepository;
 import com.we.timetrack.model.Employee;
-import com.we.timetrack.model.Timesheet;
+import com.we.timetrack.model.Project;
+import com.we.timetrack.model.Task;
 import com.we.timetrack.service.model.DateRange;
 
 @Service
@@ -23,83 +27,80 @@ public class EmployeeManager {
 	@Autowired
 	private TimesheetRepository timesheetRepository;
 	@Autowired
+	private ProjectRepository projectRepository;
+	@Autowired
+	private TaskRepository taskRepository;
+	@Autowired
 	@Qualifier("ldapEmployeeRepository")
 	private EmployeeRepository employeeRepository;
 	
 	/**
-	 * Создание статистики для текущего пользователя
+	 * Get employee by employeeId
 	 */
-	public void getEmployeeSummary(DateRange period, Model model){
-		//Текущий сотрудник
-		Employee employee = (Employee)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		getEmployeeSummary(employee, period, model);
+	public Employee getEmployee(UUID employeeId){
+		return employeeRepository.getEmployee(employeeId);
 	}
 	
 	/**
-	 * Отображение параметром текущего пользователя
-	 * @param model
+	 * РЎРѕР·РґР°РЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 	 */
-	public void getAccount(Model model){
-		//Текущий сотрудник
-		Employee employee = (Employee)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		model.addAttribute("employee", employee);
+	public Map<String, Float> getEmployeeSummary(DateRange period, int type) {
+		return getEmployeeSummary(period, type, true, null);
+	}
+			
+	/**
+	 * РЎРѕР·РґР°РЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё РґР»СЏ С‚РµРєСѓС‰РµРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
+	 */
+	public Map<String, Float> getEmployeeSummary(DateRange period, int type, boolean all, List<Integer> items){
+		Employee employee = getCurrentEmployee();
+		if (!all && items == null){
+			return new HashMap<String, Float>();
+		}
+		return getEmployeeSummary(employee, period, type, items);
 	}
 	
 	/**
-	 * Создание статистики для сотрудника employeeId
+	 * РЎРѕР·РґР°РЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё РґР»СЏ СЃРѕС‚СЂСѓРґРЅРёРєР° employeeId
 	 */
-	public void getEmployeeSummary(UUID employeeId, DateRange period, Model model){
+	public Map<String, Float> getEmployeeSummary(UUID employeeId, DateRange period, int type) {
+		return getEmployeeSummary(employeeId, period, type, true, null);
+	}
+			
+	/**
+	 * РЎРѕР·РґР°РЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё РґР»СЏ СЃРѕС‚СЂСѓРґРЅРёРєР° employeeId
+	 */
+	public Map<String, Float> getEmployeeSummary(UUID employeeId, DateRange period, int type, boolean all, List<Integer> items){
 		Employee employee = employeeRepository.getEmployee(employeeId);
-		getEmployeeSummary(employee, period, model);
+		if (!all && items == null){
+			return new HashMap<String, Float>();
+		}
+		return getEmployeeSummary(employee, period, type, items);
 	}
 	
 	/**
-	 * Создание статистики
+	 * Get current employee (user)
+	 * @return
 	 */
-	private void getEmployeeSummary(Employee employee, DateRange period, Model model){
-		
-		List<Timesheet> timesheets;
-		
-		if (period == null){
-			//Считываем все записи по сотрдунику
-			timesheets = timesheetRepository.getTimesheets(employee.getEmployeeId());
-		} else {
-			timesheets = timesheetRepository.getTimesheets(employee.getEmployeeId(), period.getBegin(), period.getEnd());
-			model.addAttribute("statPeriod", period);
-		}
-		
-		Map<String, Float> resultByTasks = new HashMap<String, Float>();
-		Map<String, Float> resultByProjects = new HashMap<String, Float>();
-		
-		//Собираем статистику по задачам и проектам
-		for (Timesheet timesheet : timesheets){
-			//Статистика по задачам
-			if (resultByTasks.containsKey(timesheet.getTask().getName())){
-				resultByTasks.put(timesheet.getTask().getName(), resultByTasks.get(timesheet.getTask().getName()) + timesheet.getCountTime());
-			}
-			else {
-				resultByTasks.put(timesheet.getTask().getName(), timesheet.getCountTime());
-			}
-			//Статистика по проектам
-			if (resultByProjects.containsKey(timesheet.getProject().getName())){
-				resultByProjects.put(timesheet.getProject().getName(), resultByProjects.get(timesheet.getProject().getName()) + timesheet.getCountTime());
-			}
-			else {
-				resultByProjects.put(timesheet.getProject().getName(), timesheet.getCountTime());
-			}
-		}
-		//Сохраняем статистику по задачам
-		model.addAttribute("summaryByTasks", resultByTasks);
-		//Сохраняем статистику по проектам
-		model.addAttribute("summaryByProjects", resultByProjects);
-		model.addAttribute("employee", employee);
-		
+	public Employee getCurrentEmployee(){
+		return (Employee)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
+	
+	private Map<String, Float> getEmployeeSummary(Employee employee, DateRange period, int type, List<Integer> items){
+		switch(type){
+		case 1:
+			return timesheetRepository.getEmployeeSummaryByProjects(
+					employee.getEmployeeId(), period.getBegin(), period.getEnd(), createTaskList(items));
+		case 2:
+			return timesheetRepository.getEmployeeSummaryByTasks(
+					employee.getEmployeeId(), period.getBegin(), period.getEnd(), createProjectList(items));
+		}
+		return new HashMap<>();
+	}
+	
 
 	public void getEmployeeList(Model model){
 		
-		//Текущий сотрудник
-		Employee employee = (Employee)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Employee employee = getCurrentEmployee();
 		
 		List<Employee> employeeList;
 		
@@ -112,4 +113,111 @@ public class EmployeeManager {
 		model.addAttribute("employeeList", employeeList);
 		
 	}
+	
+	public Map<String, Integer> getItems(DateRange period, Integer type){
+		
+		//Employee employee = getCurrentEmployee();
+		
+		switch(type){
+			case 1: 
+				return getTasks(period);
+			case 2:
+				return getProjects(period);
+		}
+		return new HashMap<>();
+	}
+	
+	private Map<String, Integer> getProjects(DateRange period){
+		List<Project> projects;
+		if (period == null){
+			projects = projectRepository.getProjects();
+		} else {
+			projects = projectRepository.getProjects();
+		}
+		Map<String, Integer> result = new HashMap<>();
+		for (Project proj : projects){
+			result.put(proj.getName(), proj.getProjectId());
+		}
+		return result;
+	}
+	
+	private Map<String, Integer> getTasks(DateRange period){
+		List<Task> tasks;
+		if (period == null){
+			tasks = taskRepository.getTasks();
+		} else {
+			tasks = taskRepository.getTasks();
+		}
+		Map<String, Integer> result = new HashMap<>();
+		for (Task task : tasks){
+			result.put(task.getName(), task.getTaskId());
+		}
+		return result;
+	}
+	
+	private List<Task> createTaskList(List<Integer> listTaskId){
+		if (listTaskId == null) {
+			return null;
+		}
+		List<Task> tasks = new ArrayList<Task>();
+		for (Integer taskId : listTaskId){
+			Task task = new Task();
+			task.setTaskId(taskId);
+			tasks.add(task);
+		}
+		return tasks;
+	}
+	
+	private List<Project> createProjectList(List<Integer> listProjectId){
+		if (listProjectId == null) {
+			return null;
+		}
+		List<Project> projects = new ArrayList<Project>();
+		for (Integer projectId : listProjectId){
+			Project project = new Project();
+			project.setProjectId(projectId);
+			projects.add(project);
+		}
+		return projects;
+	}
+	
+	/**
+	 * РЎРѕР·РґР°РЅРёРµ СЃС‚Р°С‚РёСЃС‚РёРєРё
+	 */
+/*	private Map<String, Float> getEmployeeSummaryOld(Employee employee, DateRange period, int type, List<Integer> items){
+		
+		List<Timesheet> timesheets;
+		
+		if (period == null){
+			//РЎС‡РёС‚С‹РІР°РµРј РІСЃРµ Р·Р°РїРёСЃРё РїРѕ СЃРѕС‚СЂРґСѓРЅРёРєСѓ
+			timesheets = timesheetRepository.getTimesheets(employee.getEmployeeId());
+		} else {
+			timesheets = timesheetRepository.getTimesheets(employee.getEmployeeId(), period.getBegin(), period.getEnd(), items);
+			
+		}
+		
+		Map<String, Float> result = new HashMap<String, Float>();
+		
+		//РЎРѕР±РёСЂР°РµРј СЃС‚Р°С‚РёСЃС‚РёРєСѓ
+		for (Timesheet timesheet : timesheets){
+			String key = null;
+			switch (type){
+				case 1: 
+					key = timesheet.getProject().getName();
+					break;
+				case 2:
+					key = timesheet.getTask().getName();
+					break;
+			}
+			if (result.containsKey(key)){
+				result.put(key, result.get(key) + timesheet.getCountTime());
+			}
+			else {
+				result.put(key, timesheet.getCountTime());
+			}
+
+		}
+		return result;
+	}
+*/
 }

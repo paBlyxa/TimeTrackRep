@@ -24,7 +24,7 @@ import com.we.timetrack.service.model.TimesheetDay;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RootConfig.class)
 @WebAppConfiguration
-@ActiveProfiles("production")
+@ActiveProfiles("securityConfigDevelopment, dataSourceProduction")
 public class TimesheetDayTest {
 	
 	@Autowired
@@ -42,7 +42,7 @@ public class TimesheetDayTest {
         LocalDate endDate = LocalDate.now().plusMonths(1);
         List<TimesheetDay> timesheetsByDays = TimesheetDay.getTimesheetsByDays(timesheets, beginDate, endDate);
         assertNotNull(timesheetsByDays);
-        System.out.println("Результаты:");
+        System.out.println("Timesheets:");
         for (TimesheetDay tsd : timesheetsByDays){
         	assertNotNull(tsd);
         	System.out.println(tsd.getDate() + " " + tsd.getTimesheets().size() + " " + tsd.getHours());

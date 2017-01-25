@@ -1,4 +1,4 @@
-package com.we.timetrack.test;
+package com.we.timetrack.config;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.jboss.logging.Logger;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.support.LdapUtils;
@@ -27,11 +26,10 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.we.timetrack.model.Employee;
-import com.we.timetrack.util.UuidUtils;
 
 @Configuration
 @EnableWebSecurity
-@Profile("developmentSC")
+@Profile("securityConfigDevelopment")
 public class TestSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	private static Logger logger = Logger.getLogger(TestSecurityConfig.class);

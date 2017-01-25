@@ -20,17 +20,17 @@ public class ActiveDirectoryTest {
 		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();
 		List<Employee> employeeList = employeeRepository.getEmployees();
 		for (Employee employee : employeeList){
-			System.out.println("Сотрудник: " + employee.getSurname() + " " + employee.getName() + " " 
+			System.out.println("Employee: " + employee.getSurname() + " " + employee.getName() + " " 
 					+ employee.getUsername() + " " + employee.getPost() + " " + employee.getDepartment());
 		}
 	}
 	
 	@Test
 	public void getDirectReports() {
-		String dn = "CN=Павел Факадей,OU=Проектирования и конструирования,DC=we,DC=ru";
+		String dn = "CN=РџР°РІРµР» Р¤Р°РєР°РґРµР№,OU=РџСЂРѕРµРєС‚РёСЂРѕРІР°РЅРёСЏ Рё РєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРёСЏ,DC=we,DC=ru";
 		about(dn);
 		
-		dn = "CN=Антон Иванов,OU=Проектирования и конструирования,DC=we,DC=ru";
+		dn = "CN=РџР°РІРµР» Р¤Р°РєР°РґРµР№,OU=РџСЂРѕРµРєС‚РёСЂРѕРІР°РЅРёСЏ Рё РєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРёСЏ,DC=we,DC=ru";
 		about(dn);
 	}
 	
@@ -43,11 +43,11 @@ public class ActiveDirectoryTest {
 	
 	@Test
 	public void getByDN() {
-		String dn = "CN=Павел Факадей,OU=Проектирования и конструирования,DC=we,DC=ru";
+		String dn = "CN=РџР°РІРµР» Р¤Р°РєР°РґРµР№,OU=РџСЂРѕРµРєС‚РёСЂРѕРІР°РЅРёСЏ Рё РєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРёСЏ,DC=we,DC=ru";
 		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();
 		Employee employee = employeeRepository.get(dn);
 		assertNotNull(employee);
-		System.out.println("getByDN Сотрудник: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName() + " " 
+		System.out.println("getByDN Employee: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName() + " " 
 				+ employee.getUsername() + " " + employee.getPost() + " " + employee.getDepartment());
 	}
 	
@@ -57,7 +57,7 @@ public class ActiveDirectoryTest {
 		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();
 		Employee employee = employeeRepository.getEmployee(username);
 		assertNotNull(employee);
-		System.out.println("getByUsername Сотрудник: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName() + " " 
+		System.out.println("getByUsername Employee: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName() + " " 
 				+ employee.getUsername() + " " + employee.getPost() + " " + employee.getDepartment());
 	}
 	
@@ -65,7 +65,7 @@ public class ActiveDirectoryTest {
 		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();
 		Employee employee = employeeRepository.get(dn);
 		if (employee != null) {
-			System.out.println("Найден сотрудник: " + employee.getSurname() + " " + employee.getName());
+			System.out.println("Employee: " + employee.getSurname() + " " + employee.getName());
 			if (employee.getAuthorities() != AuthorityUtils.NO_AUTHORITIES){
 				System.out.print("Authority: " );
 				for (GrantedAuthority auth : employee.getAuthorities()){
@@ -75,11 +75,11 @@ public class ActiveDirectoryTest {
 			}
 		}
 		else {
-			System.out.println(dn + " не существует");
+			System.out.println(dn + " not exist");
 		}
 		
 		List<Employee> directReports = employeeRepository.getDirectReports(employee);
-		System.out.println("Подчиненные:");
+		System.out.println("directReport:");
 		for (Employee directReport : directReports){
 			System.out.println(directReport.getSurname() + " " + directReport.getName());
 		}

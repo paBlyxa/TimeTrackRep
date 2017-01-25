@@ -1,4 +1,4 @@
-package com.we.timetrack.test;
+package com.we.timetrack.config;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -20,6 +20,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
+@Profile("dataSourceDevelopment")
 @Configuration
 @EnableTransactionManagement
 @ComponentScan
@@ -29,8 +30,8 @@ public class TestDataConfig implements TransactionManagementConfigurer {
 	private SessionFactory sessionFactory;
 
 
-	@Bean
 	@Profile("dataSourceDevelopment")
+	@Bean
 	public DataSource dataSource() {
 
 		EmbeddedDatabaseBuilder edb = new EmbeddedDatabaseBuilder();
@@ -52,8 +53,8 @@ public class TestDataConfig implements TransactionManagementConfigurer {
 		return transactionManager;
 	}
 
-	@Bean
 	@Profile("dataSourceDevelopment")
+	@Bean
 	public SessionFactory sessionFactoryBean() {
 		try {
 			LocalSessionFactoryBean lsfb = new LocalSessionFactoryBean();

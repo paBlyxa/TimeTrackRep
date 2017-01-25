@@ -24,8 +24,8 @@ import com.we.timetrack.db.hibernate.HibernateEmployeeRepository;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DataConfig.class)
 @WebAppConfiguration
-@ActiveProfiles("production")
-public class EmployeeManagerTest {
+@ActiveProfiles("dataSourceProduction")
+public class EmployeeRepositoryTest {
 
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -39,8 +39,8 @@ public class EmployeeManagerTest {
 		Employee employee = employeeRepository.getEmployee(employeeId);
 		assertNotNull(employee);
 		assertTrue(employee.getEmployeeId() == employeeId);
-		System.out.println("Сотрдуник: id = " + employee.getEmployeeId() +
-				" Фамилия = " + employee.getSurname());
+		System.out.println("РЎРѕС‚СЂСѓРґРЅРёРє: id = " + employee.getEmployeeId() +
+				" Р¤Р°РјРёР»РёСЏ = " + employee.getSurname());
 	}
 	
 	@Test
@@ -49,11 +49,10 @@ public class EmployeeManagerTest {
 		EmployeeRepository employeeRepository = new HibernateEmployeeRepository(sessionFactory);
 		List<Employee> employees = employeeRepository.getEmployees();
 		assertNotNull(employees);
-		System.out.println(">>>>>>>>>Количество записей сотрудников: " + employees.size());
+		System.out.println(">>>>>>>>>РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРѕС‚СЂРґСѓРЅРёРєРѕРІ: " + employees.size());
 		for(Employee employee: employees){
 			assertNotNull(employee);
-			System.out.println(">>>>>>>>Сотрудник: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName());
+			System.out.println(">>>>>>>>РЎРѕС‚СЂСѓРґРЅРёРє: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName());
 		}
 	}
-
 }

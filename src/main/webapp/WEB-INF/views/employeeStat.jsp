@@ -1,64 +1,60 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <head>
 	<script src="<c:url value="/resources/script/Chart.js" />"></script>
 	<script src="<c:url value="/resources/script/datepicker.min.js" />"></script>
 	<link href="<c:url value="/resources/datepicker.min.css"/>" rel="stylesheet" type="text/css">
+	<script src="<c:url value="/resources/script/jquery.sumoselect.min.js" />"></script>
+	<link href="<c:url value="/resources/sumoselect.css"/>" rel="stylesheet" type="text/css">
 </head>
 
-<div class="inlineContainer">
-		<h1><c:out value="${employee.surname} ${employee.name}" /></h1>
-		<div id="saveContainer" style="float: right;">
-			<form action="employees/xls" method="GET">
-				<div id="saveInnerContainer">
-					<label>Отчет: </label>
-					<input name="id" value="${employee.employeeId}" type="hidden"/>
-					<input type="text" class="datepicker-here"
-									data-position="bottom left"
-									data-range="true"
-									data-multiple-dates-separator=" - "
-									name="savePeriod"
-									required="required"/>
-			    	<input type="submit" value="сохранить" />
-		    	</div>
-			</form>
-		</div>
-</div>
+<nav class="filter">
+	<h3>Параметры статистики</h3>
+	<h4>Тип</h4>
+	<select id="statType">
+		<option value="1">по проектам</option>
+		<option value="2">по задачам</option>
+	</select>
+	<h4>Фильтр</h4>
+	<input type="checkbox" name="typeAllItems" value="true" id="typeAllItems" checked="checked">
+	<span id="typeAllItemsText">Все задачи</span>
+	<div id="items">
+		<select id="selectItems" name="selectItems" multiple="multiple">
+		</select>
+	</div>
+	<hr/>
+	
+	<h4>Период: </h4>
+	<input
+				id="statPeriod"
+				type="text" class="datepicker-here" data-position="bottom left"
+				data-range="true" data-multiple-dates-separator=" - "
+				name="statPeriod" value="${statPeriod}" required="required" />
+	<hr/>
+	<button id="buttonRefresh">Обновить</button>
 
-<div id="saveContainer" style="width: 480px;">
-	<form method="get">
-		<div id="saveInnerContainer">
-			<label>Статистика за период: </label>
-			<input type="text" class="datepicker-here"
-							data-position="bottom left"
-							data-range="true"
-							data-multiple-dates-separator=" - "
-							name="statPeriod" value="${statPeriod}"
-							required="required"/>
-			<input type="submit" value="Обновить" />
-		</div>
-	</form>
-</div>
+</nav>
 
-<div class = "divWithBorder">
+<article>
+
+<div class="divWithBorder">
 	<div>
-		<h2>Статистика по проектам</h2>
-		<table class="mainTable">
+		<div>
+			<h2><c:out value="${employee.surname} ${employee.name}" /></h2>
+			<span>
+			
+			</span>
+		</div>
+		
+		<table class="mainTable" id="tableStat">
 			<thead>
 				<tr>
-						<th scope="col" class="colProject">Проект</th>
-						<th scope="col" class="colCount">Часы</th>
+					<th scope="col" class="colProject">Проект</th>
+					<th scope="col" class="colCount">Часы</th>
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach var="entry" items="${summaryByProjects}" varStatus="status">
-					<tr>
-						<td><c:out value="${entry.key}"/></td>
-						<td><c:out value="${entry.value}"/></td>
-					</tr>
-				</c:forEach>
+			
 			</tbody>
 		</table>
 	</div>
@@ -66,141 +62,141 @@
 		<div class="leftChart">
 			<canvas id="chartByProjects" width="300" height="300"></canvas>
 		</div>
-		<div class="rightChart">	
-			<canvas id="barChartByProjects" width="600" height="300" ></canvas>
+		<div class="rightChart">
+			<canvas id="barChartByProjects" width="600" height="300"></canvas>
 		</div>
 	</div>
 </div>
-
-<div class = "divWithBorder">
-	<h2>Статистика по задачам</h2>
-	<div>
-		<table class="mainTable">
-			<thead>
-				<tr>
-						<th scope="col" class="colTask">Задача</th>
-						<th scope="col" class="colCount">Часы</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach var="entry" items="${summaryByTasks}" varStatus="status">
-					<tr>
-						<td><c:out value="${entry.key}"/></td>
-						<td><c:out value="${entry.value}"/></td>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-	</div>
-	<div class="chartContainer">
-		<div class="leftChart">
-			<canvas id="chartByTasks" width="300" height="300"></canvas>
-		</div>
-		<div class="rightChart">	
-			<canvas id="barChartByTasks" width="600" height="300" ></canvas>
-		</div>
-	</div>
-</div>
-
+	
+</article>
 <script>
-	var labelsByTasks = [];
-	var countsByTasks = [];
-	var labelsByProjects = [];
-	var countsByProjects = [];
+var ctx1 = document.getElementById("chartByProjects").getContext("2d");
+var ctx2 = document.getElementById("barChartByProjects").getContext("2d");
+var employeeId = "<c:out value="${employee.employeeId}"/>";
 	
-	<c:forEach items="${summaryByTasks}" var="entry">
-		labelsByTasks.push("<c:out value="${entry.key}" />");
-		countsByTasks.push("<c:out value="${entry.value}" />");
-	</c:forEach>
+$(document).ready(function() {
+	getStatistic();
+	$("#buttonRefresh").click(function(){
+		getStatistic();
+	});
+ });
 	
-	<c:forEach items="${summaryByProjects}" var="entry">
-		labelsByProjects.push("<c:out value="${entry.key}" />");
-		countsByProjects.push("<c:out value="${entry.value}" />");
-	</c:forEach>
+function getStatistic() {
+	var items = [];
+	//Если галочка все снята, то сохраняем в массив выбранные элементы
+	if (! $("#typeAllItems").prop("checked")) {
+		$("#selectItems option:selected").each(function() {
+			items.push($(this).val());
+		})
+	}
+	//Запрос статистики
+	$.getJSON("stat/getData.do",
+		{ 
+			//Id сотрудника
+			employeeId: employeeId,
+			//Диапазон дат для выборки данных
+			statPeriod: $("#statPeriod").val(),
+			//Тип выборки (1 - по проектам, 2 - по задачам)
+			type: $("#statType").val(),
+			//Выборка по всем элементам ( или выбранным
+			itemsAll: $("#typeAllItems").prop("checked"), items: items},
+		
+		function(data){
 	
-var dataByTasks = {
-	    labels: labelsByTasks,
-	    datasets: [
-	        {
-	            data: countsByTasks,
-	            backgroundColor: [
-	                "#FF6384",
-	                "#36A2EB",
-	                "#FFCE56"
-	            ],
-	            hoverBackgroundColor: [
-	                "#FF6384",
-	                "#36A2EB",
-	                "#FFCE56"
-	            ]
-	        }]
-	};
-	
-var dataByProjects = {
-	    labels: labelsByProjects,
-	    datasets: [
-	        {
-	            data: countsByProjects,
-	            backgroundColor: [
-	                "#FF6384",
-	                "#36A2EB",
-	                "#FFCE56"
-	            ],
-	            hoverBackgroundColor: [
-	                "#FF6384",
-	                "#36A2EB",
-	                "#FFCE56"
-	            ]
-	        }]
-	};
-	
-var ctx = document.getElementById("chartByTasks").getContext("2d");
-var myPieChart = new Chart(ctx,{
-    type: 'pie',
-    data: dataByTasks,
-    options: {
-    	common: {
-    		responsive: false
-    	}
-    }
-});
-var ctx2 = document.getElementById("barChartByTasks").getContext("2d");
-var myBarChart = new Chart(ctx2, {
-    type: 'bar',
-    data: dataByTasks,
-    options: {
-    	scales : {
-    		yAxes: [{
-    			ticks: {
-    				beginAtZero: true
-    			}
-    		}]
-    	}
-    }
-});
-
-var ctx3 = document.getElementById("chartByProjects").getContext("2d");
-var myPieChart = new Chart(ctx3,{
-    type: 'pie',
-    data: dataByProjects,
-    options: {
-    	common: {
-    		responsive: false
-    	}
-    }
-});
-var ctx4 = document.getElementById("barChartByProjects").getContext("2d");
-var myBarChart = new Chart(ctx4, {
-    type: 'bar',
-    data: dataByProjects,
-    options: {
-    	scales : {
-    		yAxes: [{
-    			ticks: {
-    				beginAtZero: true
-    			}
-    		}]
-    	}
-    }
-});
+		$("#tableStat tbody").empty();
+		var labels = [];
+		var counts = [];
+		
+		$.each(data, function(str, val){
+			
+			$("#tableStat tbody").append('<tr><td>' + str + '</td><td>' + val + '</td></tr>');
+			labels.push(str);
+			counts.push(val);
+		});
+		
+		dataBy = {
+			labels: labels,
+			datasets: [
+			{
+				data: counts,
+				backgroundColor: [
+					"#FF6384",
+					"#36A2EB",
+					"#FFCE56"
+				],
+				hoverBackgroundColor: [
+				"#FF6384",
+				"#36A2EB",
+				"#FFCE56"
+				]
+			}]
+		};
+				
+		var myPieChart = new Chart(ctx1,{
+			type: 'pie',
+			data: dataBy,
+			options: {
+				common: {
+			   	responsive: false
+			    }
+			}
+		});
+				
+		var myBarChart = new Chart(ctx2, {
+		    type: 'bar',
+		    data: dataBy,
+		    options: {
+			   	scales : {
+			  		yAxes: [{
+			   			ticks: {
+			   				beginAtZero: true
+			   			}
+			   		}]
+			   	}
+			}
+		});
+	})
+};
+</script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		//В зависимости от выбора checkbox-а (Все проекты/Все задачи)
+		//скрываем или отображаем возможные варианты
+		$("#typeAllItems").click(function() {
+			if ($("#typeAllItems").prop("checked")) {
+				$("#items").hide();
+			}
+			else {
+				//Сброс вариантов
+				$("#selectItems").empty();
+				$(".optWrapper .options").empty();
+				// Загружаем возможные варианты (проекты или задачи)
+				$.getJSON("stat/getItems.do",
+						{ statPeriod: $('#statPeriod').val(), type: $("#statType").val()},
+						function(data){
+							$.each(data, function(str, val){
+								$("#selectItems")[0].sumo.add(val, str);
+							});
+						}
+				);
+				$("#selectItems").SumoSelect({
+					placeholder: 'Выберите из списка',
+					search: true,
+					searchText: 'Введите имя проекта...'
+				});
+				$("#items").slideDown("slow");
+			}
+		});
+		// Изменяем текст checkbox-а в зависимости от выбора типа фильтра
+		$("#statType").change(function() {
+			$("#typeAllItems").prop( "checked", true );
+			$("#items").hide();
+			if ($("#statType").val() == 1){
+				$("#typeAllItemsText").text("Все задачи");
+			}
+			else {
+				$("#typeAllItemsText").text("Все проекты");
+			}
+		});
+	});
 </script>

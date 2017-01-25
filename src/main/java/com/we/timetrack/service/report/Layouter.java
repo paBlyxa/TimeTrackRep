@@ -15,6 +15,15 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 public class Layouter {
+
+	public final static String TITLE = "РЈС‡РµС‚ СЂР°Р±РѕС‡РµРіРѕ РІСЂРµРјРµРЅРё";
+	public final static String HEADER = "РћС‚С‡РµС‚ СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅ РІ ";
+	public final static String HEADER_DATE_COLUMN = "Р”Р°С‚Р°";
+	public final static String HEADER_PROJECT_COLUMN = "РџСЂРѕРµРєС‚";
+	public final static String HEADER_TASK_COLUMN = "Р—Р°РґР°С‡Р°";
+	public final static String HEADER_HOURS_PER_TASK_COLUMN = "Р§Р°СЃС‹";
+	public final static String HEADER_HOURS_PER_DAY_COLUMN = "Р§Р°СЃС‹";
+	public final static String HEADER_COMMENT_COLUMN = "РљРѕРјРјРµРЅС‚Р°СЂРёР№";
 	
 	/**
 	 * Builds the report layout
@@ -53,7 +62,7 @@ public class Layouter {
 		HSSFRow rowTitle = worksheet.createRow((short) startRowIndex);
 		rowTitle.setHeight((short) 500);
 		HSSFCell cellTitle = rowTitle.createCell(startRowIndex);
-		cellTitle.setCellValue("Учет рабочего времени");
+		cellTitle.setCellValue(TITLE);
 		cellTitle.setCellStyle(cellStyleTitle);
 		
 		// Create merged region for the report title
@@ -62,7 +71,7 @@ public class Layouter {
 		//Create fate header
 		HSSFRow dateTitle = worksheet.createRow((short) startRowIndex + 1);
 		HSSFCell cellDate = dateTitle.createCell(startColIndex);
-		cellDate.setCellValue("Отчет сгенерирован в " + new Date());
+		cellDate.setCellValue(HEADER + new Date());
 	}
 	
 	/**
@@ -87,28 +96,34 @@ public class Layouter {
 		HSSFRow rowHeader = worksheet.createRow((short) startRowIndex + 2);
 		rowHeader.setHeight((short) 500);
 		
+		// Date column
 		HSSFCell cell1 = rowHeader.createCell(startColIndex + 0);
-		cell1.setCellValue("Дата");
+		cell1.setCellValue(HEADER_DATE_COLUMN);
 		cell1.setCellStyle(headerCellStyle);
 		
+		// Project column
 		HSSFCell cell2 = rowHeader.createCell(startColIndex + 1);
-		cell2.setCellValue("Проект");
+		cell2.setCellValue(HEADER_PROJECT_COLUMN);
 		cell2.setCellStyle(headerCellStyle);
 		
+		// Task column
 		HSSFCell cell3 = rowHeader.createCell(startColIndex + 2);
-		cell3.setCellValue("Задача");
+		cell3.setCellValue(HEADER_TASK_COLUMN);
 		cell3.setCellStyle(headerCellStyle);
 		
+		// Hours per task column
 		HSSFCell cell4 = rowHeader.createCell(startColIndex + 3);
-		cell4.setCellValue("Часы");
+		cell4.setCellValue(HEADER_HOURS_PER_TASK_COLUMN);
 		cell4.setCellStyle(headerCellStyle);
 		
+		// Hours per day clolumn
 		HSSFCell cell5 = rowHeader.createCell(startColIndex + 4);
-		cell5.setCellValue("Часы");
+		cell5.setCellValue(HEADER_HOURS_PER_DAY_COLUMN);
 		cell5.setCellStyle(headerCellStyle);
 		
+		// Comment column
 		HSSFCell cell6 = rowHeader.createCell(startColIndex + 5);
-		cell6.setCellValue("Комментарий");
+		cell6.setCellValue(HEADER_COMMENT_COLUMN);
 		cell6.setCellStyle(headerCellStyle);
 	}
 }

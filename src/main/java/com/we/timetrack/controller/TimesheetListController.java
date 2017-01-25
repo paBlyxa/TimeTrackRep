@@ -31,67 +31,41 @@ public class TimesheetListController  {
 	@RequestMapping(method=RequestMethod.GET)
 	public String timesheets(@RequestParam(value="week", defaultValue="0") int week,
 			Model model) {
-		
-//		 final UserDetails currentUser = (UserDetails) ((Authentication) principal).getPrincipal();
-//         Collection<? extends GrantedAuthority> authorities = currentUser.getAuthorities();
-//         System.out.println("currentUser: " + currentUser.getUsername());
-//         for (GrantedAuthority grantedAuthority : authorities) {
-//             System.out.println(grantedAuthority);
-//         }
         
         timesheetManager.getTimesheetsByDays(week, model);
-				
 		return "timesheet";
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public String saveTimesheet(TimesheetForm timesheetForm, RedirectAttributes redirectAttributes){
+	public String saveTimesheet(
+			@RequestParam(value="week", defaultValue="0") int week,
+			TimesheetForm timesheetForm,
+			RedirectAttributes redirectAttributes){
 		
-		timesheetManager.saveTimesheet(timesheetForm, redirectAttributes);
-		return "redirect:/timesheet";
+		timesheetManager.saveTimesheet(timesheetForm);
+		redirectAttributes.addFlashAttribute("timesheetForm", timesheetForm);
+		return "redirect:/timesheet?week=" + week;
 	}
 	
 	@RequestMapping(value="/modify", method=RequestMethod.POST)
-	public String modifyTimesheet(@RequestParam(value="timesheetId") int timesheetId, @RequestParam(value="countTime") float countTime, Model model){
+	public String modifyTimesheet(
+			@RequestParam(value="week", defaultValue="0") int week,
+			@RequestParam(value="timesheetId") int timesheetId,
+			@RequestParam(value="countTime") float countTime,
+			Model model){
 		
 		timesheetManager.modifyTimesheet(timesheetId, countTime);
-		
-		return "redirect:/timesheet";
+		return "redirect:/timesheet?week=" + week;
 	}
 	
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
-	public String deleteTimesheet(@RequestParam(value="timesheetId") int timesheetId, Model model){
+	public String deleteTimesheet(
+			@RequestParam(value="week", defaultValue="0") int week,
+			@RequestParam(value="timesheetId") int timesheetId,
+			Model model){
 		
 		timesheetManager.deleteTimesheet(timesheetId, model);
-		
-		return "redirect:/timesheet";
+		return "redirect:/timesheet?week=" + week;
 	}
-	
-	/*@InitBinder
-	protected void initBinder(WebDataBinder binder){
-		binder.registerCustomEditor(Set.class, "dates", new CustomCollectionEditor(Set.class){
-			@Override
-			protected Object convertElement(Object element){
-				DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-				Date date = null;
-				if (element instanceof String && !((String)element).equals("")){
-					//From the JSP 'element' will be a String
-					try {
-						date = dateFormat.parse((String)element);
-					}
-					catch (ParseException ex) {
-						throw new IllegalArgumentException("Could not parse date: " + ex.getMessage(), ex);
-					}
-				}
-				else if(element instanceof Date) {
-					//From the database 'element' will be a Integer
-					date = (Date)element;
-				}
-				return date;
-			}
-		});
-		binder.registerCustomEditor(Date.class,     
-                new CustomDateEditor(new SimpleDateFormat("dd.MM.yyyy"), true, 10));   
-	}*/
 	
 }

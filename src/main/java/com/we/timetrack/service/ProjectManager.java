@@ -1,5 +1,6 @@
 package com.we.timetrack.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +10,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +32,7 @@ import com.we.timetrack.db.TimesheetRepository;
 import com.we.timetrack.model.Employee;
 import com.we.timetrack.model.Project;
 import com.we.timetrack.model.ProjectInfo;
+import com.we.timetrack.model.Task;
 import com.we.timetrack.model.Timesheet;
 import com.we.timetrack.service.model.DateRange;
 
@@ -39,9 +48,22 @@ public class ProjectManager {
 	@Autowired
 	@Qualifier("ldapEmployeeRepository")
 	private EmployeeRepository employeeRepository;
+	@Autowired
+	private SessionFactory sessionFactory;
+	
+	private Session currentSession() {
+		return sessionFactory.getCurrentSession();
+	}
 	
 	/**
-	 * Сбор данных для страницы проектов
+	 * Get project with matching projectId
+	 */
+	public Project getProject(int projectId){
+		return projectRepository.getProject(projectId);
+	}
+	
+	/**
+	 * Get all projects
 	 */
 	@Transactional(readOnly=true)
 	public void getProjects(Model model){
@@ -82,12 +104,12 @@ public class ProjectManager {
 	}
 	
 	/**
-	 * Сбор данных для страницы мои проекты
+	 * Get project, where projectLeader is current user
 	 */
 	@Transactional(readOnly=true)
 	public void getMyProjects(Model model){
 		
-		//Текущий сотрудник
+		//Get current employee
 		Employee employee = (Employee)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Collection<? extends GrantedAuthority> auths = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 		
@@ -103,7 +125,7 @@ public class ProjectManager {
 	}
 	
 	/**
-	 * Сбор данных для страницы мои проекты
+	 * Get project, where projectLieader is employee with matching employeeId
 	 */
 	@Transactional(readOnly=true)
 	public List<ProjectInfo> getMyProjects(UUID employeeId){
@@ -116,7 +138,7 @@ public class ProjectManager {
 	}	
 	
 	/**
-	 * Создание статистики проекта
+	 * Get project summary statistic
 	 * @param project
 	 */
 	@Transactional(readOnly=true)
@@ -126,10 +148,10 @@ public class ProjectManager {
 		
 		List<Timesheet> timesheets;
 		if (period == null){
-			//Считываем все записи по проекту
+			//Get all project's timesheets
 			timesheets = timesheetRepository.getTimesheets(projectId);
 		} else {
-			//Считываем записи по проекту по датам
+			//Get project's timesheets for period
 			timesheets = timesheetRepository.getTimesheets(projectId, period.getBegin(), period.getEnd());
 
 			model.addAttribute("period", period);
@@ -138,16 +160,16 @@ public class ProjectManager {
 		Map<String, Float> resultByTasks = new HashMap<String, Float>();
 		Map<UUID, Float> resultByEmployees = new HashMap<UUID, Float>();
 		
-		//Собираем статистику по задачам и сотрудникам
+		//Make statistic
 		for (Timesheet timesheet : timesheets){
-			//Статистика по задачам
+			//Statistic by tasks
 			if (resultByTasks.containsKey(timesheet.getTask().getName())){
 				resultByTasks.put(timesheet.getTask().getName(), resultByTasks.get(timesheet.getTask().getName()) + timesheet.getCountTime());
 			}
 			else {
 				resultByTasks.put(timesheet.getTask().getName(), timesheet.getCountTime());
 			}
-			//Статистика по сотрудникам
+			//Statistic by employees
 			if (resultByEmployees.containsKey(timesheet.getEmployeeId())){
 				resultByEmployees.put(timesheet.getEmployeeId(), resultByEmployees.get(timesheet.getEmployeeId()) + timesheet.getCountTime());
 			}
@@ -155,9 +177,9 @@ public class ProjectManager {
 				resultByEmployees.put(timesheet.getEmployeeId(), timesheet.getCountTime());
 			}
 		}
-		//Сохраняем статистику по задачам
+		//Add attribute to model
 		model.addAttribute("projectSummaryByTasks", resultByTasks);
-		//Сохраняем статистику по сотрдуникам (только Фамилия, имя, и количество часов)
+		//Get employee's names
 		Map<String, Float> summaryByEmployees = new HashMap<String, Float>();
 		for (Map.Entry<UUID, Float> entry : resultByEmployees.entrySet()) {
 			Employee employee = employeeRepository.getEmployee(entry.getKey());
@@ -167,10 +189,109 @@ public class ProjectManager {
 		model.addAttribute(project);	
 	}
 	
+	@Transactional
+	/**
+	 * Get project summary statistic
+	 * @param project
+	 */
+	public Map<String, Float> getProjectSummary(int projectId, LocalDate beginDate, LocalDate endDate,
+			int type, boolean all, List<String> items){
+		if (!all && items == null){
+			return new HashMap<String, Float>();
+		}
+		Criteria criteria = currentSession().createCriteria(Timesheet.class);
+		switch (type){
+			case 1:
+				criteria.setProjection(Projections.projectionList()
+					.add(Projections.groupProperty("employeeId"))
+					.add(Projections.sum("countTime")));
+				if (items != null){
+					List<Integer> tasks = new ArrayList<>();
+					for (String item : items){
+						tasks.add(Integer.parseInt(item));
+					}
+					criteria.add(Restrictions.in("task.taskId", tasks));
+				}
+			break;
+			case 2:
+				criteria.setProjection(Projections.projectionList()
+						.add(Projections.groupProperty("task"))
+						.add(Projections.sum("countTime")));
+				if (items != null){
+					List<UUID> employees = new ArrayList<>();
+					for (String item : items){
+						employees.add(UUID.fromString(item));
+					}
+					criteria.add(Restrictions.in("employeeId", employees));
+				}
+			break;
+				
+			default: return new HashMap<>();
+		}
+		if (projectId != 0){
+			criteria.add(Restrictions.eq("project.projectId", projectId));
+		}
+		if (beginDate != null) {
+			criteria.add(Restrictions.ge("dateTask", beginDate));
+		}
+		if (endDate != null) {
+			criteria.add(Restrictions.le("dateTask", endDate));
+		}
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = criteria.list();
+		return resultToMap(result);
+	}
+	
+	@Transactional
+	public Map<String, String> getItems(int projectId, DateRange period, int type){
+		switch(type){
+		case 2:
+			return getEmployees(projectId, period);
+		case 1:
+			return getTasks(projectId, period);
+		}
+		return new HashMap<>();
+	}
+	
+	private Map<String, String> getEmployees(int projectId, DateRange period){
+		Query query = currentSession().createQuery("select distinct t.employeeId as employee "
+				+ "from Timesheet t "
+				+ "where t.project.projectId = :projectId AND "
+				+ "t.dateTask >= :dateBegin AND t.dateTask <= :dateEnd")
+				.setParameter("projectId", projectId)
+				.setParameter("dateBegin", period.getBegin())
+				.setParameter("dateEnd", period.getEnd());
+		
+		@SuppressWarnings("unchecked")
+		List<UUID> employeeUUIDs = query.list();
+		Map<String, String> result = new HashMap<>();
+		for (UUID employeeId : employeeUUIDs){
+			Employee employee = employeeRepository.getEmployee(employeeId);
+			result.put(employee.getSurname() + " " + employee.getName(), employee.getEmployeeId().toString());
+		}
+		return result;
+	}
+	
+	private Map<String, String> getTasks(int projectId, DateRange period){
+		Query query = currentSession().createQuery("select distinct s.task from Timesheet s "
+				+ "where s.project.projectId = :projectId AND "
+				+ "s.dateTask >= :dateBegin AND s.dateTask <= :dateEnd")
+				.setParameter("projectId", projectId)
+				.setParameter("dateBegin", period.getBegin())
+				.setParameter("dateEnd", period.getEnd());
+		
+		@SuppressWarnings("unchecked")
+		List<Task> tasks = query.list();
+		Map<String, String> result = new HashMap<>();
+		for (Task task : tasks){
+			result.put(task.getName(), Integer.toString(task.getTaskId()));
+		}
+		return result;
+	}
 	
 	private List<ProjectInfo> getProjectInfoList(List<Project> projects){
 		List<ProjectInfo> projectInfoList = new ArrayList<>();
-		//Инициализация ведущих сотрудников по проектам
+		//Convert all items of Project.class to ProjectInfo.class
 		for(Project prj : projects){
 			ProjectInfo projInfo = new ProjectInfo(prj);
 			Set<Employee> managers = new HashSet<Employee>();
@@ -182,5 +303,26 @@ public class ProjectManager {
 		}
 		return projectInfoList;
 	}
-
+	
+	private Map<String, Float> resultToMap(List<Object[]> arrayList){
+		Map<String, Float> result = new HashMap<>();
+		for (Object[] array : arrayList){
+			if (array.length != 2){
+				return null;
+			}
+			String name = "";
+			if (array[0] instanceof Project){
+				name = ((Project)array[0]).getName();
+			}
+			if (array[0] instanceof Task){
+				name = ((Task)array[0]).getName();
+			}
+			if (array[0] instanceof UUID){
+				Employee employee = employeeRepository.getEmployee((UUID)array[0]); 
+				name = employee.getSurname() + " " + employee.getName();
+			}
+			result.put(name, (float)(double)array[1]);
+		}
+		return result;
+	}
 }

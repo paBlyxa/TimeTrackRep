@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.we.timetrack.model.Project;
+import com.we.timetrack.model.Task;
 import com.we.timetrack.model.Timesheet;
 
 public interface TimesheetRepository {
@@ -38,6 +40,14 @@ public interface TimesheetRepository {
 	 * projectId and later task than beginDate and early then endDate.
 	 */
 	public List<Timesheet> getTimesheets(int projectId, LocalDate beginaDate, LocalDate endDate);
+	
+	/**
+     * Returns list of all timesheet database records with matching
+     * employeeId and later task than beginDate and early then endDate,
+     * and matching project's id.
+     */
+	public List<Timesheet> getTimesheets(UUID employeeId, LocalDate beginDate, LocalDate endDate,
+			List<Integer> projects);
 	
 	/**
 	 * Returns list of all timesheet database records.
@@ -78,5 +88,9 @@ public interface TimesheetRepository {
 	@SuppressWarnings("rawtypes")
 	public List<Map> getEmployeeSummary(UUID employeeId);
 	
+	public Map<String, Float> getEmployeeSummaryByProjects(UUID employeeId, LocalDate beginDate, LocalDate endDate,
+			List<Task> tasks);
 	
+	public Map<String, Float> getEmployeeSummaryByTasks(UUID employeeId, LocalDate beginDate, LocalDate endDate,
+			List<Project> projects);
 }

@@ -12,7 +12,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.we.timetrack.config.RootConfig;
@@ -22,9 +24,11 @@ import com.we.timetrack.model.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RootConfig.class)
 @WebAppConfiguration
-@ActiveProfiles("production")
-public class TimesheetManagerTest{
+@ActiveProfiles("dataSourceProduction")
+public class TimesheetRepositoryTest{
 
+	private final static UUID EMPLOYEE_ID = UUID.fromString("12a24625-9f35-4d33-f7af-0ad444f9e5ee");
+	
 	@Autowired
 	private TimesheetRepository timesheetRepository;
 	
@@ -42,7 +46,7 @@ public class TimesheetManagerTest{
 		
 		for (Timesheet timesheet : timesheetList){
 			assertEquals(employeeId, timesheet.getEmployeeId());
-			System.out.println(">>>>1 Сотрудник: " + employeeId + " Количество часов: " + timesheet.getCountTime());
+			System.out.println(">>>>1 EmployeeId: " + employeeId + " countTime: " + timesheet.getCountTime());
 		}
 	}
 	
@@ -61,7 +65,7 @@ public class TimesheetManagerTest{
 		
 		for (Timesheet timesh : timesheets){
 			assertEquals(employeeId, timesh.getEmployeeId());
-			System.out.println(">>>>2 Сотрудник: " + employeeId + " Количество часов: " + timesh.getCountTime());
+			System.out.println(">>>>2   EmployeeId: " + employeeId + " countTime: " + timesh.getCountTime());
 		}
 	}
 	
@@ -79,7 +83,7 @@ public class TimesheetManagerTest{
 		
 		for (Timesheet timesh : timesheets){
 			assertEquals(project.getProjectId(), timesh.getProject().getProjectId());
-			System.out.println(">>>>>3 Проект: " + project.getProjectId() + " Количество часов: " + timesh.getCountTime());
+			System.out.println(">>>>>3  ProjectId: " + project.getProjectId() + " countTime: " + timesh.getCountTime());
 		}
 	}
 
@@ -143,9 +147,44 @@ public class TimesheetManagerTest{
 		
         int countList = 0;
 		for (TimesheetDay timeshs : timesheetsByDays){
-			System.out.println("List number " + ++countList + " Дата: " + timeshs.getDate());
+			System.out.println("List number " + ++countList + " date: " + timeshs.getDate());
 			for(Timesheet timesh: timeshs.getTimesheets())
-				System.out.println(">>>> Дата " + timesh.getDateTask());
+				System.out.println(">>>> date " + timesh.getDateTask());
 		}
 	}*/
+	
+	@Test
+	@Transactional
+	public void testGetTimesheets() {
+		LocalDate endDate = LocalDate.now();
+		LocalDate beginDate = endDate.minusMonths(12);
+		List<Integer> projects = new ArrayList<>();
+		projects.add(1);
+		List<Timesheet> timesheetList = timesheetRepository.getTimesheets(EMPLOYEE_ID, beginDate, endDate, projects);
+		print(timesheetList);
+	}
+	
+	@Test
+	@Transactional
+	public void testGetEmployeeSummaryByProjects() {
+		LocalDate endDate = LocalDate.now();
+		LocalDate beginDate = endDate.minusMonths(12);
+		List<Task> tasks = new ArrayList<>();
+		Task task = new Task();
+		task.setTaskId(2);
+		tasks.add(task);
+		Map<String, Float> result = timesheetRepository.getEmployeeSummaryByProjects(
+				EMPLOYEE_ID, beginDate, endDate, tasks);
+		result.forEach((str, count) -> {System.out.println(">>>>" + str + ": " + count);});
+	}
+	private static void print(Timesheet timesheet){
+		System.out.println("Id = " + timesheet.getId() + " РџСЂРѕРµРєС‚: " + timesheet.getProject().getName() +
+				" Р—Р°РґР°С‡Р°: " + timesheet.getTask().getName() + " РЎРѕС‚СЂСѓРґРЅРёРє: " + timesheet.getEmployeeId());
+	}
+	
+	private static void print(List<Timesheet> timesheetList){
+		for (Timesheet timesheet : timesheetList){
+			print(timesheet);
+		}
+	}
 }

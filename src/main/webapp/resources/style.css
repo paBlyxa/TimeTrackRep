@@ -1,322 +1,101 @@
-body {
-	font-family: sans-serif;
-	margin: 1px;
-	padding: 1px;
-}
+body {font-family: sans-serif;margin: 1px;padding: 1px;}
 
-.header{
-	height: 40px;
-	margin: 10px;
-}
-.menuForm {
-	height: 60px;
-}
-.pageBody{
-	margin: 5px;
-}
+.header {height: 50px;}
+.menuForm {height: 60px;z-index: 10000;}
+.pageBody {margin: 5px;}
+.divWithBorder, .listTimesheet, .timesheetForm, .projectForm, .taskForm	{
+	margin-bottom: 20px;margin-right: 10px;	box-shadow: 10px 10px 5px #888888;	border: solid 1px black;}
 
-.divWithBorder,
-.listTimesheet,
-.timesheetForm,
-.projectForm,
-.taskForm {
-	margin-bottom: 20px;
-	margin-right: 10px;
-	
-	box-shadow: 10px 10px 5px #888888;
-	border: solid 1px black;
-} 
-.divWithBorder,
-.listTimesheet {
-	overflow: auto;
-}
+.divWithBorder, .listTimesheet {overflow: auto;}
+.divWithBorder h1, .divWithBorder h2 {padding-left: 10px;}
+.timesheetList h1 {font-size: 16pt;}
+.timesheetTable, .mainTable {width: 100%;border: 1px solid #999;}
+.newRecordTable {width: 100%;border: 1px solid #999;}
 
-.divWithBorder h1,
-.divWithBorder h2 {
-	padding-left: 10px;
+/* РЎС‚РѕР»Р±С†С‹ С‚Р°Р±Р»РёС†С‹ timesheet */
+.colDate {witdh: 13%;
+	/* 	-webkit-column-width: 100px; Chrome, Safari, Opera */
+	/*     -moz-column-width: 100px;  */
 }
+.colProject {width: 25%;}
+.colTask {width: 23%;}
+.colCount {width: 6%;}
+.colHours {width: 6%;}
+.colComment {width: 25%;}
 
-.timesheetList h1 {
-	font-size: 16pt;
-}
+/* РЎС‚РѕР»Р±С†С‹ С‚Р°Р±Р»РёС†С‹ Employees */
+.colProjectLeaders {width: 35%;}
+.colTaskName {width: 35%;}
+.colProjectName {width: 25%;}
+.colProjectActive {width: 10%;}
+.colProjectComment {width: 30%;}
+/* РЎС‚РѕР»Р±С†С‹ С‚Р°Р±Р»РёС†С‹ Р—Р°РґР°С‡Рё */
+.colTaskActive {width: 10%;}
+.colTaskComment {width: 50%;}
 
-.timesheetTable,
-.mainTable {
-  width: 100%;
-  border: 1px solid #999;
-}
+/* РЎС‚РѕР»Р±С†Рµ СЃ РєРЅРѕРїРєРѕР№ СѓРґР°Р»РёС‚СЊ */
+#colLast {border: none;background: white;layout:}
 
-.newRecordTable {
-	width: 100%;
-	border: 1px solid #999;
-}
+.timesheetTable th, .mainTable th, .newRecordTable th, #header-fixed th	{background: #333;color: white;font-weight: bold;}
+.timesheetTable td, .timesheetTable th, .mainTable td, .mainTable th,.newRecordTable td, .newRecordTable th, #header-fixed th {
+	text-align: left;padding: 5px 10px;border: 1px solid #999;}
+#header-fixed {position: fixed;top: 50px;display: none;}
+.mainTable tr:nth-child(even), .even, .even input {background-color: #eee;}
+.mainTable tbody tr:hover, .timesheetTable tbody tr:hover {background: #BDC3C7;color: #FFFFFF;}
+.timesheetTable tbody tr:hover input {background: #BDC3C7;color: #FFFFFF;}
+.timesheetForm h1, .projectForm h1, .taskForm h1 {font-size: 16pt;padding-left: 10px;}
+.listTimesheet h1 {padding-left: 10px;}
+#moreUrl {padding: 10px;}
+.buttonAdd {margin: 5px;font-family: sans-serif;font-size: 12pt;}
+.input, #datepickerTS {border: 0;width: 100%;}
+.input {font-family: sans-serif;font-size: 12pt;height: 100%;}
+label.error, .errorMessage {color: red;}
+.errorMessage {font-size: 14pt;	margin: 0px;}
+input.error {background-color: #ffcccc;}
+div.errors {background-color: #ffcccc;border: 2px solid red;}
 
-/* Столбцы таблицы timesheet */
-.colDate {
-	witdh: 13%;
-/* 	-webkit-column-width: 100px; Chrome, Safari, Opera */
-/*     -moz-column-width: 100px;  */
-}
-.colProject {
-	width: 25%;
-}
-.colTask {
-	width: 23%;
-}
-.colCount {
-	width: 6%;
-}
-.colHours {
-	width: 6%;
-}
-.colComment {
-	width: 25%;
-}
+/* РљРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ СЌРєСЃРїРѕСЂС‚Р° xls */
+.inlineClass {display: inline;}
+#saveContainer {background-color: #A9A9A9;height: 45px;width: 380px;margin-bottom: 20px;}
+#saveContainer form {height: 100%;vertical-align: middle;padding: 10px 10px;}
+#saveContainer form label {font-family: sans-serif;font-size: 12pt;vertical-align: middle;}
+#saveContainer form input {font-family: sans-serif;font-size: 12pt;vertical-align: middle;}
+#saveContainer form select {font-family: sans-serif;font-size: 12pt;vertical-align: middle;}
+#saveInnerContainer {margin: auto;height: 100%;vertical-align: middle;display: inline;}
 
-/* Стоблец Employee для таблицы Проекта, вместо столбца имени проекта */
-.colProjectLeaders {
-	width: 35%;
-}
-.colTaskName {
-	width: 35%;
-}
-.colProjectName {
-	width: 25%;
-}
-.colProjectActive {
-	width: 10%;
-}
-.colProjectComment {
-	width: 30%;
-}
-/* Столбцы для таблицы Task */
-.colTaskActive {
-	width: 10%;
-}
-.colTaskComment {
-	width: 50%;
-}
+/* РљРѕРЅС‚РµР№РЅРµСЂ РІС…РѕРґР° РЅР° СЃР°Р№С‚ */
+.login-container {margin-top: 100px;background-color: floralwhite;width: 40%;left: 30%;position: absolute;}
+.login-card {width: 80%;margin: auto;}
+.login-form {padding: 10%;}
+#loginTemp {background: #D0D0D0;}
 
-/* Столбец с кнопкой удалить во всех таблицах */
-#colLast {
-	border: none;
-	background: white;
-	layout:
-}
-
-.timesheetTable th,.mainTable th, .newRecordTable th, #header-fixed th {
-  background: #333; 
-  color: white; 
-  font-weight: bold; 
-}
-.timesheetTable td,
-.timesheetTable th,
-.mainTable td,
-.mainTable th,
-.newRecordTable td,
-.newRecordTable th,
-#header-fixed th {
-  text-align: left;
-  padding: 5px 10px;
-  border: 1px solid #999;
-}
-
-#header-fixed {
-    position: fixed;
-    top: 50px;
-    display:none;
-}
-.mainTable tr:nth-child(even),
-.even,
-.even input {
-	background-color : #eee;
-}
-
-.mainTable tbody tr:hover,
-.timesheetTable tbody tr:hover {
-	background:#BDC3C7;
-	color:#FFFFFF;
-}
-.timesheetTable tbody tr:hover input {
-	background:#BDC3C7;
-	color:#FFFFFF;
-}
-
-.timesheetForm h1,
-.projectForm h1,
-.taskForm h1 {
-	font-size: 16pt;
-	padding-left: 10px;
-}
-
-.listTimesheet h1 {
-	padding-left: 10px;
-}
-
-#moreUrl {
-	padding: 10px;
-}
-
-.buttonAdd {
-	margin: 5px;
-	font-family: sans-serif;
-	font-size: 12pt;
-}
-
-.input, #datepickerTS {
-	 border: 0;
-	 width: 100%;
-}
-.input {
-	font-family: sans-serif;
-	font-size: 12pt;
-	height: 100%;
-}
-
-label.error,
-.errorMessage {
-	color: red;
-}
-
-.errorMessage {
-	font-size: 14pt;
-	margin: 0px;
-}
-
-input.error {
-	background-color: #ffcccc;
-}
-
-div.errors {
-	background-color: #ffcccc;
-	border: 2px solid red;
-}
-
-/* Форма сохранения отчета */
-
-#saveContainer {
-	background-color: #A9A9A9;
-	height: 45px;
-	width: 380px;
-	margin-bottom: 20px;
-}
-#saveContainer form {
-	height: 100%;
-	vertical-align:middle;
-    padding: 10px 10px;
-}
-#saveContainer form label {
-	font-family: sans-serif;
-	font-size: 12pt;
-	vertical-align:middle;
-}
-#saveContainer form input {
-	font-family: sans-serif;
-	font-size: 12pt;
-	vertical-align:middle;
-}
-#saveContainer form select {
-	font-family: sans-serif;
-	font-size: 12pt;
-	vertical-align:middle;
-}
-#saveInnerContainer {
-	margin: auto;
-	height: 100%;
-	vertical-align:middle;
-	display: inline;
-}
-
-/* Регистрация пользователя */
-.login-container {
-    margin-top: 100px;
-    background-color: floralwhite;
-    width: 40%;
-    left: 30%;
-    position: absolute;
-}
-.login-card {
-    width: 80%;
-    margin: auto;
-}
-.login-form {
-    padding: 10%;
-}
-#loginTemp {
-	background: #D0D0D0;
-}
-
-/* Главное меню*/
-.menu {
- 	list-style-type: none; /*Удаляем маркеры в списке */
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 1px solid #e7e7e7;
-    background-color: #606060;
-    width: 100%;
-}
-.menu li {
-    float: left;
-}
-.menuItem {
-	display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-.activeMenuItem {
-	display: block;
-    color: white;
-	background-color: #4CAF50;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-.menu li a:hover:not(.activeMenuItem) {
-    background-color: #101010;
-}
-.fixed {
-	position:fixed;
-	top:0;
-}
-#currentUser {
-	float: right;
-}
-#dropdown-content {
-	display: none;
-	position: absolute;
-	background-color: #737373;
-	min-width: 160px;
-	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-}
-#dropdown-content a {
-	color: white;
-	padding: 12px 16px;
-	text-decoration: none;
-	display: block;
-}
+/* РњРµРЅСЋ*/
+.menu {list-style-type: none;margin: 0;padding: 0;overflow: hidden;border: 1px solid #e7e7e7;background-color: #606060;width: 100%;z-index: 10000;}
+.menu li {float: left;}
+.menuItem {display: block;color: white;text-align: center;padding: 14px 16px;text-decoration: none;}
+.activeMenuItem {display: block;color: white;background-color: #4CAF50;text-align: center;padding: 14px 16px;text-decoration: none;}
+.menu li a:hover:not(.activeMenuItem ) {background-color: #101010;}
+.fixed {position: fixed;top: 0;}
+#currentUser {float: right;}
+#dropdown-content {display: none;position: absolute;background-color: #737373;min-width: 160px;box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);}
+#dropdown-content a {color: white;padding: 12px 16px;text-decoration: none;display: block;}
 #dropdown-content a:hover {background-color: #101010;}
-.dropdown:hover #dropdown-content {
-	display: block;
-}
+.dropdown:hover #dropdown-content {display: block;}
 
+/* Р”РёР°РіСЂР°РјРјС‹ */
+.chartContainer {width: 99%;border: 1px solid gray;}
+.leftChart {float: left;width: 29%;}
+.rightChart {float: left;width: 70%;}
+.myChart {height: auto;width: 30%;}
 
-/* Настройки диаграмм и графиков */
-.chartContainer {
-	width: 99%;
-	border: 1px solid gray;
-}
-.leftChart {
-	float: left;
-	width: 29%;
-}
-.rightChart {
-	float: left;
-	width: 70%;
-}
-.myChart {
-    height:                             auto;
-    width:                              30%;
-}
+/* РЎС‚Р°С‚РёСЃС‚РёРєР° */
+.filter {float: left;max-width: 180px;margin: 0;padding: 1em;}
+.filter ul {list-style-type: none;padding: 0;}
+article {margin-left: 210px;border-left: 1px solid gray;padding: 1em;overflow: hidden;}
+.filter h4,	.filter h3 {text-align: center;}
+.filter input {margin: auto;font-size: 12pt;}
+.filter button {margin: auto;display: block;}
+.filter select {width: 100%;font-size: 12pt;}
+#typeAllItems {margin-top: 10px;padding-left: 10px;}
+#statPeriod {width: 100%;border: 0px;text-align: center;}
+#items {display: none;margin-top: 10px;border: solid 1px gray;}

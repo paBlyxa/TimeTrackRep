@@ -28,7 +28,7 @@ public interface EmployeeRepository {
 	
 	
 	/**
-	 * Get employee record with matching username
+	 * Gets employee record with matching username
 	 * @param username
 	 * @return
 	 * @throws UsernameNotFoundException
@@ -41,4 +41,5 @@ public interface EmployeeRepository {
 	 * @return List<Employee> - direct reports
 	 */
 	public List<Employee> getDirectReports(Employee employee);
+
 }

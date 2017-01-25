@@ -35,7 +35,6 @@ public class TaskListController {
 	@RequestMapping(method=RequestMethod.POST)
 	public String saveProject(Task taskForm, Model model){
 		
-		//System.out.println("Project name = " + projectForm.getName() + ", comment = " + projectForm.getComment());
 		taskManager.saveTask(taskForm);
 		
 		return "redirect:/tasks";
@@ -44,7 +43,6 @@ public class TaskListController {
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public String deleteTask(@RequestParam(value="taskId") int taskId, Model model){
 		
-		//System.out.println("Project name = " + projectForm.getName() + ", comment = " + projectForm.getComment());
 		Task task = new Task();
 		task.setTaskId(taskId);
 		taskManager.deleteTask(task);

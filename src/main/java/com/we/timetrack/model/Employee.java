@@ -30,27 +30,27 @@ public class Employee implements UserDetails {
 	private static final long serialVersionUID = 6300796441923012473L;
 	
 	private UUID employeeId;	
-	@NotNull(message = "Фамилия должна быть задана")
-	@Size(max = 64, message = "Длина фамилии не более 64 символа")
+	@NotNull(message = "Р¤Р°РјРёР»РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РґР°РЅР°")
+	@Size(max = 64, message = "Р¤Р°РјРёР»РёСЏ РЅРµ Р±РѕР»РµРµ 64 СЃРёРјРІРѕР»Р°")
 	private String surname;
-	@NotNull(message = "Имя должно быть задана")
-	@Size(max = 64, message = "Длина имени не более 32 символа")	
+	@NotNull(message = "РРјСЏ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р·Р°РґР°РЅРѕ")
+	@Size(max = 64, message = "РРјСЏ РЅРµ Р±РѕР»РµРµ 32 СЃРёРјРІРѕР»Р°")	
 	private String name;
-	//@NotNull(message = "Email должен быть задан")
-	//@Size(max = 64, message = "Длина email-а не более 64 символа")
+	//@NotNull(message = "РђРґСЂРµСЃ РїРѕС‡С‚С‹ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р·Р°РґР°РЅ")
+	//@Size(max = 64, message = "РђРґСЂРµСЃ РїРѕС‡С‚С‹ РЅРµ Р±РѕР»РµРµ 64 СЃРёРјРІРѕР»Р°")
 	private String mail;
 	private Integer chief;
-	//@NotNull(message = "Должность должна быть задана")
-	//@Size(max = 64, message = "Длина должности не более 64 символа")
+	//@NotNull(message = "Р”РѕР»Р¶РЅРѕСЃС‚СЊ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ Р·Р°РґР°РЅР°")
+	//@Size(max = 64, message = "Р”РѕР»Р¶РЅРѕСЃС‚СЊ РЅРµ Р±РѕР»РµРµ 64 СЃРёРјРІРѕР»Р°")
 	private String post;
-	//@NotNull(message = "Отдел должен быть задан")
-	//@Size(max = 64, message = "Длина отдела не более 255 символов")
+	//@NotNull(message = "РћС‚РґРµР» РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р·Р°РґР°РЅпїЅ")
+	//@Size(max = 64, message = "РћС‚РґРµР» РЅРµ Р±РѕР»РµРµ 255 СЃРёРјРІРѕР»РѕРІ")
 	private String department;
-	@NotNull(message = "Имя пользователя должно быть задано")
-	@Size(max = 64, message = "Длина имени пользователя не более 64 символа")
+	@NotNull(message = "РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р·Р°РґР°РЅРѕ")
+	@Size(max = 64, message = "РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅРµ Р±РѕР»РµРµ 64 СЃРёРјРІРѕР»Р°")
 	private String username;
-	@NotNull(message = "Пароль должен быть задан")
-	@Size(max = 64, message = "Длина пароля не более 64 символа")
+	@NotNull(message = "РџР°СЂРѕР»СЊ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ Р·Р°РґР°РЅ")
+	@Size(max = 64, message = "РџР°СЂРѕР»СЊ РЅРµ Р±РѕР»РµРµ 64 СЃРёРјРІРѕР»Р°")
 	private String password;
 	@Transient
 	private Collection<? extends GrantedAuthority> authorities;
