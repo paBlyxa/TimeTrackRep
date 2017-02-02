@@ -18,7 +18,7 @@
 	<h4>Фильтр</h4>
 	<input type="checkbox" name="typeAllItems" value="true" id="typeAllItems" checked="checked">
 	<span id="typeAllItemsText">Все задачи</span>
-	<div id="items">
+	<div id="items" class="items">
 		<select id="selectItems" name="selectItems" multiple="multiple">
 		</select>
 	</div>
@@ -26,7 +26,7 @@
 	
 	<h4>Период: </h4>
 	<input
-				id="statPeriod"
+				id="statPeriod" class="statPeriod"
 				type="text" class="datepicker-here" data-position="bottom left"
 				data-range="true" data-multiple-dates-separator=" - "
 				name="statPeriod" value="${statPeriod}" required="required" />
@@ -152,6 +152,9 @@ function getStatistic() {
 			   				beginAtZero: true
 			   			}
 			   		}]
+			   	},
+			   	legend: {
+		            display: false
 			   	}
 			}
 		});
