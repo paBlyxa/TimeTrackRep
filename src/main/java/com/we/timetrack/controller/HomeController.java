@@ -12,4 +12,9 @@ public class HomeController {
 	public String home(){
 		return "home";							// View name is home
 	}
+	
+	@RequestMapping(value="/help", method=GET)		// Handle GET requests for /
+	public String help(){
+		return "help";							// View name is help
+	}
 }

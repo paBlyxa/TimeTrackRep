@@ -50,4 +50,8 @@
 	<definition name="account" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/account.jsp" />
 	</definition>
+
+	<definition name="help" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/help.jsp" />
+	</definition>	
 </tiles-definitions>

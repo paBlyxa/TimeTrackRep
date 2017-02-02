@@ -8,9 +8,9 @@
 <script>
   $(window).scroll(function(){
       if ($(this).scrollTop() > 60) {
-          $(".menu").addClass("fixed");
+          $("#mainMenu").addClass("fixed");
       } else {
-          $(".menu").removeClass("fixed");
+          $("#mainMenu").removeClass("fixed");
       }
   });
 </script>
@@ -18,7 +18,7 @@
 
 <c:set var="currentUrl"
 	value="${requestScope['javax.servlet.forward.request_uri']}"></c:set>
-<ul class="menu">
+<ul class="menu" id="mainMenu">
 	<li><a
 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'timesheet')}">
@@ -80,6 +80,16 @@
 				</c:otherwise>
 			</c:choose>
 		href="<c:url value="/employees/mystat" />">Статистика</a></li>
+	<li><a
+		<c:choose>
+				<c:when test="${fn:contains(currentUrl, 'help')}">
+					class="activeMenuItem"
+				</c:when>
+				<c:otherwise>
+					class="menuItem" 
+				</c:otherwise>
+			</c:choose>
+		href="<c:url value="/help" />">Помощь</a></li>		
 	<li id="currentUser"><a
 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'account')}">

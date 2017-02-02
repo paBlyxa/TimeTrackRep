@@ -1,4 +1,4 @@
-body {font-family: sans-serif;margin: 1px;padding: 1px;}
+body {font-family: "proxima-nova", sans-serif;margin: 1px;padding: 1px;}
 
 .header {height: 50px;}
 .menuForm {height: 60px;z-index: 10000;}
@@ -7,7 +7,7 @@ body {font-family: sans-serif;margin: 1px;padding: 1px;}
 	margin-bottom: 20px;margin-right: 10px;	box-shadow: 10px 10px 5px #888888;	border: solid 1px black;}
 
 .divWithBorder, .listTimesheet {overflow: auto;}
-.divWithBorder h1, .divWithBorder h2 {padding-left: 10px;}
+.divWithBorder h1, .divWithBorder h2, .divWithBorder h3 {padding-left: 10px;}
 .timesheetList h1 {font-size: 16pt;}
 .timesheetTable, .mainTable {width: 100%;border: 1px solid #999;}
 .newRecordTable {width: 100%;border: 1px solid #999;}
@@ -83,7 +83,7 @@ div.errors {background-color: #ffcccc;border: 2px solid red;}
 .dropdown:hover #dropdown-content {display: block;}
 
 /* Диаграммы */
-.chartContainer {width: 99%;border: 1px solid gray;}
+.chartContainer {width: 99%;border: 0px solid gray;padding-top: 10px;}
 .leftChart {float: left;width: 29%;}
 .rightChart {float: left;width: 70%;}
 .myChart {height: auto;width: 30%;}
@@ -96,6 +96,18 @@ article {margin-left: 210px;border-left: 1px solid gray;padding: 1em;overflow: h
 .filter input {margin: auto;font-size: 12pt;}
 .filter button {margin: auto;display: block;}
 .filter select {width: 100%;font-size: 12pt;}
-#typeAllItems {margin-top: 10px;padding-left: 10px;}
-#statPeriod {width: 100%;border: 0px;text-align: center;}
-#items {display: none;margin-top: 10px;border: solid 1px gray;}
+#typeAllItems, #typeAllItemsPrj {margin-top: 10px;padding-left: 10px;}
+.statPeriod {width: 100%;border: 0px;text-align: center;}
+.items {display: none;margin-top: 10px;border: solid 1px gray;}
+
+/* Страница помощь */
+.nav--section {margin-bottom: 20px;}
+.nav--section-title {font-size: 22px; font-family: 'Fira Sans',sans-serif; font-weight: 100;margin: 0 0 8px;}
+.nav--section-title a {color: #000;text-decoration: none;outline: 0;}
+.nav--subsection-title {font-size: 13px;font-weight: 400;font-family: Tahoma,sans-serif;margin: 0 0 8px;}
+.nav--subsection-title a {color: #787878;text-decoration: none;}
+article h2 {font-size: 28px; font-family: 'Fira Sans',sans-serif; font-weight: 100;}
+.menuHelp-wrap {position:absolute;width: 200px; left: 0; bottom: 10px; top: 120px;overflow: auto;}
+.menuHelp-wrap-fixed {position: fixed; top: 60px; left:2px;}
+.menuHelp {padding: 15px; margin: 0;position:absolute;overflow-y: auto;}
+.help-article {padding-top: 25px;color: #333538;}
