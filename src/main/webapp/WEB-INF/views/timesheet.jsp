@@ -103,8 +103,7 @@
 					<c:choose>
 						<c:when test="${fn:length(timesheetByDay.timesheets) gt 0}">
 
-							<c:forEach var="timesheet" items="${timesheetByDay.timesheets}"
-								varStatus="status">
+							<c:forEach var="timesheet" items="${timesheetByDay.timesheets}" varStatus="status">
 								<c:if test="${status.index > 0}">
 									<tr class="${classRow}">
 								</c:if>
@@ -131,6 +130,9 @@
 										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 									</form>
 								</td>
+								<c:if test="${status.index > 0}">
+									</tr>
+								</c:if>								
 							</c:forEach>
 						</c:when>
 						<c:otherwise>
