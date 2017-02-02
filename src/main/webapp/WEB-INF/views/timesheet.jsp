@@ -95,13 +95,14 @@
 					</c:otherwise>
 				</c:choose>
 				<tr class="${classRow}">
-					<td rowspan="${fn:length(timesheetByDay.timesheets)}"><fmt:parseDate
-							value="${timesheetByDay.date}" pattern="yyyy-MM-dd"
-							var="parsedDate" type="date" /> <fmt:formatDate pattern="EEEE"
-							value="${parsedDate}" /> <br /> <fmt:formatDate
-							pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
 					<c:choose>
 						<c:when test="${fn:length(timesheetByDay.timesheets) gt 0}">
+						
+							<td rowspan="${fn:length(timesheetByDay.timesheets)}"><fmt:parseDate
+								value="${timesheetByDay.date}" pattern="yyyy-MM-dd"
+								var="parsedDate" type="date" /> <fmt:formatDate pattern="EEEE"
+								value="${parsedDate}" /> <br /> <fmt:formatDate
+								pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
 
 							<c:forEach var="timesheet" items="${timesheetByDay.timesheets}" varStatus="status">
 								<c:if test="${status.index > 0}">
@@ -136,6 +137,11 @@
 							</c:forEach>
 						</c:when>
 						<c:otherwise>
+							<td><fmt:parseDate
+								value="${timesheetByDay.date}" pattern="yyyy-MM-dd"
+								var="parsedDate" type="date" /> <fmt:formatDate pattern="EEEE"
+								value="${parsedDate}" /> <br /> <fmt:formatDate
+								pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
 							<td></td>
 							<td></td>
 							<td></td>
