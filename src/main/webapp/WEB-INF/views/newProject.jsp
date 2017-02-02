@@ -60,13 +60,7 @@
 					data-url="<c:url value="/"/>projects/project?id=<c:out value="${project.projectId}" />">
 					<td><c:out value="${project.name}" /></td>
 					<td>Актив</td>
-					<td><c:forEach var="leader" items="${project.managers}"
-							varStatus="stat">
-							<c:if test="${stat.index > 0}">,
-							</c:if>
-							<c:out value="${leader.name}" />
-
-						</c:forEach></td>
+					<td><c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach></td>
 					<td><c:out value="${project.comment}" /></td>
 					<td id="colLast">
 						<form action="${deleteUrl}" method="POST">

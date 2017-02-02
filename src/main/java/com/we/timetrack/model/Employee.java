@@ -117,6 +117,10 @@ public class Employee implements UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	public String getShortName() {
+		String[] str = name.split(" ");
+		return surname + " " + str[0].charAt(0) + ". " + str[1].charAt(0) + ".";
+	}
 	
 	/*
 	 * Compare two Employee objects by fields
