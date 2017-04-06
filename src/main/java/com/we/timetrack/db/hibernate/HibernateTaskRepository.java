@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.we.timetrack.db.TaskRepository;
 import com.we.timetrack.model.Task;
+import com.we.timetrack.model.TaskStatus;
 
 @Repository
 @Transactional
@@ -48,7 +49,24 @@ public class HibernateTaskRepository implements TaskRepository {
 		
 		List<Task> tasks = null;
 
-		tasks = currentSession().createQuery("from Task")
+		tasks = currentSession().createQuery("from Task t ORDER BY t.name")
+					.list();
+		
+		return tasks;
+	}
+	
+	 /**
+     * Returns list of all task database records
+     * with matching TaskStatus.
+     */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Task> getTasks(TaskStatus status) {
+		
+		List<Task> tasks = null;
+
+		tasks = currentSession().createQuery("from Task t WHERE t.status =:status ORDER BY t.name")
+				.setParameter("status", status)
 					.list();
 		
 		return tasks;
@@ -69,4 +87,5 @@ public class HibernateTaskRepository implements TaskRepository {
 
 		currentSession().delete(task);
 	}
+
 }

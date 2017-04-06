@@ -177,6 +177,18 @@ public class TimesheetRepositoryTest{
 				EMPLOYEE_ID, beginDate, endDate, tasks);
 		result.forEach((str, count) -> {System.out.println(">>>>" + str + ": " + count);});
 	}
+	
+	@Test
+	@Transactional
+	public void testGetEmployeeSummaryByTime() {
+		LocalDate endDate = LocalDate.now();
+		LocalDate beginDate = endDate.minusMonths(1);
+		
+		Map<String, Float> result = timesheetRepository.getEmployeeSummaryByTime(
+				EMPLOYEE_ID, beginDate, endDate);
+		result.forEach((str, count) -> {System.out.println(">>>>" + str + ": " + count);});
+	}
+	
 	private static void print(Timesheet timesheet){
 		System.out.println("Id = " + timesheet.getId() + " Проект: " + timesheet.getProject().getName() +
 				" Задача: " + timesheet.getTask().getName() + " Сотрудник: " + timesheet.getEmployeeId());

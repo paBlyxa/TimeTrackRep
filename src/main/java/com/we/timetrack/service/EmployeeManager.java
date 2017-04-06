@@ -2,6 +2,7 @@ package com.we.timetrack.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -93,6 +94,8 @@ public class EmployeeManager {
 		case 2:
 			return timesheetRepository.getEmployeeSummaryByTasks(
 					employee.getEmployeeId(), period.getBegin(), period.getEnd(), createProjectList(items));
+		case 3:
+			return timesheetRepository.getEmployeeSummaryByTime(employee.getEmployeeId(), period.getBegin(), period.getEnd());
 		}
 		return new HashMap<>();
 	}
@@ -134,7 +137,7 @@ public class EmployeeManager {
 		} else {
 			projects = projectRepository.getProjects();
 		}
-		Map<String, Integer> result = new HashMap<>();
+		Map<String, Integer> result = new LinkedHashMap<>();
 		for (Project proj : projects){
 			result.put(proj.getName(), proj.getProjectId());
 		}
@@ -148,7 +151,7 @@ public class EmployeeManager {
 		} else {
 			tasks = taskRepository.getTasks();
 		}
-		Map<String, Integer> result = new HashMap<>();
+		Map<String, Integer> result = new LinkedHashMap<>();
 		for (Task task : tasks){
 			result.put(task.getName(), task.getTaskId());
 		}

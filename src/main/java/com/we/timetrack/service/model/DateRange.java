@@ -25,7 +25,11 @@ public class DateRange {
 	
 	@Override
 	public String toString() {
-		return begin.format(dateFormat) + " - " + end.format(dateFormat);
+		if (begin != null && end != null){
+			return begin.format(dateFormat) + " - " + end.format(dateFormat);
+		} else {
+			return null;
+		}
 	}
 	
 }

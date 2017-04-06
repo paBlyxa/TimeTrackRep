@@ -3,6 +3,7 @@ package com.we.timetrack.db;
 import java.util.List;
 
 import com.we.timetrack.model.Task;
+import com.we.timetrack.model.TaskStatus;
 
 public interface TaskRepository {
 
@@ -15,6 +16,12 @@ public interface TaskRepository {
      * Returns list of all task database records.
      */
 	public List<Task> getTasks();
+
+	/**
+     * Returns list of all task database records
+     * with matching TaskStatus.
+     */
+	public List<Task> getTasks(TaskStatus status);
 	
 	/**
      * Saves a Task object.

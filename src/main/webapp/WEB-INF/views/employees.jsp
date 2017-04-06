@@ -20,14 +20,18 @@
 		</thead>
 		<tbody>
 			<c:forEach var="e" items="${employeeList}">
-				<tr class="clickable-row"
-					data-url="<c:url value="/"/>employees/stat?id=<c:out value="${e.employeeId}" />">
-					<td><c:out value="${e.username}" /></td>
-					<td><c:out value="${e.name}" /></td>
-					<td><c:out value="${e.surname}" /></td>
-					<td><c:out value="${e.mail}" /></td>
-					<td><c:out value="${e.post}" /></td>
-					<td><c:out value="${e.department}" /></td>
+				<c:url var="statUrl" value="/employees/stat?id=${e.employeeId}" />
+				<tr>
+					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.username}" /></td>
+					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.name}" /></td>
+					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.surname}" /></td>
+					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.mail}" /></td>
+					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.post}" /></td>
+					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.department}" /></td>
+					<td id="colLast"><c:url value="/employees/${e.employeeId}/"
+								var="showTimesheetUrl" />
+							<button class="btn btn-primary"
+								onclick="location.href='${showTimesheetUrl}'">Учет</button></td>
 				</tr>
 			</c:forEach>
 		</tbody>

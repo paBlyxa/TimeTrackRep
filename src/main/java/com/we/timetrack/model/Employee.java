@@ -9,19 +9,22 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 /**
  * @author fakadey
  *
  */
-//@Entity
-//@Table(name = "employee")
+@Entity
+@Table(name = "employee")
 public class Employee implements UserDetails {
 
 	/**
@@ -29,6 +32,11 @@ public class Employee implements UserDetails {
 	 */
 	private static final long serialVersionUID = 6300796441923012473L;
 	
+	@Id
+	@Column(name = "employeeid")
+	//@GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+	//@GeneratedValue(generator = "uuid-gen")
+	@Type(type="pg-uuid")
 	private UUID employeeId;	
 	@NotNull(message = "Фамилия должна быть задана")
 	@Size(max = 64, message = "Фамилия не более 64 символа")
@@ -39,7 +47,8 @@ public class Employee implements UserDetails {
 	//@NotNull(message = "Адрес почты должен быть задан")
 	//@Size(max = 64, message = "Адрес почты не более 64 символа")
 	private String mail;
-	private Integer chief;
+	@Type(type="pg-uuid")
+	private UUID chief;
 	//@NotNull(message = "Должность должна быть задана")
 	//@Size(max = 64, message = "Должность не более 64 символа")
 	private String post;
@@ -57,8 +66,7 @@ public class Employee implements UserDetails {
 	@Transient
 	private List<Employee> directReports;
 	
-	@Id
-	@Column(name = "employeeid")
+
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq_gen")
 //	@SequenceGenerator(name = "employee_seq_gen", sequenceName = "employee_employeeid_seq", allocationSize = 1)
 	public UUID getEmployeeId() {
@@ -86,10 +94,10 @@ public class Employee implements UserDetails {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-	public Integer getChief() {
+	public UUID getChief() {
 		return chief;
 	}
-	public void setChief(Integer chief) {
+	public void setChief(UUID chief) {
 		this.chief = chief;
 	}
 	public String getPost() {

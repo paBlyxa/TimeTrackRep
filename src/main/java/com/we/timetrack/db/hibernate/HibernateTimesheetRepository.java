@@ -1,7 +1,7 @@
 package com.we.timetrack.db.hibernate;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +13,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
@@ -276,8 +277,31 @@ public class HibernateTimesheetRepository implements TimesheetRepository {
 		return resultToMap(result);
 	}
 	
+	@Override
+	public Map<String, Float> getEmployeeSummaryByTime(UUID employeeId, LocalDate beginDate, LocalDate endDate){
+		
+		Criteria criteria = currentSession().createCriteria(Timesheet.class)
+				.setProjection(Projections.projectionList()
+						.add(Projections.groupProperty("dateTask"))
+						.add(Projections.sum("countTime")))
+				.addOrder(Order.asc("dateTask"));
+		
+		if (employeeId != null){
+			criteria.add(Restrictions.eq("employeeId", employeeId));
+		}
+		if (beginDate != null){
+			criteria.add(Restrictions.ge("dateTask", beginDate));
+		}
+		if (endDate != null) {
+			criteria.add(Restrictions.le("dateTask", endDate));
+		}
+		@SuppressWarnings("unchecked")
+		List<Object[]> result = criteria.list();
+		return resultToMap(result);
+	}
+	
 	private Map<String, Float> resultToMap(List<Object[]> arrayList){
-		Map<String, Float> result = new HashMap<>();
+		Map<String, Float> result = new LinkedHashMap<>();
 		for (Object[] array : arrayList){
 			if (array.length != 2){
 				return null;
@@ -289,7 +313,15 @@ public class HibernateTimesheetRepository implements TimesheetRepository {
 			if (array[0] instanceof Task){
 				name = ((Task)array[0]).getName();
 			}
-			result.put(name, (float)(double)array[1]);
+			if (array[0] instanceof LocalDate){
+				name = ((LocalDate)array[0]).toString();
+			}
+			if (array[1] instanceof Double){
+				result.put(name, (float)(double)array[1]);
+			}
+			if (array[1] instanceof Float){
+				result.put(name, (float)array[1]);
+			}
 		}
 		return result;
 	}

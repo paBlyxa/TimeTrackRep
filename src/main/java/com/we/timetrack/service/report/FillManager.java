@@ -1,5 +1,6 @@
 package com.we.timetrack.service.report;
 
+import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class FillManager {
 	 */
 	public static void fillReport(HSSFSheet worksheet, int startRowIndex, int startColIndex, List<TimesheetDay> datasource){
 		//Row offset
-		startRowIndex += 2;
+		startRowIndex += 3;
 		
 		// Create cell style for the body
 		HSSFCellStyle bodyCellStyle = worksheet.getWorkbook().createCellStyle();
@@ -64,16 +65,37 @@ public class FillManager {
 				
 				if (firstRow){
 					// Retrieve the count hours by day value
+					float hours = timesheetDay.getHours();
 					HSSFCell cell5 = row.createCell(startColIndex + 4);
-					cell5.setCellValue(timesheetDay.getHours());
+					cell5.setCellValue(hours);
 					cell5.setCellStyle(bodyCellStyle);	
-					firstRow = false;
+					if (timesheetDay.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || timesheetDay.getDate().getDayOfWeek() == DayOfWeek.SUNDAY) {
+						// Hours over norm
+						HSSFCell cell6 = row.createCell(startColIndex + 5);
+						cell6.setCellValue(hours);
+						cell6.setCellStyle(bodyCellStyle);	
+						// Hours late norm
+						HSSFCell cell7 = row.createCell(startColIndex + 6);
+						cell7.setCellValue(0);
+						cell7.setCellStyle(bodyCellStyle);	
+						firstRow = false;
+					} else {
+						// Hours over norm
+						HSSFCell cell6 = row.createCell(startColIndex + 5);
+						cell6.setCellValue(hours > 8 ? (hours- 8): 0);
+						cell6.setCellStyle(bodyCellStyle);	
+						// Hours late norm
+						HSSFCell cell7 = row.createCell(startColIndex + 6);
+						cell7.setCellValue(hours < 8 ? (8 - hours): 0);
+						cell7.setCellStyle(bodyCellStyle);	
+						firstRow = false;
+					}
 				}
 				
 				// Retrieve the comment value
-				HSSFCell cell6 = row.createCell(startColIndex + 5);
-				cell6.setCellValue(timesheet.getComment());
-				cell6.setCellStyle(bodyCellStyle);			
+				HSSFCell cell8 = row.createCell(startColIndex + 7);
+				cell8.setCellValue(timesheet.getComment());
+				cell8.setCellStyle(bodyCellStyle);			
 				
 			}
 			if (timesheetDay.getTimesheets().size() > 1){
@@ -81,6 +103,10 @@ public class FillManager {
 						startColIndex, startColIndex));
 				worksheet.addMergedRegion(new CellRangeAddress(rowIndex - timesheetDay.getTimesheets().size() + 1, rowIndex,
 						startColIndex + 4, startColIndex + 4));
+				worksheet.addMergedRegion(new CellRangeAddress(rowIndex - timesheetDay.getTimesheets().size() + 1, rowIndex,
+						startColIndex + 5, startColIndex + 5));
+				worksheet.addMergedRegion(new CellRangeAddress(rowIndex - timesheetDay.getTimesheets().size() + 1, rowIndex,
+						startColIndex + 6, startColIndex + 6));
 			}
 			
 		}

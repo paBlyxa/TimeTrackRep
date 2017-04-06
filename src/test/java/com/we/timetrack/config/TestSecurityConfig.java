@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
@@ -97,6 +96,7 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter{
 			employee.setMail(context.getStringAttribute("mail"));
 			employee.setPost(context.getStringAttribute("title"));
 			employee.setAuthorities(loadUserAuthorities(context));
+			logger.debug("'memberOf' attribute values: " + Arrays.asList(employee.getAuthorities()));
 			return employee;
 		}
 
@@ -112,7 +112,9 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter{
 			if (groups == null) {
 				logger.debug("No values for 'memberOf' attribute.");
 			
-				return AuthorityUtils.NO_AUTHORITIES;
+				ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+				authorities.add(new SimpleGrantedAuthority("Операторы архива Projects"));
+				return authorities;
 			}
 			
 			if (logger.isDebugEnabled()) {

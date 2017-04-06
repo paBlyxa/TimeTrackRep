@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.we.timetrack.model.Project;
+import com.we.timetrack.model.ProjectStatus;
 
 public interface ProjectRepository {
 
@@ -16,6 +17,12 @@ public interface ProjectRepository {
      * Returns list of all project database records.
      */
 	public List<Project> getProjects();
+	
+	/**
+     * Returns list of project database records
+     * with matching ProjectStatus.
+     */
+	public List<Project> getProjects(ProjectStatus status);	
 	
 	/**
      * Saves a Project object.

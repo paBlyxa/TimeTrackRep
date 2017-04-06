@@ -19,6 +19,7 @@
 		<thead>
 			<tr>
 				<th class="colProjectName">Проект</th>
+				<th class="colProjectContract">Номер договора</th>
 				<th class="colProjectActive">Статус</th>
 				<th class="colProjectLeaders">Ведущие сотрудники</th>
 				<th class="colProjectComment">Комментарий</th>
@@ -28,11 +29,12 @@
 			<c:forEach var="project" items="${projectList}" varStatus="status">
 				<tr class="clickable-row"
 					data-url="<c:url value="/"/>projects/project?id=<c:out value="${project.projectId}" />">
-					<td><c:out value="${project.name}" /></td>
-					<td>Актив</td>
+					<td>${project.name}</td>
+					<td>${project.contract}</td>
+					<td>${project.status.name}</td>
 					<td><c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach></td>
 					<td><c:out value="${project.comment}" /></td>
-					<td id="colLast">
+					<%-- <td id="colLast">
 						<form action="${deleteUrl}" method="POST">
 							<input name="projectId" type="hidden"
 								value="${project.projectId}" /> <input type="submit"
@@ -40,7 +42,7 @@
 								type="hidden" name="${_csrf.parameterName}"
 								value="${_csrf.token}" />
 						</form>
-					</td>
+					</td> --%>
 				</tr>
 			</c:forEach>
 		</tbody>

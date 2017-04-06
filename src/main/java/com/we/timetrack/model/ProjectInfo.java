@@ -9,6 +9,8 @@ public class ProjectInfo extends Project{
 		this.setComment(project.getComment());
 		this.setName(project.getName());
 		this.setProjectId(project.getProjectId());
+		this.setStatus(project.getStatus());
+		this.setContract(project.getContract());
 	}
 	
 	private Set<Employee> managers = new HashSet<>();

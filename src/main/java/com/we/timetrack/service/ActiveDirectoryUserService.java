@@ -26,35 +26,35 @@ import com.we.timetrack.model.Employee;
 
 @Service
 public class ActiveDirectoryUserService implements UserDetailsService, AuthenticationProvider {
-	
+
 	private static final Logger logger = Logger.getLogger(ActiveDirectoryUserService.class.getName());
-	private static final String ldapUrl = "ldap://wemaster1:3268";
+	private static final String ldapUrl = "ldap://we.ru";
 	private static final String userSuffix = "@we.ru";
-	
+
 	@Autowired
 	@Qualifier("ldapEmployeeRepository")
 	private EmployeeRepository employeeRepository;
-	
+
 	public Employee loadUserByUsername(String username) throws UsernameNotFoundException {
-		
+
 		Employee employee = employeeRepository.getEmployee(username);
 		if (employee != null) {
 			return employee;
-		}
-		else {
-			UsernameNotFoundException ex = new UsernameNotFoundException("User '" + username + "' not found.");	
+		} else {
+			UsernameNotFoundException ex = new UsernameNotFoundException("User '" + username + "' not found.");
 			logger.log(Level.SEVERE, "Could not login", ex);
 			throw ex;
 		}
-		
+
 	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		final String name = authentication.getName();
 		final String password = authentication.getCredentials().toString();
-		logger.log(Level.FINE, "Performing logon into AD with credentials '" + name + "'/'" + password.replaceAll(".", "*") + "'");
-		
+		logger.log(Level.FINE,
+				"Performing login into AD with credentials '" + name + "'/'" + password.replaceAll(".", "*") + "'");
+
 		DirContext ctx = null;
 		try {
 			ctx = getDirContext(name + userSuffix, password);
@@ -73,7 +73,7 @@ public class ActiveDirectoryUserService implements UserDetailsService, Authentic
 				}
 			}
 		}
-		
+
 	}
 
 	private DirContext getDirContext(String username, String password) throws NamingException {
@@ -83,10 +83,10 @@ public class ActiveDirectoryUserService implements UserDetailsService, Authentic
 		props.put(Context.SECURITY_PRINCIPAL, username);
 		props.put(Context.SECURITY_CREDENTIALS, password);
 		props.put(Context.PROVIDER_URL, ldapUrl);
-		
+
 		return new InitialDirContext(props);
 	}
-	
+
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);

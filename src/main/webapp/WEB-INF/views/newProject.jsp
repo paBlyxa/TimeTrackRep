@@ -18,6 +18,7 @@
 			<thead>
 				<tr>
 					<th class="colProjectName">Проект</th>
+					<th class="colProjectContract">Номер договора</th>
 					<th class="colProjectActive">Статус</th>
 					<th class="colProjectLeaders">Ведущие сотрудники</th>
 					<th class="colProjectComment">Комментарий</th>
@@ -27,8 +28,13 @@
 				<tr>
 					<td><input required="required" class="input" type="text"
 						name="name" /></td>
-					<td>Актив</td>
-					<td><form:select id="selectManagers" path="projectLeaders"
+					<td><input class="input" type="text"
+						name="contract" /></td>
+					<td><form:select class="selectStatus" path="status"
+							multiple="false">
+							<form:options items="${statusList}" itemLabel="name"/>
+						</form:select></td>
+					<td><form:select class="selectManagers" path="projectLeaders"
 							multiple="true">
 							<form:options items="${employeeList}" />
 						</form:select></td>
@@ -43,12 +49,14 @@
 
 <div class="divWithBorder">
 	<c:url var="deleteUrl" value="/projects/delete" />
-	<h1>Проекты</h1>
+	
+	<h1>Все проекты</h1>
 
 	<table class="mainTable">
 		<thead>
 			<tr>
 				<th class="colProjectName">Проект</th>
+				<th class="colProjectContract">Номер договора</th>
 				<th class="colProjectActive">Статус</th>
 				<th class="colProjectLeaders">Ведущие сотрудники</th>
 				<th class="colProjectComment">Комментарий</th>
@@ -56,12 +64,20 @@
 		</thead>
 		<tbody>
 			<c:forEach var="project" items="${projectList}" varStatus="status">
-				<tr class="clickable-row"
-					data-url="<c:url value="/"/>projects/project?id=<c:out value="${project.projectId}" />">
-					<td><c:out value="${project.name}" /></td>
-					<td>Актив</td>
-					<td><c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach></td>
-					<td><c:out value="${project.comment}" /></td>
+				<tr>
+					<c:url var="statUrl" value="/projects/project?id=${project.projectId}" />
+					<td class="clickable-row" data-url="${statUrl}">${project.name}</td>
+					<td class="clickable-row" data-url="${statUrl}">${project.contract}</td>
+					<td class="clickable-row" data-url="${statUrl}">${project.status.name}</td>
+					<td class="clickable-row" data-url="${statUrl}">
+						<c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach>
+					</td>
+					<td class="clickable-row" data-url="${statUrl}">${project.comment}</td>
+					<td id="colLast">
+						<c:url value="/projects/${project.projectId}/modify" var="updateUrl" />
+						<button class="btn btn-primary" onclick="location.href='${updateUrl}'">Изменить</button>
+					</td>
+					
 					<td id="colLast">
 						<form action="${deleteUrl}" method="POST">
 							<input name="projectId" type="hidden"
@@ -81,10 +97,15 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#selectManagers').SumoSelect({
+		$('.selectManagers').SumoSelect({
 			placeholder: 'Выберите из списка',
 			search: true,
 			searchText: 'Введите имя или фамилию...'
+			});
+		$('.selectStatus').SumoSelect({
+			placeholder: 'Выберите из списка',
+			search: true,
+			searchText: 'Введите статус...'
 			});
 	});
 </script>

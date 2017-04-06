@@ -7,8 +7,7 @@ body {font-family: "proxima-nova", sans-serif;margin: 1px;padding: 1px;}
 	margin-bottom: 20px;margin-right: 10px;	box-shadow: 10px 10px 5px #888888;	border: solid 1px black;}
 
 .divWithBorder, .listTimesheet {overflow: auto;}
-.divWithBorder h1, .divWithBorder h2, .divWithBorder h3 {padding-left: 10px;}
-.timesheetList h1 {font-size: 16pt;}
+.divWithBorder h1, .divWithBorder h2, .divWithBorder h3, .listTimesheet h2 {padding-left: 10px;}
 .timesheetTable, .mainTable {width: 100%;border: 1px solid #999;}
 .newRecordTable {width: 100%;border: 1px solid #999;}
 
@@ -19,16 +18,17 @@ body {font-family: "proxima-nova", sans-serif;margin: 1px;padding: 1px;}
 }
 .colProject {width: 25%;}
 .colTask {width: 23%;}
-.colCount {width: 6%;}
+.colCount {width: 6%; min-width: 58px;}
 .colHours {width: 6%;}
 .colComment {width: 25%;}
 
-/* Столбцы таблицы Employees */
-.colProjectLeaders {width: 35%;}
+/* Столбцы таблиц */
 .colTaskName {width: 35%;}
-.colProjectName {width: 25%;}
-.colProjectActive {width: 10%;}
-.colProjectComment {width: 30%;}
+.colProjectLeaders {width: 30%;}
+.colProjectName {width: 20%;}
+.colProjectContract {width: 20%;}
+.colProjectActive {width: 7%;}
+.colProjectComment {width: 23%;}
 /* Столбцы таблицы Задачи */
 .colTaskActive {width: 10%;}
 .colTaskComment {width: 50%;}
@@ -62,6 +62,10 @@ div.errors {background-color: #ffcccc;border: 2px solid red;}
 #saveContainer form input {font-family: sans-serif;font-size: 12pt;vertical-align: middle;}
 #saveContainer form select {font-family: sans-serif;font-size: 12pt;vertical-align: middle;}
 #saveInnerContainer {margin: auto;height: 100%;vertical-align: middle;display: inline;}
+
+/* Контейнер для экспорта на странице учета */
+#saveCurrentTimesheet {float: right; margin-top: 12px; padding:10px;}
+#saveCurrentTimesheet form input {font-family: sans-serif;font-size: 12pt;vertical-align: middle;}
 
 /* Контейнер входа на сайт */
 .login-container {margin-top: 100px;background-color: floralwhite;width: 40%;left: 30%;position: absolute;}

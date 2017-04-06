@@ -23,6 +23,10 @@
 		<put-attribute name="body" value="/WEB-INF/views/timesheet.jsp" />
 	</definition>
 
+	<definition name="timesheetEmployee" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/timesheetEmployee.jsp" />
+	</definition>
+
 	<definition name="projects" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/projects.jsp" />
 	</definition>
@@ -30,7 +34,11 @@
 	<definition name="tasks" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/tasks.jsp" />
 	</definition>
-
+	
+	<definition name="modifyTask" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/modifyTask.jsp" />
+	</definition>
+	
 	<definition name="project" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/project.jsp" />
 	</definition>
@@ -38,7 +46,11 @@
 	<definition name="newProject" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/newProject.jsp" />
 	</definition>
-
+	
+	<definition name="modifyProject" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/modifyProject.jsp" />
+	</definition>
+	
 	<definition name="employees" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/employees.jsp" />
 	</definition>

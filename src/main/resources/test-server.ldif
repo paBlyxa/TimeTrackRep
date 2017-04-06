@@ -13,10 +13,10 @@ objectclass: top
 objectclass: person
 objectclass: organizationalPerson
 objectclass: inetOrgPerson
-cn: Pavel Fakadey
-sn: Fakadey
+cn: Pavel FAKADEY
+sn: Pavel
 uid: fakadey
-userPassword: 123fakadey
+userPassword: 123
 
 dn: uid=idolov,ou=people,dc=we,dc=ru
 objectclass: top
@@ -48,7 +48,15 @@ sn: Roman
 uid: muhutdinov
 userPassword: 123muhutdinov
 
-
+dn: uid=addrbook,ou=people,dc=we,dc=ru
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Roman Muhutdinov
+sn: Roman
+uid: addrbook
+userPassword: 123addrbook321
 
 dn: cn=developers,ou=groups,dc=we,dc=ru
 objectclass: top
@@ -57,6 +65,13 @@ cn: developers
 ou: developer
 uniqueMember: uid=fakadey,ou=people,dc=we,dc=ru
 uniqueMember: uid=zilberman,ou=people,dc=we,dc=ru
+
+dn: cn=Операторы архива Projects,ou=groups,dc=we,dc=ru
+objectclass: top
+objectclass: groupOfNames
+cn: developers
+ou: developer
+uniqueMember: uid=fakadey,ou=people,dc=we,dc=ru
 
 dn: cn=projects,ou=groups,dc=we,dc=ru
 objectclass: top

@@ -5,11 +5,14 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <head>
-	<script src="<c:url value="/resources/script/jquery.sumoselect.min.js" />"></script>
-	<link href="<s:url value="/resources/sumoselect.css"/>" rel="stylesheet" type="text/css">
-	
-	<script src="<c:url value="/resources/script/datepicker.min.js" />"></script>
-	<link href="<s:url value="/resources/datepicker.min.css"/>" rel="stylesheet" type="text/css">
+<script
+	src="<c:url value="/resources/script/jquery.sumoselect.min.js" />"></script>
+<link href="<s:url value="/resources/sumoselect.css"/>" rel="stylesheet"
+	type="text/css">
+
+<script src="<c:url value="/resources/script/datepicker.min.js" />"></script>
+<link href="<s:url value="/resources/datepicker.min.css"/>"
+	rel="stylesheet" type="text/css">
 </head>
 
 <div class="timesheetForm">
@@ -28,10 +31,13 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td><form:input type="text" required="true"
-							class="datepicker-here input" id="datepickerTS"
-							data-position="bottom left" data-multiple-dates="true"
-							data-multiple-dates-separator=", " path="dates" /></td>
+					<td><s:bind path="dates">
+							<form:input type="text" required="true"
+								class="datepicker-here input" id="datepickerTS"
+								data-position="bottom left" data-multiple-dates="true"
+								data-multiple-dates-separator=", " path="dates" />
+							<form:errors path="dates" class="errorMessage" />
+						</s:bind></td>
 					<td><form:select path="projectId" class="input"
 							required="true" id="selectProject">
 							<form:option value="" label="--Выберите проект" />
@@ -44,14 +50,14 @@
 							<form:options items="${taskList}" itemValue="taskId"
 								itemLabel="name" />
 						</form:select></td>
-					<td><form:input class="input" type="text" path="countTime"
-							list="listTimes" required="true" id="inputCountTime" /> <datalist
-							id="listTimes">
-							<option value="0.5" />
-							<option value="1.0" />
-							<option value="2.0" />
-							<option value="4.0" />
-							<option value="8.0" />
+					<td><form:input class="input" type="number" step="0.5"
+							path="countTime" min="0.5" max="24" list="listTimes"
+							required="true" id="inputCountTime" /> <datalist id="listTimes">
+							<option value="0,5" />
+							<option value="1,0" />
+							<option value="2,0" />
+							<option value="4,0" />
+							<option value="8,0" />
 						</datalist></td>
 					<td><form:input class="input" type="text" path="comment" /></td>
 				</tr>
@@ -70,8 +76,32 @@
 
 <div class="listTimesheet">
 	<c:url var="deleteUrl" value="/timesheet/delete" />
-	<c:url var="modifyUrl" value="/timesheet/modify" />
-	<h1>Недавние записи</h1>
+	<c:url var="modifyCountTimeUrl" value="/timesheet/modifyCountTime" />
+	<c:url var="modifyCommentUrl" value="/timesheet/modifyComment" />
+	<div>
+		<div style="float: left;">
+			<h2>
+				<fmt:parseDate value="${timesheetsByDays[0].date}"
+					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+				<fmt:formatDate pattern="w" value="${parsedDate}" />
+				неделя
+				<fmt:formatDate pattern="y" value="${parsedDate}" />
+				года:
+				<fmt:formatDate pattern="dd MMMM" value="${parsedDate}" />
+				-
+				<fmt:parseDate value="${timesheetsByDays[6].date}"
+					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+				<fmt:formatDate value="${parsedDate}" pattern="dd MMMM" />
+			</h2>
+		</div>
+		<div id="saveCurrentTimesheet">
+			<form action="employees/xls" method="GET">
+				<input name="id" value="${employee.employeeId}" type="hidden" /> <input
+					name="week" value="${param.week}" type="hidden" /> <input
+					type="submit" value="Сохранить" />
+			</form>
+		</div>
+	</div>
 	<table class="timesheetTable">
 		<thead>
 			<tr>
@@ -94,68 +124,77 @@
 						<c:set var="classRow" value="even" />
 					</c:otherwise>
 				</c:choose>
-				<tr class="${classRow}">
-					<c:choose>
-						<c:when test="${fn:length(timesheetByDay.timesheets) gt 0}">
-						
-							<td rowspan="${fn:length(timesheetByDay.timesheets)}"><fmt:parseDate
-								value="${timesheetByDay.date}" pattern="yyyy-MM-dd"
-								var="parsedDate" type="date" /> <fmt:formatDate pattern="EEEE"
-								value="${parsedDate}" /> <br /> <fmt:formatDate
-								pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
-
-							<c:forEach var="timesheet" items="${timesheetByDay.timesheets}" varStatus="status">
-								<c:if test="${status.index > 0}">
-									<tr class="${classRow}">
+				<c:choose>
+					<c:when test="${fn:length(timesheetByDay.timesheets) gt 0}">
+						<c:forEach var="timesheet" items="${timesheetByDay.timesheets}"
+							varStatus="status">
+							<tr class="${classRow}">
+								<c:if test="${status.index == 0}">
+									<td rowspan="${fn:length(timesheetByDay.timesheets)}"><fmt:parseDate
+											value="${timesheetByDay.date}" pattern="yyyy-MM-dd"
+											var="parsedDate" type="date" /> <fmt:formatDate
+											pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
+											pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
 								</c:if>
-								<td><c:out value="${timesheet.project.name}" /></td>
-								<td><c:out value="${timesheet.task.name}" /></td>
+								<td>${timesheet.project.name}</td>
+								<td>${timesheet.task.name}</td>
 								<td>
-									<form action="${modifyUrl}" method="POST">
-										<input name="week" type="hidden" value="${param.week}"/>
-										<input name="timesheetId" type="hidden" value="${timesheet.id}" />
-										<input name="countTime" class="input" type="text" value="${timesheet.countTime}" />
-										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+									<form action="${modifyCountTimeUrl}" method="POST">
+										<input name="week" type="hidden" value="${param.week}" /> <input
+											name="timesheetId" type="hidden" value="${timesheet.id}" />
+										<input name="countTime" class="input" type="number" step="0.5"
+											min="0.5" max="24" value="${timesheet.countTime}" /> <input
+											type="hidden" name="${_csrf.parameterName}"
+											value="${_csrf.token}" />
 									</form>
 								</td>
 								<c:if test="${status.index == 0}">
-									<td rowspan="${fn:length(timesheetByDay.timesheets)}"><c:out
-											value="${timesheetByDay.hours}" /></td>
+									<td rowspan="${fn:length(timesheetByDay.timesheets)}"><input class="input" type="number" step="0.5"
+											min="0.5" max="24" readonly="readonly" value="${timesheetByDay.hours}" /></td>
 								</c:if>
-								<td><c:out value="${timesheet.comment}" /></td>
-								<td id="colLast">
-									<form action="${deleteUrl}" method="POST">
-										<input name="week" type="hidden" value="${param.week}"/>
-										<input name="timesheetId" type="hidden" value="${timesheet.id}" />
-										<input type="submit" value="Удалить" onClick="return confirm('Удалить запись?')" />
-										<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+								<td>
+									<form action="${modifyCommentUrl}" method="POST">
+										<input name="week" type="hidden" value="${param.week}" /> <input
+											name="timesheetId" type="hidden" value="${timesheet.id}" />
+										<input name="comment" class="input" type="text"
+											value="${timesheet.comment}" /> <input type="hidden"
+											name="${_csrf.parameterName}" value="${_csrf.token}" />
 									</form>
 								</td>
-								<c:if test="${status.index > 0}">
-									</tr>
-								</c:if>								
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							<td><fmt:parseDate
-								value="${timesheetByDay.date}" pattern="yyyy-MM-dd"
-								var="parsedDate" type="date" /> <fmt:formatDate pattern="EEEE"
-								value="${parsedDate}" /> <br /> <fmt:formatDate
-								pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
+								<td id="colLast">
+									<form action="${deleteUrl}" method="POST">
+										<input name="week" type="hidden" value="${param.week}" /> <input
+											name="timesheetId" type="hidden" value="${timesheet.id}" />
+										<input type="submit" value="Удалить"
+											onClick="return confirm('Удалить запись?')" /> <input
+											type="hidden" name="${_csrf.parameterName}"
+											value="${_csrf.token}" />
+									</form>
+								</td>
+							</tr>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<tr class="${classRow}">
+							<td><fmt:parseDate value="${timesheetByDay.date}"
+									pattern="yyyy-MM-dd" var="parsedDate" type="date" /> <fmt:formatDate
+									pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
+									pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
 							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
-						</c:otherwise>
-					</c:choose>
-				</tr>
+						</tr>
+					</c:otherwise>
+				</c:choose>
+
 			</c:forEach>
 		</tbody>
 		<tfoot>
 			<tr>
-				<td style="text-align: right;" colspan="4">Общее
-					количество часов:</td>
+				<td style="text-align: right;" colspan="4">Общее количество
+					часов:</td>
 				<td colspan="2"><c:out value="${countTime}" /></td>
 			</tr>
 		</tfoot>
@@ -165,19 +204,18 @@
 		<s:url value="/timesheet?week=${param.week + 1}" var="more_url" />
 		<a href="${more_url}">Предыдующая неделя</a>
 		<s:url value="/timesheet?week=${param.week - 1}" var="less_url" />
-		<a style="float: right;" href="${less_url}">Следующая
-			неделя</a>
+		<a style="float: right;" href="${less_url}">Следующая неделя</a>
 	</div>
 </div>
 
 <script type="text/javascript">
 	function validate() {
 		if (isNaN(document.getElementById("inputCountTime").value)) {
-			document.getElementById("errorValidate").innerHTML="Введите числовое значение в поле часы";
+			document.getElementById("errorValidate").innerHTML = "Введите числовое значение в поле часы";
 			return false;
 		} else {
 			if (document.getElementById("inputCountTime").value <= 0) {
-				document.getElementById("errorValidate").innerHTML="Введите положительное и ненулевое значение в поле часы";
+				document.getElementById("errorValidate").innerHTML = "Введите положительное и ненулевое значение в поле часы";
 				return false;
 			}
 		}
@@ -185,16 +223,16 @@
 	};
 	$(document).ready(function() {
 		$('#selectProject').SumoSelect({
-			placeholder: 'Выберите проект из списка',
-			search: true,
-			searchText: 'Поиск по названию проекта'
-			});
+			placeholder : 'Выберите проект из списка',
+			search : true,
+			searchText : 'Поиск по названию проекта'
+		});
 	});
 	$(document).ready(function() {
 		$('#selectTask').SumoSelect({
-			placeholder: 'Выберите задачу из списка',
-			search: true,
-			searchText: 'Поиск по названию задачи'
-			});
+			placeholder : 'Выберите задачу из списка',
+			search : true,
+			searchText : 'Поиск по названию задачи'
+		});
 	});
 </script>

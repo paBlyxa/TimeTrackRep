@@ -93,4 +93,13 @@ public interface TimesheetRepository {
 	
 	public Map<String, Float> getEmployeeSummaryByTasks(UUID employeeId, LocalDate beginDate, LocalDate endDate,
 			List<Project> projects);
+	
+	/**
+	 * Returns a map of countTimes by days
+	 * @param employeeId
+	 * @param beginDate
+	 * @param endDate
+	 * @return
+	 */
+	public Map<String, Float> getEmployeeSummaryByTime(UUID employeeId, LocalDate beginDate, LocalDate endDate);
 }

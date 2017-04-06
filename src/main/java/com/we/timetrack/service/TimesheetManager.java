@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 import org.jboss.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,9 @@ import com.we.timetrack.db.TaskRepository;
 import com.we.timetrack.db.TimesheetRepository;
 import com.we.timetrack.model.Employee;
 import com.we.timetrack.model.Project;
+import com.we.timetrack.model.ProjectStatus;
 import com.we.timetrack.model.Task;
+import com.we.timetrack.model.TaskStatus;
 import com.we.timetrack.model.Timesheet;
 import com.we.timetrack.service.model.TimesheetDay;
 import com.we.timetrack.service.model.TimesheetForm;
@@ -53,30 +57,14 @@ public class TimesheetManager {
 	@Transactional(readOnly = true)
 	public void getTimesheetsByDays(int week, Model model) {
 
-		// Last day in last week (Sunday)
-		LocalDate dateEarly = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1).minusWeeks(week);
-
 		// Current user
 		Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		List<Timesheet> timesheets = timesheetRepository.getTimesheets(employee.getEmployeeId(), dateEarly,
-				dateEarly.plusDays(6));
+		getTimesheetsByDays(employee.getEmployeeId(), week, model);
 
-		logger.debug("Loaded timesheets count: " + timesheets.size() + " for employee " + employee.getUsername()
-				+ ", dateEarly: " + dateEarly);
+		List<Project> projects = projectRepository.getProjects(ProjectStatus.Active);
 
-		List<TimesheetDay> timesheetsByDays = TimesheetDay.getTimesheetsByDays(timesheets, dateEarly,
-				dateEarly.plusDays(6));
-
-		List<Project> projects = projectRepository.getProjects();
-
-		List<Task> tasks = taskRepository.getTasks();
-
-		// Count all hours in week
-		float countTime = 0;
-		for (TimesheetDay timesheetDay : timesheetsByDays) {
-			countTime += timesheetDay.getHours();
-		}
+		List<Task> tasks = taskRepository.getTasks(TaskStatus.Active);
 
 		// if call redirect, model's already had timesheetform
 		if (model.asMap().get("timesheetForm") == null) {
@@ -85,9 +73,31 @@ public class TimesheetManager {
 			model.addAttribute(timesheetForm);
 		}
 
-		model.addAttribute("timesheetsByDays", timesheetsByDays);
 		model.addAttribute("projectList", projects);
 		model.addAttribute("taskList", tasks);
+	}
+
+	public void getTimesheetsByDays(UUID employeeId, int week, Model model) {
+
+		// Last day in last week (Sunday)
+		LocalDate dateEarly = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1).minusWeeks(week);
+
+		List<Timesheet> timesheets = timesheetRepository.getTimesheets(employeeId, dateEarly,
+				dateEarly.plusDays(6));
+		
+		logger.debug("Loaded timesheets count: " + timesheets.size() + " for employee " + employeeId
+				+ ", dateEarly: " + dateEarly);
+
+		List<TimesheetDay> timesheetsByDays = TimesheetDay.getTimesheetsByDays(timesheets, dateEarly,
+				dateEarly.plusDays(6));
+		
+		// Count all hours in week
+		float countTime = 0;
+		for (TimesheetDay timesheetDay : timesheetsByDays) {
+			countTime += timesheetDay.getHours();
+		}
+				
+		model.addAttribute("timesheetsByDays", timesheetsByDays);
 		model.addAttribute("countTime", countTime);
 	}
 
@@ -137,13 +147,28 @@ public class TimesheetManager {
 	 * @param timesheetId
 	 * @param countTime
 	 */
+	@Transactional
 	public void modifyTimesheet(int timesheetId, float countTime) {
 
 		Timesheet timesheet = timesheetRepository.getTimesheet(timesheetId, false);
 		timesheet.setCountTime(countTime);
 		timesheetRepository.saveTimesheet(timesheet);
 	}
+	
+	/**
+	 * Modify comment in timesheet with matching timesheetId
+	 * 
+	 * @param timesheetId
+	 * @param countTime
+	 */
+	@Transactional
+	public void modifyTimesheet(int timesheetId, String comment) {
 
+		Timesheet timesheet = timesheetRepository.getTimesheet(timesheetId, false);
+		timesheet.setComment(comment);
+		timesheetRepository.saveTimesheet(timesheet);
+	}
+	
 	/**
 	 * Delete choosen timesheet
 	 * 

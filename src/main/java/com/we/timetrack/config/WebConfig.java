@@ -6,6 +6,7 @@ package com.we.timetrack.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.servlet.View;
@@ -50,6 +51,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	    messageSource.setCacheSeconds(10);
 	    return messageSource;
 	}*/
+	
+	@Bean
+	public ResourceBundleMessageSource messageSource() {
+		ResourceBundleMessageSource rb = new ResourceBundleMessageSource();
+		rb.setBasenames(new String[] { "messages/messages", "messages/validation" });
+		rb.setDefaultEncoding("UTF-8");
+		return rb;
+	}
 	
 	@Bean
 	public TilesConfigurer tilesConfigurer() {

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
- <!DOCTYPE xml>
+<!DOCTYPE xml>
 
 <project name="timexdb">
 	<property name="hjar" value="lib/postgresql-9.4.1208.jar" />
@@ -8,30 +8,26 @@
 	<fail message="no database at port: ${hport}">
 		<condition>
 			<not>
-				<socket port="${hport}" server="127.0.0.1"/>
+				<socket port="${hport}" server="127.0.0.1" />
 			</not>
 		</condition>
 	</fail>
-	<property name="user" value="postgres"/>
-	<property name="password" value="gfDkeynbq"/>
-	<property name="user_owner" value="timex_user"/>
-	<property name="password_owner" value="123timeX321"/>
+	<property name="user" value="postgres" />
+	<property name="password" value="gfDkeynbq" />
+	<property name="user_owner" value="timex_user" />
+	<property name="password_owner" value="123timeX321" />
 
 	<target name="dropdb">
-		<sql  classpath="${hjar}" driver="org.postgresql.Driver"
-		url="jdbc:postgresql://localhost/template1" userid="${user}"
-		password="${password}" print="yes" autocommit="true">
+		<sql classpath="${hjar}" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost/template1" userid="${user}" password="${password}" print="yes" autocommit="true">
 			
 			DROP DATABASE ${halias};
 			DROP USER ${user_owner};
 		</sql>
 	</target>
-	
-	
+
+
 	<target name="createdb">
-		<sql classpath="${hjar}" driver="org.postgresql.Driver"
-			url="jdbc:postgresql://localhost/template1" userid="${user}"
-			password="${password}" print="yes" autocommit="true">
+		<sql classpath="${hjar}" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost/template1" userid="${user}" password="${password}" print="yes" autocommit="true">
 
 			-- SQL script for TimeX
 			-- Step 1: Create USER
@@ -46,9 +42,7 @@
 
 
 	<target name="execddl">
-		<sql classpath="${hjar}" driver="org.postgresql.Driver"
-			url="jdbc:postgresql://localhost:${hport}/${halias}" userid="${user_owner}"
-			password="${password_owner}" print="yes" autocommit="true">
+		<sql classpath="${hjar}" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:${hport}/${halias}" userid="${user_owner}" password="${password_owner}" print="yes" autocommit="true">
 
 			-- SQL script for TimeX
 			-- Step 1: Drop tables if they exist
@@ -64,6 +58,8 @@
 			projectId serial ,
 			name VARCHAR(255) NOT NULL UNIQUE,
 			comment VARCHAR(255) ,
+			status INTEGER NOT NULL,
+			contract VARCHAR(255),
 			CONSTRAINT project_pk PRIMARY KEY(projectId)
 			);
 
@@ -87,6 +83,7 @@
 			taskId serial ,
 			name VARCHAR(255) NOT NULL UNIQUE,
 			comment VARCHAR(255) ,
+			status INTEGER NOT NULL,
 			CONSTRAINT task_pk PRIMARY KEY(taskId)
 			);
 
@@ -115,22 +112,28 @@
 			Project(projectId)
 			);
 
+			CREATE TABLE persistent_logins
+			(
+			username VARCHAR(64) NOT NULL,
+			series VARCHAR(64) NOT NULL,
+			token_VARCHAR(64) NOT NULL,
+			last_used TIMESTAMP NOT NULL,
+			CONSTRAINT series_pk PRIMARY_KEY(series)
+			);
 			</sql>
-		</target>			
-	
-	
-		<target name="insertddl">
-			<sql classpath="${hjar}" driver="org.postgresql.Driver"
-				url="jdbc:postgresql://localhost:${hport}/${halias}" userid="${user}"
-				password="${password}" print="yes" autocommit="true">
+	</target>
+
+
+	<target name="insertddl">
+		<sql classpath="${hjar}" driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:${hport}/${halias}" userid="${user}" password="${password}" print="yes" autocommit="true">
 				
 			-- Step 3: Insert some reference and test data
-			--INSERT INTO Project (name)
-			-- VALUES ('GHK IGK-6');
-			--INSERT INTO Project (name)
-			-- VALUES ('GHK ARM RTK');
-			--INSERT INTO Project (name)
-			-- VALUES ('LAES2 SAU DG');
+			--INSERT INTO Project (name, status)
+			-- VALUES ('GHK IGK-6', '1');
+			--INSERT INTO Project (name, status)
+			-- VALUES ('GHK ARM RTK', '1');
+			--INSERT INTO Project (name, status)
+			-- VALUES ('LAES2 SAU DG', '1');
 
 			--INSERT INTO Employee (surname, name, mail, post, department, username,
 			password)
@@ -146,12 +149,12 @@
 			programmer', 'Programmeers', 'fakadey', '123fakadey');
 
 
-			--INSERT INTO Task (name)
-			-- VALUES ('Make scheme');
-			--INSERT INTO Task (name)
-			-- VALUES ('Make document');
-			--INSERT INTO Task (name)
-			-- VALUES ('PO');
+			--INSERT INTO Task (name, status)
+			-- VALUES ('Make scheme', '1');
+			--INSERT INTO Task (name, status)
+			-- VALUES ('Make document', '1');
+			--INSERT INTO Task (name, status)
+			-- VALUES ('PO', '1');
 
 
 			--INSERT INTO ProjectLeader (projectId, employeeId)
