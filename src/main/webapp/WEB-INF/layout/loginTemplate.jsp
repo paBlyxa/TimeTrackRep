@@ -12,7 +12,7 @@
 <link rel="stylesheet" type="text/css"
 	href="<s:url value="/resources/bootstrap.css" />">
 <link rel="stylesheet"
-	href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+	href="<s:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css" />">
 </head>
 
 <body id="loginTemp">

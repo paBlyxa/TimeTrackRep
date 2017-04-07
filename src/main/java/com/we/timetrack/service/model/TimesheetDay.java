@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.jboss.logging.Logger;
 
@@ -17,7 +19,7 @@ public class TimesheetDay {
 	private LocalDate date;
 	private float hours;
 	
-	private List<Timesheet> timesheets;
+	private SortedSet<Timesheet> timesheets;
 
 	public LocalDate getDate() {
 		return date;
@@ -27,11 +29,11 @@ public class TimesheetDay {
 		this.date = date;
 	}
 
-	public List<Timesheet> getTimesheets() {
+	public SortedSet<Timesheet> getTimesheets() {
 		return timesheets;
 	}
 
-	public void setTimesheets(List<Timesheet> timesheets) {
+	public void setTimesheets(SortedSet<Timesheet> timesheets) {
 		this.timesheets = timesheets;
 	}
 
@@ -50,16 +52,16 @@ public class TimesheetDay {
 	 */
 	public static List<TimesheetDay> getTimesheetsByDays(List<Timesheet> timesheets, LocalDate beginDate, LocalDate endDate){
 		
-		Map<LocalDate, List<Timesheet>> timesheetsByDays = new HashMap<>();
+		Map<LocalDate, SortedSet<Timesheet>> timesheetsByDays = new HashMap<>();
 		
 		// Create map by days with empty lists
 		for (LocalDate date = beginDate; !date.isAfter(endDate); date = date.plusDays(1)){
-			timesheetsByDays.put(date, new ArrayList<Timesheet>());
+			timesheetsByDays.put(date, new TreeSet<Timesheet>(new TimesheetComparator()));
 		}
 				
 		// Fill map
 		for(Timesheet timesheet : timesheets){
-			List<Timesheet> timesheetList = timesheetsByDays.get(timesheet.getDateTask());
+			SortedSet<Timesheet> timesheetList = timesheetsByDays.get(timesheet.getDateTask());
 			if (timesheetList != null) {
 				timesheetList.add(timesheet);
 			} else {
@@ -72,7 +74,7 @@ public class TimesheetDay {
 		for (LocalDate date = beginDate; !date.isAfter(endDate); date = date.plusDays(1)){
 			TimesheetDay timesheetDay = new TimesheetDay();
 			timesheetDay.setDate(date);
-			List<Timesheet> tss = timesheetsByDays.get(date);
+			SortedSet<Timesheet> tss = timesheetsByDays.get(date);
 			float countHours = 0;
 			// Sum hours
 			for (Timesheet ts : tss){

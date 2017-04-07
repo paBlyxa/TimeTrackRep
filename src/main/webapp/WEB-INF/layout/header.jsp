@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <head>
 	<style type="text/css">
 		.logo {
@@ -24,10 +24,17 @@
 		}
 	</style>
 </head>
+
+<c:url var="logoutUrl" value="/logout" />
+
 <div>
 	<div class="logo">
-		<a href="<s:url value="/" />"> <img src="<s:url value="/resources/" />images/logo.png" border="0" />
-		</a>
+		<form action="${logoutUrl}" method="POST">
+			<a href="#" onclick="parentNode.submit();">
+				<img src="<c:url value="/resources/" />images/logo.png" border="0" />
+			</a>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		</form>
 	</div>
 	<div class="mailto">
 		<a href="mailto:p.fakadey@west-e.ru?subject=Ошибка в программе учета времени&body=Найдена ошибка в программе учета времени:">

@@ -195,7 +195,8 @@
 			<tr>
 				<td style="text-align: right;" colspan="4">Общее количество
 					часов:</td>
-				<td colspan="2"><c:out value="${countTime}" /></td>
+				<td colspan="2"><input class="input" type="number" step="0.5"
+											min="0.5" max="24" readonly="readonly" value="${countTime}" /></td>
 			</tr>
 		</tfoot>
 	</table>

@@ -16,6 +16,11 @@
 						<p>Invalid username and password.</p>
 					</div>
 				</c:if>
+				<c:if test="${param.logout != null}">       3
+					<div class="alert alert-danger">
+						<p>You have been logged out.</p>
+					</div>
+				</c:if>
 				<c:if test="${not empty error}">
 					<div>${error}</div>
 				</c:if>
@@ -34,7 +39,16 @@
 						class="form-control" id="password" name="password"
 						placeholder="Enter Password" required>
 				</div>
-
+				<c:if test="${empty loginUpdate}">
+					<div class="input-group input-sm">
+						<label class="input-group-addon" for="remember me" id="input-anchor"><i
+						class="fa fa-anchor"></i></label>
+						<label id="rememberMe-label" >Remember Me:</label>
+						<span class="input-group-addon">
+        					<input type="checkbox" name="remember-me" >
+						</span>
+					</div>
+				</c:if>
 				<input type="hidden" name="${_csrf.parameterName}"
 					value="${_csrf.token}" />
 				<div class="form-actions">

@@ -118,7 +118,7 @@
 			series VARCHAR(64) NOT NULL,
 			token_VARCHAR(64) NOT NULL,
 			last_used TIMESTAMP NOT NULL,
-			CONSTRAINT series_pk PRIMARY_KEY(series)
+			CONSTRAINT series_pk PRIMARY KEY(series)
 			);
 			</sql>
 	</target>
