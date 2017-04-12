@@ -14,7 +14,12 @@ public class TimesheetComparator implements Comparator<Timesheet> {
 			return compareProjectName;
 		}
 		
-		return t1.getTask().getName().compareTo(t2.getTask().getName());
+		int compareTaskName = t1.getTask().getName().compareTo(t2.getTask().getName());
+		if (compareTaskName != 0){
+			return compareTaskName;
+		}
+		
+		return (t1.getId() - t2.getId());
 	}
 
 }
