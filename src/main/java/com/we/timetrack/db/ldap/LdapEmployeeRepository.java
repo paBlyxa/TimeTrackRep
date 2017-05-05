@@ -36,7 +36,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	private static Logger logger = Logger.getLogger("db");
 
 	private final static String BASE = "dc=we,dc=ru";
-	private final static String MAIN_GROUP = "cn=Адресная книга,ou=Группы,dc=we,dc=ru";
+	private final static String MAIN_GROUP = "cn=Timex пользователи,ou=Группы,dc=we,dc=ru";
 
 	// Attributes
 	private final static String NAME_ATTRIBUTE = "givenName";
@@ -57,7 +57,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	public Employee getEmployee(UUID employeeId) {
 		List<Employee> employees = getLdapTemplate().search(
 				query().base(BASE).filter("(&(objectClass=person)(objectGUID="
-						+ UuidUtils.convertToByteString(employeeId) + ")" + "(memberOf=" + MAIN_GROUP + "))"),
+						+ UuidUtils.convertToByteString(employeeId) + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"),
 				getContextMapper());
 		return employees.isEmpty() ? null : employees.get(0);
 	}
@@ -66,14 +66,14 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	public Employee getEmployee(String username) {
 		List<Employee> employees = getLdapTemplate().search(
 				query().base(BASE).filter(
-						"(&(objectClass=person)(sAMAccountName=" + username + ")" + "(memberOf=" + MAIN_GROUP + "))"),
+						"(&(objectClass=person)(sAMAccountName=" + username + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"),
 				getContextMapper());
 		return employees.get(0);
 	}
 
 	@Override
 	public List<Employee> getEmployees() {
-		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf=" + MAIN_GROUP + "))");
+		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))");
 		
 		List<Employee> employeeList = getLdapTemplate().search(query, getContextMapper());
 		employeeList.sort(new EmployeeComparator());
@@ -98,7 +98,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		if (!checked.contains(employee)) {
 			DirContextOperations context = getLdapTemplate()
 					.searchForContext(query().base(BASE).filter("(&(objectClass=person)(sAMAccountName="
-							+ employee.getUsername() + ")" + "(memberOf=" + MAIN_GROUP + "))"));
+							+ employee.getUsername() + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"));
 			String[] strDirectReports = context.getStringAttributes("directReports");
 			checked.add(employee);
 			if (strDirectReports != null) {

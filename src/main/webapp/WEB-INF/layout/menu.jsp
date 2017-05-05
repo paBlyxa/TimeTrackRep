@@ -6,13 +6,13 @@
 <script src="<c:url value="/resources/script/jquery-3.0.0.min.js" />"></script>
 </head>
 <script>
-  $(window).scroll(function(){
-      if ($(this).scrollTop() > 60) {
-          $("#mainMenu").addClass("fixed");
-      } else {
-          $("#mainMenu").removeClass("fixed");
-      }
-  });
+	$(window).scroll(function() {
+		if ($(this).scrollTop() > 60) {
+			$("#mainMenu").addClass("fixed");
+		} else {
+			$("#mainMenu").removeClass("fixed");
+		}
+	});
 </script>
 
 
@@ -40,17 +40,14 @@
 				</c:otherwise>
 			</c:choose>
 		href="<c:url value="/projects" />">Проекты</a> <sec:authorize
-			access="hasAuthority('Операторы архива Projects')">
+			access="hasAuthority('Timex руководители')">
 			<div id="dropdown-content">
-				<a href="<c:url value="/projects/new" />">Новый
-					проект</a>
+				<a href="<c:url value="/projects/new" />">Новый проект</a>
 				<%-- 					<a href="<c:url value="/projects" />">Мои проекты</a> --%>
 			</div>
 		</sec:authorize></li>
-	<sec:authorize
-		access="hasAuthority('Операторы архива Projects')">
-		<li><a
-			<c:choose>
+	<li><a
+		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'tasks')}">
 					class="activeMenuItem"
 				</c:when>
@@ -58,8 +55,7 @@
 					class="menuItem" 
 				</c:otherwise>
 			</c:choose>
-			href="<c:url value="/tasks" />">Задачи</a></li>
-	</sec:authorize>
+		href="<c:url value="/tasks" />">Задачи</a></li>
 	<li><a
 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'employees') and not fn:contains(currentUrl, 'account')  and not fn:contains(currentUrl, 'stat')}">
@@ -89,7 +85,7 @@
 					class="menuItem" 
 				</c:otherwise>
 			</c:choose>
-		href="<c:url value="/help" />">Помощь</a></li>		
+		href="<c:url value="/help" />">Помощь</a></li>
 	<li id="currentUser"><a
 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'account')}">

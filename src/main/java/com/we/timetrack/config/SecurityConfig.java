@@ -42,6 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.authorizeRequests()
 					.antMatchers("/", "/home", "/resources/**").permitAll()
+					.antMatchers("/projects/new","/projects/delete","/projects/*/modify",
+							"/tasks/new", "tasks/delete", "/tasks/*/modify").hasAuthority("Timex руководители")
 					.anyRequest().authenticated()
 			.and()
 				.formLogin()

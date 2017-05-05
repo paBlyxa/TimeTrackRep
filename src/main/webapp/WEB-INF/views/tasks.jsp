@@ -12,7 +12,7 @@
 
 <c:url var="saveUrl" value="/tasks/new" />
 
-<sec:authorize access="hasAuthority('Операторы архива Projects')">
+<sec:authorize access="hasAuthority('Timex руководители')">
 	<div class="taskForm">
 		<h1>Новая задача</h1>
 		<form:form method="POST" modelAttribute="taskForm" action="${saveUrl}">
@@ -68,7 +68,7 @@
 					<td>${task.name}</td>
 					<td>${task.status.name}</td>
 					<td>${task.comment}</td>
-					<sec:authorize access="hasAuthority('Операторы архива Projects')">
+					<sec:authorize access="hasAuthority('Timex руководители')">
 						<td id="colLast"><c:url value="/tasks/${task.taskId}/modify"
 								var="updateUrl" />
 							<button class="btn btn-primary"
