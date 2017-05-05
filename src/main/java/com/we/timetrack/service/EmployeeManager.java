@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -24,6 +27,8 @@ import com.we.timetrack.service.model.DateRange;
 
 @Service
 public class EmployeeManager {
+	
+	private final static Logger logger = LoggerFactory.getLogger(EmployeeManager.class);
 	
 	@Autowired
 	private TimesheetRepository timesheetRepository;
@@ -86,6 +91,9 @@ public class EmployeeManager {
 		return (Employee)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
 	
+	/**
+	 * Создание статистики для сотрудника employeeId
+	 */
 	private Map<String, Float> getEmployeeSummary(Employee employee, DateRange period, int type, List<Integer> items){
 		switch(type){
 		case 1:
@@ -100,14 +108,22 @@ public class EmployeeManager {
 		return new HashMap<>();
 	}
 	
-
+	/**
+	 * Получение списка подчиненных сотрудников.
+	 * Если пользователь имеет роль "Timex статисты" список
+	 * содержит всех сотрудников.
+	 * 
+	 * @param model
+	 * 			Список сохраняется в модель.
+	 */
 	public void getEmployeeList(Model model){
 		
 		Employee employee = getCurrentEmployee();
 		
 		List<Employee> employeeList;
 		
-		if (employee.getAuthorities().contains("admin")) {
+		if (employee.getAuthorities().contains(new SimpleGrantedAuthority("Timex статисты"))) {
+			logger.debug("Employee [{}] has Timex статисты authority", employee.getShortName());
 			employeeList = employeeRepository.getEmployees();
 		} else {
 			employeeList = employeeRepository.getDirectReports(employee);

@@ -10,9 +10,8 @@
 	<table class="mainTable">
 		<thead>
 			<tr>
-				<th>Имя пользователя</th>
-				<th>Имя</th>
 				<th>Фамилия</th>
+				<th>Имя</th>
 				<th>Адрес почты</th>
 				<th>Должность</th>
 				<th>Отдел</th>
@@ -22,9 +21,8 @@
 			<c:forEach var="e" items="${employeeList}">
 				<c:url var="statUrl" value="/employees/stat?id=${e.employeeId}" />
 				<tr>
-					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.username}" /></td>
-					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.name}" /></td>
 					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.surname}" /></td>
+					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.name}" /></td>
 					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.mail}" /></td>
 					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.post}" /></td>
 					<td class="clickable-row" data-url="${statUrl}"><c:out value="${e.department}" /></td>
