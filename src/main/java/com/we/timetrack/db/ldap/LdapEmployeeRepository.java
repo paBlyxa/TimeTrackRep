@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
@@ -25,7 +27,6 @@ import com.we.timetrack.model.Employee;
 import com.we.timetrack.service.model.EmployeeComparator;
 import com.we.timetrack.util.UuidUtils;
 
-import org.jboss.logging.Logger;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
@@ -33,7 +34,7 @@ import static org.springframework.ldap.query.LdapQueryBuilder.query;
 public class LdapEmployeeRepository implements EmployeeRepository {
 
 	
-	private static Logger logger = Logger.getLogger("db");
+	private static Logger logger = LoggerFactory.getLogger(LdapEmployeeRepository.class);
 
 	private final static String BASE = "dc=we,dc=ru";
 	private final static String MAIN_GROUP = "cn=Timex пользователи,ou=Группы,dc=we,dc=ru";
@@ -53,24 +54,47 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 			EMAIL_ATTRIBUTE, DEPARTMENT_ATTRIBUTE, GUID_ATTRIBUTE, MANAGER_ATTRIBUTE, TITLE_ATTRIBUTE,
 			GROUPS_ATTRIBUTE };
 
+	/**
+	 * Get employee with matching employeeId from ActiveDirectory
+	 * 
+	 * @param employeeId - employee's UUID
+	 * @return Employee if exist, otherwise null
+	 */
 	@Override
 	public Employee getEmployee(UUID employeeId) {
 		List<Employee> employees = getLdapTemplate().search(
 				query().base(BASE).filter("(&(objectClass=person)(objectGUID="
 						+ UuidUtils.convertToByteString(employeeId) + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"),
 				getContextMapper());
+		if (employees.isEmpty()){
+			logger.warn("No employee with matching employeeId = [{}]", employeeId);
+		}
 		return employees.isEmpty() ? null : employees.get(0);
 	}
 
+	/**
+	 * Get employee with matching username from ActiveDirectory
+	 * 
+	 * @param username - employee's username
+	 * @return Employee if exist, otherwise null
+	 */
 	@Override
 	public Employee getEmployee(String username) {
 		List<Employee> employees = getLdapTemplate().search(
 				query().base(BASE).filter(
 						"(&(objectClass=person)(sAMAccountName=" + username + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"),
 				getContextMapper());
-		return employees.get(0);
+		if (employees.isEmpty()){
+			logger.warn("No employee with matching username = [{}]", username);
+		}
+		return employees.isEmpty() ? null : employees.get(0);
 	}
-
+	
+	/**
+	 * Get employees from ActiveDirectory
+	 * 
+	 * @return list of employees
+	 */
 	@Override
 	public List<Employee> getEmployees() {
 		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))");
@@ -80,10 +104,22 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		return employeeList;
 	}
 
+	/**
+	 * Get employee by dn from ActiveDirectory
+	 * 
+	 * @param dn
+	 * @return Employee if exist, otherwise null
+	 */	
 	public Employee get(String dn) {
 		return getLdapTemplate().lookup(dn, getContextMapper());
 	}
 
+	/**
+	 * Get subordinate employees from ActiveDirectory
+	 * 
+	 * @param employee
+	 * @return list of employees
+	 */
 	public List<Employee> getDirectReports(Employee employee) {
 
 		List<Employee> directReports = new ArrayList<>();
