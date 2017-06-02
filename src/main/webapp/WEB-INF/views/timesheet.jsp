@@ -33,7 +33,7 @@
 				<tr>
 					<td><s:bind path="dates">
 							<form:input type="text" required="true"
-								class="datepicker-here input" id="datepickerTS"
+								class="input" id="datepickerTS"
 								data-position="bottom left" data-multiple-dates="true"
 								data-multiple-dates-separator=", " path="dates" />
 							<form:errors path="dates" class="errorMessage" />
@@ -82,16 +82,16 @@
 		<div style="float: left;">
 			<h2>
 				<fmt:parseDate value="${timesheetsByDays[0].date}"
-					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
-				<fmt:formatDate pattern="w" value="${parsedDate}" />
+					pattern="yyyy-MM-dd" var="startWeekDate" type="date" />
+				<fmt:formatDate pattern="w" value="${startWeekDate}" />
 				неделя
-				<fmt:formatDate pattern="y" value="${parsedDate}" />
+				<fmt:formatDate pattern="y" value="${startWeekDate}" />
 				года:
-				<fmt:formatDate pattern="dd MMMM" value="${parsedDate}" />
+				<fmt:formatDate pattern="dd MMMM" value="${startWeekDate}" />
 				-
 				<fmt:parseDate value="${timesheetsByDays[6].date}"
-					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
-				<fmt:formatDate value="${parsedDate}" pattern="dd MMMM" />
+					pattern="yyyy-MM-dd" var="endWeekDate" type="date" />
+				<fmt:formatDate value="${endWeekDate}" pattern="dd MMMM" />
 			</h2>
 		</div>
 		<div id="saveCurrentTimesheet">
@@ -236,4 +236,79 @@
 			searchText : 'Поиск по названию задачи'
 		});
 	});
+	var day = <fmt:formatDate pattern="dd" value="${startWeekDate}" />;
+	var month = <fmt:formatDate pattern="MM" value="${startWeekDate}" />;
+	var year = <fmt:formatDate pattern="yyyy" value="${startWeekDate}" />;
+	var startDate = new Date(year, month - 1, day);
+	day = <fmt:formatDate pattern="dd" value="${endWeekDate}" />;
+	month = <fmt:formatDate pattern="MM" value="${endWeekDate}" />;
+	year = <fmt:formatDate pattern="yyyy" value="${endWeekDate}" />;
+	var endDate = new Date(year, month - 1, day);
+
+var dates = {
+    convert:function(d) {
+        // Converts the date in d to a date-object. The input can be:
+        //   a date object: returned without modification
+        //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
+        //   a number     : Interpreted as number of milliseconds
+        //                  since 1 Jan 1970 (a timestamp) 
+        //   a string     : Any format supported by the javascript engine, like
+        //                  "YYYY/MM/DD", "MM/DD/YYYY", "Jan 31 2009" etc.
+        //  an object     : Interpreted as an object with year, month and date
+        //                  attributes.  **NOTE** month is 0-11.
+        return (
+            d.constructor === Date ? d :
+            d.constructor === Array ? new Date(d[0],d[1],d[2]) :
+            d.constructor === Number ? new Date(d) :
+            d.constructor === String ? new Date(d) :
+            typeof d === "object" ? new Date(d.year,d.month,d.date) :
+            NaN
+        );
+    },
+    compare:function(a,b) {
+        // Compare two dates (could be of any type supported by the convert
+        // function above) and returns:
+        //  -1 : if a < b
+        //   0 : if a = b
+        //   1 : if a > b
+        // NaN : if a or b is an illegal date
+        // NOTE: The code inside isFinite does an assignment (=).
+        return (
+            isFinite(a=this.convert(a).valueOf()) &&
+            isFinite(b=this.convert(b).valueOf()) ?
+            (a>b)-(a<b) :
+            NaN
+        );
+    },
+    inRange:function(d,start,end) {
+        // Checks if date in d is between dates in start and end.
+        // Returns a boolean or NaN:
+        //    true  : if d is between start and end (inclusive)
+        //    false : if d is before start or after end
+        //    NaN   : if one or more of the dates is illegal.
+        // NOTE: The code inside isFinite does an assignment (=).
+       return (
+            isFinite(d=this.convert(d).valueOf()) &&
+            isFinite(start=this.convert(start).valueOf()) &&
+            isFinite(end=this.convert(end).valueOf()) ?
+            start <= d && d <= end :
+            NaN
+        );
+    }
+};
+var datepicker = $('#datepickerTS').datepicker({
+	startDate: startDate,
+	// Передаем функцию, которая добавляет 11 числу каждого месяца класс 'my-class'
+    // и делает их невозможными к выбору.
+    onRenderCell: function(date, cellType) {
+        if (cellType == 'day' && dates.inRange(date, startDate, endDate)) {
+            return {
+                classes: '-currentWeek-'
+            }
+        }
+    }
+	}).data('datepicker');
+//	datepicker.selectDate(startDate);
+//	var stDate = new Date(2017, 3, 5);
+//	datepicker.date = stDate;
 </script>
