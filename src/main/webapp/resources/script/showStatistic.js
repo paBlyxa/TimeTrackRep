@@ -47,7 +47,7 @@ function showStatistic(data, refresh, ctx1, ctx2, text1, text2) {
 	$("#tableStat tbody").empty();
 	
 	// Если обновление данных, то предыдущие диаграмма уничтожаем
-	if (refresh){
+	if (refresh & (chart1 != null) & (chart2 != null)){
 		chart1.destroy();
 		chart2.destroy();
 	}
