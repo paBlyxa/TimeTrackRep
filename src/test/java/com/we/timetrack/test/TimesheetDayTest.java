@@ -3,6 +3,7 @@ package com.we.timetrack.test;
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.we.timetrack.config.RootConfig;
 import com.we.timetrack.db.TimesheetRepository;
+import com.we.timetrack.model.Day;
 import com.we.timetrack.model.Employee;
 import com.we.timetrack.model.Timesheet;
 import com.we.timetrack.service.model.TimesheetDay;
@@ -40,12 +42,12 @@ public class TimesheetDayTest {
         List<Timesheet> timesheets = timesheetRepository.getTimesheets(employeeId);
         LocalDate beginDate = LocalDate.now().minusMonths(1);
         LocalDate endDate = LocalDate.now().plusMonths(1);
-        List<TimesheetDay> timesheetsByDays = TimesheetDay.getTimesheetsByDays(timesheets, beginDate, endDate);
+        List<TimesheetDay> timesheetsByDays = TimesheetDay.getTimesheetsByDays(timesheets, beginDate, endDate, new ArrayList<Day>());
         assertNotNull(timesheetsByDays);
         System.out.println("Timesheets:");
         for (TimesheetDay tsd : timesheetsByDays){
         	assertNotNull(tsd);
-        	System.out.println(tsd.getDate() + " " + tsd.getTimesheets().size() + " " + tsd.getHours());
+        	System.out.println(tsd.getDay().getDateDay() + " " + tsd.getTimesheets().size() + " " + tsd.getHours());
         }
 	}
 

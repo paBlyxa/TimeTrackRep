@@ -17,9 +17,10 @@ body {font-family: "proxima-nova", sans-serif;margin: 1px;padding: 1px;}
 	/*     -moz-column-width: 100px;  */
 }
 .colProject {width: 25%;}
-.colTask {width: 23%;}
-.colCount {width: 6%; min-width: 58px;}
-.colHours {width: 6%;}
+.colTask {width: 21%;}
+.colCount {width: 5%; min-width: 58px;}
+.colHours {width: 5%;}
+.colOverHours {width: 5%;}
 .colComment {width: 25%;}
 
 /* Столбцы таблиц */
@@ -53,6 +54,11 @@ label.error, .errorMessage {color: red;}
 .errorMessage {font-size: 14pt;	margin: 0px;}
 input.error {background-color: #ffcccc;}
 div.errors {background-color: #ffcccc;border: 2px solid red;}
+
+.timesheet-weekend {color: #ff0000;}
+.timesheet-short {color: #b3b300;}
+.timesheet-overcount, .timesheet-overcount  input {background: #ffdfdf; font-weight: bold;}
+.timesheet-abovecount, .timesheet-abovecount input {background: #d7d7ff; font-weight: bold;}
 
 /* Контейнер для экспорта xls */
 .inlineClass {display: inline;}

@@ -11,41 +11,14 @@
 		<put-attribute name="menu" value="/WEB-INF/layout/menu.jsp" />
 	</definition>
 
-	<definition name="home" template="/WEB-INF/layout/loginTemplate.jsp">
-		<put-attribute name="body" value="/WEB-INF/views/home.jsp" />
+
+	<definition name="account" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/account.jsp" />
 	</definition>
 
-	<definition name="timesheet" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/timesheet.jsp" />
-	</definition>
-
-	<definition name="timesheetEmployee" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/timesheetEmployee.jsp" />
-	</definition>
-
-	<definition name="projects" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/projects.jsp" />
-	</definition>
-
-	<definition name="tasks" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/tasks.jsp" />
-	</definition>
-	
-	<definition name="modifyTask" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/modifyTask.jsp" />
-	</definition>
-	
-	<definition name="project" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/project.jsp" />
-	</definition>
-
-	<definition name="newProject" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/newProject.jsp" />
-	</definition>
-	
-	<definition name="modifyProject" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/modifyProject.jsp" />
-	</definition>
+	<definition name="calendar" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/calendar.jsp" />
+	</definition>	
 	
 	<definition name="employees" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/employees.jsp" />
@@ -55,11 +28,43 @@
 		<put-attribute name="body" value="/WEB-INF/views/employeeStat.jsp" />
 	</definition>
 
-	<definition name="account" extends="base">
-		<put-attribute name="body" value="/WEB-INF/views/account.jsp" />
-	</definition>
-
 	<definition name="help" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/help.jsp" />
 	</definition>	
+	
+	<definition name="home" template="/WEB-INF/layout/loginTemplate.jsp">
+		<put-attribute name="body" value="/WEB-INF/views/home.jsp" />
+	</definition>
+	
+	<definition name="modifyProject" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/modifyProject.jsp" />
+	</definition>
+	
+	<definition name="modifyTask" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/modifyTask.jsp" />
+	</definition>
+
+	<definition name="newProject" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/newProject.jsp" />
+	</definition>
+	
+	<definition name="project" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/project.jsp" />
+	</definition>
+
+	<definition name="projects" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/projects.jsp" />
+	</definition>
+
+	<definition name="tasks" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/tasks.jsp" />
+	</definition>
+
+	<definition name="timesheet" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/timesheet.jsp" />
+	</definition>
+
+	<definition name="timesheetEmployee" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/timesheetEmployee.jsp" />
+	</definition>
 </tiles-definitions>

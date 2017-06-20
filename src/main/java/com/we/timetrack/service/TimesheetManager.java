@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import com.we.timetrack.db.CalendarRepository;
 import com.we.timetrack.db.ProjectRepository;
 import com.we.timetrack.db.TaskRepository;
 import com.we.timetrack.db.TimesheetRepository;
@@ -23,6 +24,7 @@ import com.we.timetrack.model.ProjectStatus;
 import com.we.timetrack.model.Task;
 import com.we.timetrack.model.TaskStatus;
 import com.we.timetrack.model.Timesheet;
+import com.we.timetrack.service.model.DateRange;
 import com.we.timetrack.service.model.TimesheetDay;
 import com.we.timetrack.service.model.TimesheetForm;
 
@@ -43,6 +45,9 @@ public class TimesheetManager {
 
 	@Autowired
 	private TaskRepository taskRepository;
+	
+	@Autowired
+	private CalendarRepository calendarRepository;
 
 	/**
 	 * Returns a database Timesheets records with matching EmployeeId and later
@@ -54,13 +59,21 @@ public class TimesheetManager {
 	 * @param model
 	 *            - model where info will be save
 	 */
-	@Transactional(readOnly = true)
 	public void getTimesheetsByDays(int week, Model model) {
 
 		// Current user
 		Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		getTimesheetsByDays(employee.getEmployeeId(), week, model);
+
+	}
+	
+	@Transactional(readOnly = true)
+	public void getTimesheetsByDays(UUID employeeId, int week, Model model) {
+		// Last day in last week (Sunday)
+		LocalDate dateEarly = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1).minusWeeks(week);		
+		
+		List<TimesheetDay> timesheetsByDays = getTimesheetsByDays(employeeId, new DateRange(dateEarly, dateEarly.plusDays(6)));
 
 		List<Project> projects = projectRepository.getProjects(ProjectStatus.Active);
 
@@ -72,33 +85,34 @@ public class TimesheetManager {
 			timesheetForm = new TimesheetForm();
 			model.addAttribute(timesheetForm);
 		}
-
-		model.addAttribute("projectList", projects);
-		model.addAttribute("taskList", tasks);
-	}
-
-	public void getTimesheetsByDays(UUID employeeId, int week, Model model) {
-
-		// Last day in last week (Sunday)
-		LocalDate dateEarly = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1).minusWeeks(week);
-
-		List<Timesheet> timesheets = timesheetRepository.getTimesheets(employeeId, dateEarly,
-				dateEarly.plusDays(6));
-		
-		logger.debug("Loaded timesheets count: " + timesheets.size() + " for employee " + employeeId
-				+ ", dateEarly: " + dateEarly);
-
-		List<TimesheetDay> timesheetsByDays = TimesheetDay.getTimesheetsByDays(timesheets, dateEarly,
-				dateEarly.plusDays(6));
 		
 		// Count all hours in week
 		float countTime = 0;
+		float countOverTime = 0;
 		for (TimesheetDay timesheetDay : timesheetsByDays) {
 			countTime += timesheetDay.getHours();
+			countOverTime += (timesheetDay.getHours() - timesheetDay.getDay().getStatus().getWorkingHours());
 		}
 				
 		model.addAttribute("timesheetsByDays", timesheetsByDays);
 		model.addAttribute("countTime", countTime);
+		model.addAttribute("countOverTime", countOverTime);
+
+		model.addAttribute("projectList", projects);
+		model.addAttribute("taskList", tasks);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<TimesheetDay> getTimesheetsByDays(UUID employeeId, DateRange period) {
+
+		List<Timesheet> timesheets = timesheetRepository.getTimesheets(employeeId, period.getBegin(),
+				period.getEnd());
+		
+		logger.debug("Loaded timesheets count: " + timesheets.size() + " for employee " + employeeId
+				+ ", dateEarly: " + period.getBegin());
+
+		return TimesheetDay.getTimesheetsByDays(timesheets, period.getBegin(),
+				period.getEnd(), calendarRepository.getDays(period.getBegin(), period.getEnd()));
 	}
 
 	/**

@@ -16,7 +16,7 @@ public class TaskStatusAttributeConverter implements AttributeConverter<TaskStat
 		case NotActive:
 			return new Integer(2);
 		default:
-			throw new IllegalArgumentException("Unknown" + attribute);
+			throw new IllegalArgumentException("Unknown " + attribute);
 		}
 	}
 
@@ -28,7 +28,7 @@ public class TaskStatusAttributeConverter implements AttributeConverter<TaskStat
 		case 2:
 			return TaskStatus.NotActive;
 			default:
-				throw new IllegalArgumentException("Unknown" + dbData);
+				throw new IllegalArgumentException("Unknown " + dbData);
 		}
 	}
 

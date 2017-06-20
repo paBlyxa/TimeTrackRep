@@ -8,25 +8,28 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.we.timetrack.model.Day;
+import com.we.timetrack.model.DayStatus;
 import com.we.timetrack.model.Timesheet;
 
 public class TimesheetDay {
 
-	private static Logger logger = Logger.getLogger(TimesheetDay.class);
+	private static Logger logger = LoggerFactory.getLogger(TimesheetDay.class);
 	
-	private LocalDate date;
+	private Day day;
 	private float hours;
 	
 	private SortedSet<Timesheet> timesheets;
 
-	public LocalDate getDate() {
-		return date;
+	public Day getDay() {
+		return day;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public void setDay(Day day) {
+		this.day = day;
 	}
 
 	public SortedSet<Timesheet> getTimesheets() {
@@ -44,13 +47,14 @@ public class TimesheetDay {
 	public void setHours(float hours) {
 		this.hours = hours;
 	}
+
 	
 	/**
 	 * Group timesheets by day
 	 * @param timesheets
 	 * @return
 	 */
-	public static List<TimesheetDay> getTimesheetsByDays(List<Timesheet> timesheets, LocalDate beginDate, LocalDate endDate){
+	public static List<TimesheetDay> getTimesheetsByDays(List<Timesheet> timesheets, LocalDate beginDate, LocalDate endDate, List<Day> weekends){
 		
 		Map<LocalDate, SortedSet<Timesheet>> timesheetsByDays = new HashMap<>();
 		
@@ -73,7 +77,17 @@ public class TimesheetDay {
 		List<TimesheetDay> result = new ArrayList<>();
 		for (LocalDate date = beginDate; !date.isAfter(endDate); date = date.plusDays(1)){
 			TimesheetDay timesheetDay = new TimesheetDay();
-			timesheetDay.setDate(date);
+			Day newDay = new Day();
+			newDay.setDateDay(date);
+			int index = weekends.indexOf(newDay);
+			if (index != -1){
+				//This is weekend or short day
+				newDay.setStatus(weekends.get(index).getStatus());
+			} else {
+				newDay.setStatus(DayStatus.Work);
+			}
+			logger.debug("Date {} has status {}", newDay.getDateDay(), newDay.getStatus());
+			timesheetDay.setDay(newDay);
 			SortedSet<Timesheet> tss = timesheetsByDays.get(date);
 			float countHours = 0;
 			// Sum hours

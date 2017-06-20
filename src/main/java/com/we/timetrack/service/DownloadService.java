@@ -12,9 +12,7 @@ import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.we.timetrack.db.TimesheetRepository;
 import com.we.timetrack.model.Employee;
-import com.we.timetrack.model.Timesheet;
 import com.we.timetrack.service.model.DateRange;
 import com.we.timetrack.service.model.TimesheetDay;
 import com.we.timetrack.service.report.FillManager;
@@ -27,7 +25,7 @@ public class DownloadService {
 	private static Logger logger = Logger.getLogger("service");
 
 	@Autowired
-	private TimesheetRepository timesheetRepository;
+	private TimesheetManager timesheetManager;
 
 	/**
 	 * Processes the download for Excel format. It does the following steps:
@@ -86,7 +84,6 @@ public class DownloadService {
 	}
 
 	private List<TimesheetDay> getDatasource(UUID employeeId, DateRange period) {
-		List<Timesheet> timesheets = timesheetRepository.getTimesheets(employeeId, period.getBegin(), period.getEnd());
-		return TimesheetDay.getTimesheetsByDays(timesheets, period.getBegin(), period.getEnd());
+		return timesheetManager.getTimesheetsByDays(employeeId, period);
 	}
 }

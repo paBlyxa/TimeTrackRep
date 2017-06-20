@@ -9,6 +9,9 @@
 	src="<c:url value="/resources/script/jquery.sumoselect.min.js" />"></script>
 <link href="<c:url value="/resources/sumoselect.css"/>" rel="stylesheet"
 	type="text/css">
+	<link rel="stylesheet" href="<c:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
+	<link href="<c:url value="/resources/calendar.css"/>" rel="stylesheet"
+		type="text/css">
 </head>
 
 <div class="menuHelp-wrap" id="menuHelp-wrap">
@@ -100,6 +103,11 @@
 		</div>
 		<div class="nav--section">
 			<h2 class="nav--section-title">
+				<a href="#calendar">Календарь</a>
+			</h2>
+		</div>
+		<div class="nav--section">
+			<h2 class="nav--section-title">
 				<a href="#help">Помощь</a>
 			</h2>
 		</div>
@@ -134,12 +142,13 @@
 				<li><a class="menuItem" href="#tasks">Задачи</a></li>
 				<li><a class="menuItem" href="#employees">Сотрудники</a></li>
 				<li><a class="menuItem" href="#stat">Статистика</a></li>
+				<li><a class="menuItem" href="#calendar">Календарь</a></li>
 				<li><a class="menuItem" href="#help">Помощь</a></li>
 				<li id="currentUser"><a class="menuItem" href="#account">sidorov</a></li>
 			</ul>
 		</div>
 		<p>Главное меню содержит пункты: Учет, Проекты, Задачи,
-			Сотрудники, Статистика, Помощь и "текущий пользователь".</p>
+			Сотрудники, Статистика, Календарь, Помощь и "текущий пользователь".</p>
 		<p>Пункт меню "Учет" позволяет перейти на страницу, где
 			отображается записи за определенную неделю. Также на странице "Учет"
 			производится редактирование сохраненных записей и создание новых.</p>
@@ -158,6 +167,8 @@
 			отображается список ваших непосредственных подчиненных.</p>
 		<p>Пункт меню "Статистика" позволяет перейти на страницу, где
 			отображается ваша статистика по проектам и задачам.</p>
+		<p>Пункт меню "Календарь" позволяет перейти на страницу, где
+			отображается рабочий календарь за год.</p>
 		<p>Пункт меню "Помощь" позволяет перейти на текущую странице, где
 			описаны основные моменты работы с сайтом.</p>
 		<p>Пункт меню "Текущий пользователь" (на картинке выше "sidorov" -
@@ -199,8 +210,9 @@
 							<th scope="col" class="colDate">Дата</th>
 							<th scope="col" class="colProject">Проект</th>
 							<th scope="col" class="colTask">Задача</th>
-							<th scope="col" class="colCount">Часы</th>
-							<th scope="col" class="colHours">Часы</th>
+							<th scope="col" class="colCount"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Время выделенное на задачу, часы"></i></th>
+							<th scope="col" class="colHours"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Общее время работы за день, часы"></i></th>
+							<th scope="col" class="colOverHours"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Переработки/опоздания за день, часы"></i></th>
 							<th scope="col" class="colComment">Комментарий</th>
 						</tr>
 					</thead>
@@ -212,6 +224,7 @@
 							<td>Разработка эксплуатационной документации</td>
 							<td>8.0</td>
 							<td rowspan="1">8.0</td>
+							<td rowspan="1">0.0</td>
 							<td>Замечания к ПМ ТЗБиС</td>
 							<td id="colLast"><input type="submit" value="Удалить"
 								onClick="return confirm('Удалить запись?')" /></td>
@@ -223,6 +236,7 @@
 							<td>Разработка эксплуатационной документации</td>
 							<td>8.0</td>
 							<td rowspan="2">9.0</td>
+							<td rowspan="2" class="timesheet-overcount">1.0</td>
 							<td>Замечания к ПМ САР</td>
 							<td id="colLast"><input type="submit" value="Удалить"
 								onClick="return confirm('Удалить запись?')" /></td>
@@ -242,6 +256,7 @@
 							<td>ПНР</td>
 							<td>1.0</td>
 							<td rowspan="1">1.0</td>
+							<td rowspan="1" class="timesheet-abovecount">-7.0</td>
 							<td></td>
 							<td id="colLast"><input type="submit" value="Удалить"
 								onClick="return confirm('Удалить запись?')" /></td>
@@ -253,6 +268,7 @@
 							<td>ПО ПЛК</td>
 							<td>2.0</td>
 							<td rowspan="2">3.0</td>
+							<td rowspan="2" class="timesheet-abovecount">-4.0</td>
 							<td></td>
 							<td id="colLast"><input type="submit" value="Удалить"
 								onClick="return confirm('Удалить запись?')" /></td>
@@ -272,13 +288,15 @@
 							<td>ПО ПЛК</td>
 							<td>8.0</td>
 							<td rowspan="1">8.0</td>
+							<td rowspan="1">0.0</td>
 							<td></td>
 							<td id="colLast"><input type="submit" value="Удалить"
 								onClick="return confirm('Удалить запись?')" /></td>
 						</tr>
 						<tr class="even">
-							<td rowspan="1">суббота <br /> 31-12-2016
+							<td rowspan="1" class="timesheet-weekend">суббота <br /> 31-12-2016
 							</td>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -286,8 +304,9 @@
 							<td></td>
 						</tr>
 						<tr class="odd">
-							<td rowspan="1">воскресенье <br /> 01-01-2017
+							<td rowspan="1" class="timesheet-weekend">воскресенье <br /> 01-01-2017
 							</td>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -298,8 +317,13 @@
 					<tfoot>
 						<tr>
 							<td style="text-align: right;" colspan="4">Общее количество
-								часов:</td>
-							<td colspan="2">29.0</td>
+					времени работы, ч:</td>
+							<td colspan="3">29.0</td>
+						</tr>
+						<tr>
+							<td style="text-align: right;" colspan="4">Общее количество
+					времени переработок, ч:</td>
+							<td colspan="3">-10.0</td>
 						</tr>
 					</tfoot>
 				</table>
@@ -312,10 +336,12 @@
 		<p>Значение в первом столбце "Часы" доступно для изменения.
 			Необходимо выделить значение, ввести новое и нажать кнопку "Enter" на
 			клавиатуре, при успешном изменении значение обновится, и
-			пересчитается значение во втором стоблце "Часы".</p>
+			пересчитаются значения во втором ("Общие часы") и втретьем (Переработки) столбцах.</p>
 		<p>Текст в столбце "Комментарий" также доступен для изменения.
 			Необходимо ввести новый текст, и после нажатия кнопки "Enter" на клавиатуре -
-			текст обновится.
+			текст обновится.</p>
+		<p>Дата в первом столбце выделяется красным цветом, если этот день выходной. Желтым
+		если этот день короткий.</p>
 		<p>
 			Кнопка <input type="submit" value="Удалить"
 				onClick="return confirm('Удалить запись?')" /> позволяет удалить
@@ -654,12 +680,12 @@
 
 	<article id="tasks" class="help-article">
 		<h2>Задачи</h2>
-		<p>Данная страница доступна только для сотрудников с повышенным
-			уровнем доступа.</p>
 		<p>На странице "Задачи" отображается таблица со списком всех
 			созданных задач с возможность удаления или изменения. Возможно
 			удалить только задачу не имеющую ни одной записи в учете. При попытке
 			удалить задачу с записями - приложение выдаст ошибку.</p>
+		<p>Возможность удаления или изменения задач доступно только сотрудникам с повышенным
+			уровнем доступа.</p>
 		<div class="divWithBorder">
 			<h3>Все задачи</h3>
 			<table class="mainTable">
@@ -753,6 +779,8 @@
 			Для создания новой задачи необходимо заполнить форму "Новая задача" и
 			нажать кнопку <input type="submit" class="buttonAdd" value="Добавить" />.
 		</p>
+		<p>Данная форма видна только сотрудникам с повышенным
+			уровнем доступа.</p>
 		<div class="taskForm">
 			<h3>Новая задача</h3>
 			<form id="taskForm" action="#tasks" method="POST">
@@ -1097,6 +1125,23 @@
 		</div>
 	</article>
 
+	<article id="calendar" class="help-article">
+		<h2>Календарь</h2>
+		<p>На данной странице отображен рабочий календарь на год.</p>
+		<p>Для сотрудником с повышенным уровнем доступа доступна форма для
+		обновления данных рабочего календаря. Актуальный календарь в формате CSV
+		вы можете скачать <a
+				href="http://data.gov.ru/opendata/7708660670-proizvcalendar">по ссылке</a>.</p>
+		<div class="calendar-update">
+			<h1>Обновление календаря</h1>
+			<form method="POST" action="#">
+				<input type="file" name="file" />
+				<br/>
+				<input type="submit" value="Обновить" />
+			</form>
+		</div>
+	</article>
+
 	<article id="help" class="help-article">
 		<h2>Помощь</h2>
 		<p>На данной странице отображено краткое описание системы.</p>
@@ -1161,6 +1206,9 @@
 		<h2>Обновления</h2>
 		<p>На данной странице отображены обновления в системе учета
 			рабочего времени.</p>
+		<h3>20.06.2017</h3>
+		<p>Добавлен рабочий календарь.</p>
+		<p>Добавлен расчет переработок.</p>
 		<h3>05.04.2017</h3>
 		<p>Добавлено поле номер договора для проектов.</p>
 		<p>Добавлена возможность изменять статус проектов и задач.</p>

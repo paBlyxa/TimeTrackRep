@@ -1,0 +1,161 @@
+#calendar-here ul {list-style-type: none;margin: auto;padding: 0;overflow: hidden;border: 1px solid #e7e7e7;width: 100%;}
+#calendar-here li {display:inline-block; margin: 0 auto; width: 25%; min-width: 230px;vertical-align: top}
+#calendar-year-header span {display:inline-block;text-align:center;}
+#calendar-year-header {margin: 10px 20%;position: relative;}
+
+.calendar-year {
+	letter-spacing: 1px; 
+    width: 100%; 
+    text-align: center; 
+}
+
+#calendar-year-header span {
+    font: 24px/1.5 "Helvetica Neue", Helvatica, Arial, san-serif;
+    font-weight:bold;  
+}
+
+.calendar {
+	-moz-box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.25);
+	-webkit-box-shadow:0px 3px 3px rgba(0, 0, 0, 0.25);
+	margin:10px auto; 
+    font: 14px/1.5 "Helvetica Neue", Helvatica, Arial, san-serif; 
+    display:table;
+}
+
+.calendar-header {
+	cursor:default;
+	background: #606060; 
+    background: -moz-linear-gradient(top, #1a1a1a, #606060); 
+    background: -webkit-gradient(linear, left top, left bottom, from(#1a1a1a), to(#606060)); 
+    height: 34px; 
+    position: relative; 
+    color:#fff; 
+    -webkit-border-top-left-radius: 5px; 
+    -webkit-border-top-right-radius: 5px; 
+    -moz-border-radius-topleft: 5px; 
+    -moz-border-radius-topright: 5px; 
+    border-top-left-radius: 5px; 
+    border-top-right-radius: 5px; 
+    font-weight:bold; 
+    text-shadow:0px -1px 0 #87260C; 
+    text-transform: uppercase; 
+}
+
+.calendar-header span {
+	display:inline-block; 
+    line-height:34px;
+}
+
+
+.calendar-month-year {
+	letter-spacing: 1px; 
+    width: 100%; 
+    text-align: center; 
+}
+
+.calendar table {
+	background:#fff; 
+    border-collapse:collapse; 
+}
+
+.calendar td:not(.calendar-weekend, .calendar-short) {
+	color:#2b2b2b; 
+}
+
+.calendar td {
+    width:30px; 
+    height:30px; 
+    line-height:30px; 
+    text-align:center; 
+    border:1px solid #e6e6e6; 
+    cursor:default;
+    font-weight:bold; 
+}
+
+#calendar-days td {
+	height:26px; 
+    line-height: 26px; 
+    text-transform:uppercase; 
+    font-size:90%; 
+    color:#9e9e9e; 
+}
+
+#calendar-days td:not(:last-child) { 
+    border-right:1px solid #fff; 
+}
+
+#calendar-frame td.calendar-today { 
+    background:#ededed; 
+    color:#8c8c8c; 
+    box-shadow:1px 1px 0px #fff inset; 
+    -moz-box-shadow:1px 1px 0px #fff inset; 
+    -webkit-box-shadow:1px 1px 0px #fff inset; 
+} 
+
+#calendar-frame td:not(.calendar-nil):hover { 
+    color:#fff; 
+    text-shadow: #6C1A07 0px -1px; 
+    background:#606060; 
+    background: -moz-linear-gradient(top, #1a1a1a, #606060); 
+    background: -webkit-gradient(linear, left top, left bottom, from(#1a1a1a), to(#606060)); 
+    -moz-box-shadow:0px 0px 0px; 
+    -webkit-box-shadow:0px 0px 0px; 
+}
+
+#calendar-frame td span { 
+    font-size:80%; 
+    position:relative; 
+} 
+
+#calendar-frame td span:first-child { 
+    bottom:5px; 
+} 
+
+#calendar-frame td span:last-child { 
+    top:5px; 
+}
+
+#calendar-frame table.calendar-curr { 
+    float:left;      
+} 
+
+#calendar-frame table.calendar-temp { 
+    position:absolute; 
+}
+
+.calendar-left, .calendar-right { 
+    width:24px; 
+    text-align:center; 
+    position:absolute; 
+} 
+
+.calendar-left { 
+    left:0; 
+    -webkit-border-top-left-radius: 5px; 
+    -moz-border-radius-topleft: 5px; 
+    border-top-left-radius: 5px; 
+    border-right:1px solid #000000; 
+} 
+
+.calendar-right { 
+	top: 0;
+    right:0; 
+    border-left:1px solid #000000; 
+    -webkit-border-top-right-radius: 5px; 
+    -moz-border-radius-topright: 5px; 
+    border-top-right-radius: 5px; 
+} 
+
+.calendar-left:hover, .calendar-right:hover { 
+    background: -moz-linear-gradient(top, #1a1a1a, #606060); 
+    background: -webkit-gradient(linear, left top, left bottom, from(#1a1a1a), to(#606060)); 
+}
+
+.calendar-short {color:#b3b300;}
+.calendar-weekend {color:#ff0000;}
+
+.calendar-update {
+	margin: 20px; box-shadow: 10px 10px 5px #888888;	border: solid 1px black;overflow: auto;width: 500px;
+}
+.calendar-update h1 {padding-left: 10px;}
+.calendar-update input {margin: 10px;}

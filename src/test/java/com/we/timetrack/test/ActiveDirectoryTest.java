@@ -37,8 +37,11 @@ public class ActiveDirectoryTest {
 	@Test
 	public void getByGUID() {
 		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();
-		Employee employee = employeeRepository.getEmployee(UUID.fromString("12a24625-9f35-4d33-f7af-0ad444f9e5ee"));
-		System.out.println("getByGUID" + " " + employee);
+		//12a24625-9f35-4d33-f7af-0ad444f9e5ee
+		//9e2fca30-878b-4a16-1da7-5ee301a03bde
+		Employee employee = employeeRepository.getEmployee(UUID.fromString("0763a058-4c6d-43a4-8183-835faddbb8fd"));
+		System.out.println("getByGuid: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName() + " " 
+				+ employee.getUsername() + " " + employee.getPost() + " " + employee.getDepartment());
 	}
 	
 	@Test

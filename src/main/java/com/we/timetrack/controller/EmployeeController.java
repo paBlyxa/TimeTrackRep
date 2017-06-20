@@ -7,7 +7,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +31,7 @@ import com.we.timetrack.service.model.DateRange;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-	private static Logger logger = Logger.getLogger("controller");
+	private static Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 	
 	@Autowired
 	private EmployeeManager employeeManager;

@@ -10,6 +10,15 @@ public class DateRange {
 	private LocalDate begin;
 	private LocalDate end;
 	
+	public DateRange(){
+		
+	}
+	
+	public DateRange(LocalDate begin, LocalDate end){
+		this.begin = begin;
+		this.end = end;
+	}
+	
 	public LocalDate getBegin() {
 		return begin;
 	}

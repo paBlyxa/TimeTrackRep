@@ -4,6 +4,11 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
+<head>
+	<link rel="stylesheet" href="<s:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
+</head>
+
+
 <div>
 	<h2>
 		<c:out value="${employee.surname} ${employee.name}" />
@@ -15,7 +20,7 @@
 	<div>
 		<div style="float: left;">
 			<h2>
-				<fmt:parseDate value="${timesheetsByDays[0].date}"
+				<fmt:parseDate value="${timesheetsByDays[0].day.dateDay}"
 					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
 				<fmt:formatDate pattern="w" value="${parsedDate}" />
 				неделя
@@ -23,7 +28,7 @@
 				года:
 				<fmt:formatDate pattern="dd MMMM" value="${parsedDate}" />
 				-
-				<fmt:parseDate value="${timesheetsByDays[6].date}"
+				<fmt:parseDate value="${timesheetsByDays[6].day.dateDay}"
 					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
 				<fmt:formatDate value="${parsedDate}" pattern="dd MMMM" />
 			</h2>
@@ -35,14 +40,26 @@
 				<th scope="col" class="colDate">Дата</th>
 				<th scope="col" class="colProject">Проект</th>
 				<th scope="col" class="colTask">Задача</th>
-				<th scope="col" class="colCount">Часы</th>
-				<th scope="col" class="colHours">Часы</th>
+				<th scope="col" class="colCount"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Время выделенное на задачу, часы"></i></th>
+				<th scope="col" class="colHours"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Общее время работы за день, часы"></i></th>
+				<th scope="col" class="colOverHours"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Переработки/опоздания за день, часы"></i></th>
 				<th scope="col" class="colComment">Комментарий</th>
 			</tr>
 		</thead>
 		<tbody>
 			<c:forEach var="timesheetByDay" items="${timesheetsByDays}"
 				varStatus="stat">
+				<c:choose>
+					<c:when test="${timesheetByDay.day.status == 'Work'}">
+						<c:set var="classDay" value="timesheet-work" />
+					</c:when>
+					<c:when test="${timesheetByDay.day.status == 'Short'}">
+						<c:set var="classDay" value="timesheet-short" />
+					</c:when>
+					<c:when test="${timesheetByDay.day.status == 'Weekend'}">
+						<c:set var="classDay" value="timesheet-weekend" />
+					</c:when>
+				</c:choose>
 				<c:choose>
 					<c:when test="${stat.index % 2 == 0}">
 						<c:set var="classRow" value="odd" />
@@ -57,8 +74,8 @@
 							varStatus="status">
 							<tr class="${classRow}">
 								<c:if test="${status.index == 0}">
-									<td rowspan="${fn:length(timesheetByDay.timesheets)}"><fmt:parseDate
-											value="${timesheetByDay.date}" pattern="yyyy-MM-dd"
+									<td rowspan="${fn:length(timesheetByDay.timesheets)}" class="${classDay}"><fmt:parseDate
+											value="${timesheetByDay.day.dateDay}" pattern="yyyy-MM-dd"
 											var="parsedDate" type="date" /> <fmt:formatDate
 											pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
 											pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
@@ -69,6 +86,24 @@
 								<c:if test="${status.index == 0}">
 									<td rowspan="${fn:length(timesheetByDay.timesheets)}"><c:out
 											value="${timesheetByDay.hours}" /></td>
+									
+									<c:set var="countOverHoursPerDay" value="${timesheetByDay.hours - timesheetByDay.day.status.workingHours}" />
+									<c:choose>
+										<c:when test="${countOverHoursPerDay > 0}">
+											<c:set var="classOverHoursPerDay" value="timesheet-overcount" />
+										</c:when>
+										<c:when test="${countOverHoursPerDay < 0}">
+											<c:set var="classOverHoursPerDay" value="timesheet-abovecount" />
+										</c:when>
+										<c:otherwise>
+											<c:set var="classOverHoursPerDay" value="timesheet-normcount" />
+										</c:otherwise>
+									</c:choose>
+									<td rowspan="${fn:length(timesheetByDay.timesheets)}" class="${classOverHoursPerDay}">
+
+										<input class="input" type="number" step="0.5"
+											min="0.5" max="24" readonly="readonly" value="${countOverHoursPerDay}" />
+									</td>
 								</c:if>
 								<td><c:out value="${timesheet.comment}" /></td>
 							</tr>
@@ -76,10 +111,11 @@
 					</c:when>
 					<c:otherwise>
 						<tr class="${classRow}">
-							<td><fmt:parseDate value="${timesheetByDay.date}"
+							<td class="${classDay}"><fmt:parseDate value="${timesheetByDay.day.dateDay}"
 									pattern="yyyy-MM-dd" var="parsedDate" type="date" /> <fmt:formatDate
 									pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
 									pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -96,6 +132,12 @@
 				<td style="text-align: right;" colspan="4">Общее количество
 					часов:</td>
 				<td colspan="2"><c:out value="${countTime}" /></td>
+			<tr>
+				<td style="text-align: right;" colspan="4">Общее количество
+					времени переработок, ч:</td>
+				<td colspan="2"><input class="input" type="number" step="0.5"
+											min="0.5" max="24" readonly="readonly" value="${countOverTime}" /></td>
+			</tr>
 			</tr>
 		</tfoot>
 	</table>

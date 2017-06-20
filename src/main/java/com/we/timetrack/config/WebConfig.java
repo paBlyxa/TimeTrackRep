@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.View;
 //import org.springframework.http.CacheControl;
 //import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -42,6 +44,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	    	.addResourceLocations("/resources/");
 	}
 
+	@Bean
+	public MultipartResolver multipartResolver(){
+		return new StandardServletMultipartResolver();
+	}
 
 	/*@Bean
 	public MessageSource messageSource() {

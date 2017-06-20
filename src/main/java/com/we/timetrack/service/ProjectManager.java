@@ -20,7 +20,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,7 +45,7 @@ import com.we.timetrack.service.model.EmployeeComparator;
 @Service
 public class ProjectManager {
 
-	private static Logger logger = Logger.getLogger(ProjectManager.class);
+	private static Logger logger = LoggerFactory.getLogger(ProjectManager.class);
 
 	@Autowired
 	private TimesheetRepository timesheetRepository;

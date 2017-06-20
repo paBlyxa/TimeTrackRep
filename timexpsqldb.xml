@@ -120,6 +120,15 @@
 			last_used TIMESTAMP NOT NULL,
 			CONSTRAINT series_pk PRIMARY KEY(series)
 			);
+			
+			
+			CREATE TABLE WorkCalendar
+			(
+			id serial ,
+			dateDay date NOT NULL,
+			status INTEGER NOT NULL,
+			CONSTRAINT WorkCalendar_pk PRIMARY KEY(id)
+			);
 			</sql>
 	</target>
 

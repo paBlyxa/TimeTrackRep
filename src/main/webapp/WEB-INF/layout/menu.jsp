@@ -78,6 +78,16 @@
 		href="<c:url value="/employees/mystat" />">Статистика</a></li>
 	<li><a
 		<c:choose>
+				<c:when test="${fn:contains(currentUrl, 'calendar')}">
+					class="activeMenuItem"
+				</c:when>
+				<c:otherwise>
+					class="menuItem" 
+				</c:otherwise>
+			</c:choose>
+		href="<c:url value="/calendar" />">Календарь</a></li>
+	<li><a
+		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'help')}">
 					class="activeMenuItem"
 				</c:when>
