@@ -148,7 +148,7 @@
 			 });  */
 
 			$("td:empty", calendar).addClass("calendar-nil");
-			if (month === new Date().getMonth()) {
+			if ((month == new Date().getMonth()) && (year == new Date().getFullYear())) {
 				$('td', calendar).filter(function() {
 					return $(this).text() === new Date().getDate().toString();
 				}).addClass("calendar-today");
