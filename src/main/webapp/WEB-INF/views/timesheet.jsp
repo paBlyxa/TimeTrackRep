@@ -336,6 +336,8 @@ var dates = {
 };
 var datepicker = $('#datepickerTS').datepicker({
 	startDate: startDate,
+	minDate : startDate,
+	maxDate : endDate,
 	// Передаем функцию, которая добавляет класс 'my-class'
     // и делает их невозможными к выбору.
     onRenderCell: function(date, cellType) {
