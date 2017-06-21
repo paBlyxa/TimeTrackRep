@@ -124,8 +124,8 @@
 			
 			CREATE TABLE WorkCalendar
 			(
-			id serial ,
-			dateDay date NOT NULL,
+			id serial,
+			dateDay date NOT NULL UNIQUE,
 			status INTEGER NOT NULL,
 			CONSTRAINT WorkCalendar_pk PRIMARY KEY(id)
 			);

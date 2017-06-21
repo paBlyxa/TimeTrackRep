@@ -154,7 +154,15 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	public void saveDays(List<Day> days) {
 		
 		for (Day day : days){
-			currentSession().saveOrUpdate(day);
+			Day dayTemp = (Day) currentSession().createCriteria(Day.class)
+				.add(Restrictions.eq("dateDay", day.getDateDay())).uniqueResult();
+			if (dayTemp != null){
+				dayTemp.setDateDay(day.getDateDay());
+				dayTemp.setStatus(day.getStatus());
+				currentSession().saveOrUpdate(dayTemp);
+			} else {
+				currentSession().saveOrUpdate(day);
+			}
 		}
 		
 	}
