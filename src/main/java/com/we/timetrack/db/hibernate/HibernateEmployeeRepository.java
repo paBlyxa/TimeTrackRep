@@ -79,6 +79,12 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<Employee> getEmployees(String group) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	/**
 	 * Get employee record with matching username

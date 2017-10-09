@@ -26,6 +26,12 @@ public interface EmployeeRepository {
 	 */
 	public List<Employee> getEmployees();
 	
+	/**
+	 * Get employees from ActiveDirectory with matching Group
+	 * 
+	 * @return list of employees
+	 */
+	public List<Employee> getEmployees(String group);
 	
 	/**
 	 * Gets employee record with matching username

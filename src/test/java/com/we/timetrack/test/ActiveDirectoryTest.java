@@ -63,6 +63,17 @@ public class ActiveDirectoryTest {
 		System.out.println("getByUsername Employee: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName() + " " 
 				+ employee.getUsername() + " " + employee.getPost() + " " + employee.getDepartment());
 	}
+
+	@Test
+	public void getByGroup() {
+		String group = "cn=ОПИК,ou=ОПИК,dc=we,dc=ru";
+		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();
+		List<Employee> employeeList = employeeRepository.getEmployees(group);
+		for (Employee employee : employeeList){
+			System.out.println("Employee: " + employee.getSurname() + " " + employee.getName() + " " 
+					+ employee.getUsername() + " " + employee.getPost() + " " + employee.getDepartment());
+		}
+	}
 	
 	private static void about(String dn){
 		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();

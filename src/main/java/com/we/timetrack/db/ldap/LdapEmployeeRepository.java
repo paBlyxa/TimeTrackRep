@@ -103,6 +103,20 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		employeeList.sort(new EmployeeComparator());
 		return employeeList;
 	}
+	
+	/**
+	 * Get employees from ActiveDirectory with matching Group
+	 * 
+	 * @return list of employees
+	 */
+	@Override
+	public List<Employee> getEmployees(String group) {
+		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + ")(memberOf:1.2.840.113556.1.4.1941:=" + group + "))");
+		
+		List<Employee> employeeList = getLdapTemplate().search(query, getContextMapper());
+		employeeList.sort(new EmployeeComparator());
+		return employeeList;
+	}
 
 	/**
 	 * Get employee by dn from ActiveDirectory

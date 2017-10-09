@@ -126,8 +126,11 @@ public class Employee implements UserDetails {
 		this.password = password;
 	}
 	public String getShortName() {
-		String[] str = name.split(" ");
-		return surname + " " + str[0].charAt(0) + ". " + str[1].charAt(0) + ".";
+		String[] str = {"", ""};
+		if (name != null){
+			str = name.split(" ");
+		}
+		return (surname != null ? surname : "NoName") + " " + str[0].charAt(0) + ". " + (str.length > 1 ? str[1].charAt(0) : "") + ".";
 	}
 	
 	/*
