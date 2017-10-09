@@ -631,7 +631,9 @@ gantt.undo = function() {
 				}, {
 					done: function(){
 						if (!gantt.checkCollision(act.line)){
-							gantt.message.show("Изменения не сохранены. Сохранить изменения?");
+							if (gantt.stackUndo.length > 0){	
+								gantt.message.show("Изменения не сохранены. Сохранить изменения?");
+							}
 						} else {
 							gantt.message.error("Ошибка. Невозможно сохранить изменения!");
 						}
