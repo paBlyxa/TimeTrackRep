@@ -95,18 +95,20 @@ public class EmployeeController {
 	 */
 	@RequestMapping(value = "/xls", method = RequestMethod.GET)
 	public void getXLS(@RequestParam(value="id") String employeeId, @RequestParam(value="period", required=false) DateRange period,
-			@RequestParam(value="week", required=false) Integer week,
 			HttpServletResponse response, Model model) throws ClassNotFoundException {
 		logger.debug("Received request to download report as an XLS");
 		
 		if (period == null || period.getBegin() == null || period.getEnd() == null){
-			if (week == null){
-				week = 0;
+			int offsetMonth = LocalDate.now().getMonthValue() % 3;
+			if (offsetMonth == 0){
+				offsetMonth = 2;
+			} else {
+				offsetMonth += 2;
 			}
-			LocalDate dateEarly = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1).minusWeeks(week);
+			LocalDate dateEarly = LocalDate.now().withDayOfMonth(1).minusMonths(offsetMonth);
 			period = new DateRange();
 			period.setBegin(dateEarly);
-			period.setEnd(dateEarly.plusDays(6));
+			period.setEnd(dateEarly.plusMonths(3).minusDays(1));
 		}
 		// Delegate to downloadService
 		downloadService.downloadXLS(response, employeeManager.getCurrentEmployee(), period);

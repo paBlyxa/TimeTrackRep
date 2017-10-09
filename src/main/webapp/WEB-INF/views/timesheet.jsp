@@ -97,9 +97,8 @@
 		</div>
 		<div id="saveCurrentTimesheet">
 			<form action="employees/xls" method="GET">
-				<input name="id" value="${employee.employeeId}" type="hidden" /> <input
-					name="week" value="${param.week}" type="hidden" /> <input
-					type="submit" value="Сохранить" />
+				<input name="id" value="${employee.employeeId}" type="hidden" />
+				<input type="submit" value="Сохранить квартал" />
 			</form>
 		</div>
 	</div>
