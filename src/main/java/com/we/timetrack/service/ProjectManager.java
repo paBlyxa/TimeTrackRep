@@ -2,7 +2,6 @@ package com.we.timetrack.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -135,14 +134,16 @@ public class ProjectManager {
 
 		// Get current employee
 		Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Collection<? extends GrantedAuthority> auths = SecurityContextHolder.getContext().getAuthentication()
-				.getAuthorities();
-
-		for (GrantedAuthority auth : auths) {
-			System.out.println(auth.getAuthority());
+		
+		List<Project> projects;
+		
+		if (employee.getAuthorities().contains(new SimpleGrantedAuthority("Timex статисты"))) {
+			logger.debug("Employee [{}] has Timex статисты authority", employee.getShortName());
+			projects = projectRepository.getProjects();
+		} else {
+			projects = projectRepository.getProjects(employee.getEmployeeId());
 		}
-		List<Project> projects = projectRepository.getProjects(employee.getEmployeeId());
-
+		
 		List<ProjectInfo> projectInfoList = getProjectInfoList(projects);
 
 		model.addAttribute("projectList", projectInfoList);
