@@ -131,12 +131,12 @@
 			<tr>
 				<td style="text-align: right;" colspan="4">Общее количество
 					часов:</td>
-				<td colspan="2"><c:out value="${countTime}" /></td>
+				<td colspan="3"><c:out value="${countTime}" /></td>
 			</tr>
 			<tr>
 				<td style="text-align: right;" colspan="4">Общее количество
 					времени переработок, ч:</td>
-				<td colspan="2"><input class="input" type="number" step="0.5"
+				<td colspan="3"><input class="input" type="number" step="0.5"
 											min="0.5" max="24" readonly="readonly" value="${countOverTime}" /></td>
 			</tr>
 		</tfoot>
