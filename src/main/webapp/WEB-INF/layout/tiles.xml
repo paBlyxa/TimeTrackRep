@@ -67,4 +67,8 @@
 	<definition name="timesheetEmployee" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/timesheetEmployee.jsp" />
 	</definition>
+
+	<definition name="vacation" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/vacation.jsp" />
+	</definition>
 </tiles-definitions>

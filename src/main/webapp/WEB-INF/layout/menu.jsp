@@ -76,7 +76,7 @@
 				</c:otherwise>
 			</c:choose>
 		href="<c:url value="/employees/mystat" />">Статистика</a></li>
-	<li><a
+	<li class="dropdown"><a
 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'calendar')}">
 					class="activeMenuItem"
@@ -85,7 +85,11 @@
 					class="menuItem" 
 				</c:otherwise>
 			</c:choose>
-		href="<c:url value="/calendar" />">Календарь</a></li>
+		href="<c:url value="/calendar" />">Календарь</a>
+		<div id="dropdown-content">
+			<a href="<c:url value="/calendar/vacation" />">Отпусков</a>
+		</div>
+	</li>
 	<li><a
 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'help')}">
