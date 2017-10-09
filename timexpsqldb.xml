@@ -129,6 +129,21 @@
 			status INTEGER NOT NULL,
 			CONSTRAINT WorkCalendar_pk PRIMARY KEY(id)
 			);
+			
+			CREATE TABLE Vacation
+			(
+			id serial,
+			employeeId UUID NOT NULL,
+			startDate DATE NOT NULL,
+			duration INTEGER NOT NULL,
+			changeDate DATE NOT NULL,
+			CONSTRAINT Vacation_pk PRIMARY KEY(id),
+			CONSTRAINT dates_overlapping EXCLUDE USING GIST(
+				(employeeid::text) WITH=,
+				tsrange(startDate, startDate + duration) WITH 
+			)
+			);
+			-- needs symbol
 			</sql>
 	</target>
 

@@ -7,12 +7,19 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.we.timetrack.db.CalendarRepository;
+import com.we.timetrack.db.EmployeeRepository;
+import com.we.timetrack.db.VacationRepository;
 import com.we.timetrack.model.Day;
 import com.we.timetrack.model.DayStatus;
+import com.we.timetrack.model.Employee;
+import com.we.timetrack.model.Vacation;
+import com.we.timetrack.service.model.DateRange;
+import com.we.timetrack.service.model.VacationForm;
 import com.we.timetrack.util.CSVUtils;
 
 @Service
@@ -22,6 +29,11 @@ public class CalendarService {
 	
 	@Autowired
 	private CalendarRepository calendarRepository;
+	@Autowired
+	private VacationRepository vacationRepository;
+	@Autowired
+	@Qualifier("ldapEmployeeRepository")
+	private EmployeeRepository employeeRepository;
 	
 	/**
 	 * Return weekends and short days in this year
@@ -112,6 +124,75 @@ public class CalendarService {
 		}
 		
 		return dayList;
+	}
+	
+	public List<VacationForm> getVacations(DateRange period){
+		
+		List<Vacation> vacationList = vacationRepository.getVacations(period.getBegin().minusMonths(1), period.getEnd());
+		
+		List<VacationForm> result = new ArrayList<VacationForm>();
+		
+		String group = "cn=ОПИК,ou=ОПИК,dc=we,dc=ru";
+		List<Employee> employeeList = employeeRepository.getEmployees(group);
+		
+		for(Employee employee : employeeList){
+			VacationForm vacationForm = new VacationForm(employee);
+			result.add(vacationForm);
+		}
+		
+		for (Vacation vacation : vacationList){
+			logger.info(vacation.toString());
+			for (VacationForm vacationForm : result){
+				if (vacationForm.getEmployeeId().compareTo(vacation.getEmployeeId()) == 0){
+					vacationForm.addVacation(vacation);
+					break;
+				}
+			}
+		}
+		
+		return result;
+		
+	}
+	
+	/**
+	 * Save or update vacation's objects from vacationList
+	 * @param vacationList
+	 * @return
+	 */
+	public List<VacationForm> saveVacations(List<Vacation> vacationList){
+		List<VacationForm> result = new ArrayList<VacationForm>();
+		
+		for (Vacation vacation : vacationList){
+			logger.debug("Save vacation: {}", vacation.toString());
+			vacation.setChangeDate(LocalDate.now());
+			vacationRepository.saveVacation(vacation);
+			
+			boolean vacationFormExist = false;
+			for (VacationForm vacationForm : result){
+				if (vacationForm.getEmployeeId().compareTo(vacation.getEmployeeId()) == 0){
+					vacationForm.addVacation(vacation);
+					vacationFormExist = true;
+					break;
+				}
+			}
+			if (!vacationFormExist){
+				VacationForm vacationForm = new VacationForm(employeeRepository.getEmployee(vacation.getEmployeeId()));
+				vacationForm.addVacation(vacation);
+				result.add(vacationForm);
+			}
+		}
+		logger.debug("Save success");
+		return result;
+	}
+	
+	/**
+	 * Delete vacation's objects from vacationList
+	 * @param vacationList
+	 * @return
+	 */
+	public String deleteVacations(List<Vacation> vacationList){
+			vacationRepository.deleteVacations(vacationList);
+		return "Success";
 	}
 	
 	/**
