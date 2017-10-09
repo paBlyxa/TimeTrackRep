@@ -12,4 +12,8 @@ public enum DayStatus {
 	public float getWorkingHours(){
 		return workingHours;
 	}
+	
+	public boolean isWeekend(){
+		return workingHours == 0.0f;
+	}
 }

@@ -49,8 +49,24 @@ public class FillManager {
 		aboveTimeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		aboveTimeCellStyle.setFillForegroundColor((new HSSFColor.BLUE()).getIndex());
 		aboveTimeCellStyle.setFont(font);
+		HSSFCellStyle summaryCellStyleText = worksheet.getWorkbook().createCellStyle();
+		summaryCellStyleText.setAlignment(HorizontalAlignment.RIGHT);
+		summaryCellStyleText.setVerticalAlignment(VerticalAlignment.CENTER);
+		summaryCellStyleText.setWrapText(true);
+		summaryCellStyleText.setFont(font);
+		HSSFCellStyle summaryCellStyleCount = worksheet.getWorkbook().createCellStyle();
+		summaryCellStyleCount.setAlignment(HorizontalAlignment.CENTER);
+		summaryCellStyleCount.setVerticalAlignment(VerticalAlignment.CENTER);
+		summaryCellStyleCount.setWrapText(true);
+		summaryCellStyleCount.setFont(font);
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("EEE, dd.MM.yyyy");
 
+		// Summary
+		float countWeekendsHours = 0.0f;
+		float countLateHours = 0.0f;
+		float countFirstTwoHours = 0.0f;
+		float countAfterTwoHours = 0.0f;
+		
 		// Create body
 		int rowIndex = startRowIndex;
 		for (TimesheetDay timesheetDay : datasource) {
@@ -71,8 +87,17 @@ public class FillManager {
 			// Hours over norm
 			HSSFCell cell6 = row.createCell(startColIndex + 5);
 			if (hours > timesheetDay.getDay().getStatus().getWorkingHours()) {
-				cell6.setCellValue(hours - timesheetDay.getDay().getStatus().getWorkingHours());
+				float overHours = hours - timesheetDay.getDay().getStatus().getWorkingHours();
+				cell6.setCellValue(overHours);
 				cell6.setCellStyle(overTimeCellStyle);
+				if (timesheetDay.getDay().getStatus().isWeekend()){
+					countWeekendsHours += overHours;
+				} else if (overHours <= 2){
+					countFirstTwoHours += overHours;
+				} else {
+					countFirstTwoHours += 2;
+					countAfterTwoHours += overHours - 2;
+				}
 			} else {
 				cell6.setCellValue(0);
 				cell6.setCellStyle(bodyCellStyle);
@@ -82,6 +107,7 @@ public class FillManager {
 			if (hours < timesheetDay.getDay().getStatus().getWorkingHours()){
 				cell7.setCellValue(timesheetDay.getDay().getStatus().getWorkingHours() - hours);
 				cell7.setCellStyle(aboveTimeCellStyle);
+				countLateHours += timesheetDay.getDay().getStatus().getWorkingHours() - hours;
 			} else {
 				cell7.setCellValue(0);
 				cell7.setCellStyle(bodyCellStyle);
@@ -130,5 +156,46 @@ public class FillManager {
 			}
 
 		}
+		
+		// Save summary
+		HSSFRow row = worksheet.createRow((short) ++rowIndex);
+		HSSFCell cell = row.createCell(startColIndex );
+		cell.setCellValue("Общее количество часов опозданий:");
+		cell.setCellStyle(summaryCellStyleText);
+		cell = row.createCell(startColIndex + 5);
+		cell.setCellValue(countLateHours);
+		cell.setCellStyle(summaryCellStyleCount);
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
+		
+		row = worksheet.createRow((short) ++rowIndex);
+		cell = row.createCell(startColIndex);
+		cell.setCellValue("Общее количество часов переработок в выходные:");
+		cell.setCellStyle(summaryCellStyleText);
+		cell = row.createCell(startColIndex + 5);
+		cell.setCellValue(countWeekendsHours);
+		cell.setCellStyle(summaryCellStyleCount);
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
+		
+		row = worksheet.createRow((short) ++rowIndex);
+		cell = row.createCell(startColIndex);
+		cell.setCellValue("Общее количество часов переработок в будние более 2х:");
+		cell.setCellStyle(summaryCellStyleText);
+		cell = row.createCell(startColIndex + 5);
+		cell.setCellValue(countAfterTwoHours);
+		cell.setCellStyle(summaryCellStyleCount);
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
+		
+		row = worksheet.createRow((short) ++rowIndex);
+		cell = row.createCell(startColIndex);
+		cell.setCellValue("Общее количество часов переработок в будние менее 2х:");
+		cell.setCellStyle(summaryCellStyleText);
+		cell = row.createCell(startColIndex + 5);
+		cell.setCellValue(countFirstTwoHours);
+		cell.setCellStyle(summaryCellStyleCount);
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
 	}
 }
