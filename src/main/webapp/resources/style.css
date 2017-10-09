@@ -19,8 +19,8 @@ body {font-family: "proxima-nova", sans-serif;margin: 1px;padding: 1px;}
 .colProject {width: 25%;}
 .colTask {width: 21%;}
 .colCount {width: 5%; min-width: 58px;}
-.colHours {width: 5%;}
-.colOverHours {width: 5%;}
+.colHours {width: 5%; min-width: 45px;}
+.colOverHours {width: 5%; min-width: 45px;}
 .colComment {width: 25%;}
 
 /* Столбцы таблиц */
