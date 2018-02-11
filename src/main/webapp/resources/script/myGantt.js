@@ -283,13 +283,24 @@ gantt.createGridRow = function(data, rowNumber) {
 	row.setAttribute("role", "row");row.setAttribute("rowNumber", rowNumber);
 	row.style.height = gantt.rowHeight + "px";row.style.lineHeight = gantt.rowHeight + "px";
 
+	if (gantt.employeeId == data.employeeId){
+		row.appendChild(newDiv("gantt_cell gantt_last_cell", 43));
+		row.lastChild.setAttribute("role", "gridcell");
+		row.lastChild.appendChild(newDiv());
+		row.lastChild.lastChild.className = "gantt_add";
+		row.lastChild.lastChild.setAttribute("role", "button");
+		row.lastChild.lastChild.setAttribute("aria-label", "New");
+		row.lastChild.lastChild.addEventListener("click", function() {
+			gantt.dialog.newD(data.name, rowNumber);
+		});
+	}
 	row.appendChild(newDiv("gantt_cell"));
-	row.childNodes[0].setAttribute("role", "gridcell");
+	row.lastChild.setAttribute("role", "gridcell");
 	// row.childNodes[0].appendChild(newDiv("gantt_tree_icon gantt_close"));
 	// row.childNodes[0].appendChild(newDiv("gantt_tree_icon
 	// gantt_folder_open"));
-	row.childNodes[0].appendChild(newDiv("gantt_tree_content"));
-	row.childNodes[0].lastChild.innerText = data.name;
+	row.lastChild.appendChild(newDiv("gantt_tree_content"));
+	row.lastChild.lastChild.innerText = data.name;
 
 	/*
 	 * row.appendChild(newDiv("gantt_cell", 90));
@@ -304,17 +315,6 @@ gantt.createGridRow = function(data, rowNumber) {
 	 * row.childNodes[2].appendChild(newDiv("gantt_tree_content"));
 	 * row.childNodes[2].lastChild.innerText = data.duration;
 	 */
-	if (gantt.employeeId == data.employeeId){
-		row.appendChild(newDiv("gantt_cell gantt_last_cell", 43));
-		row.childNodes[1].setAttribute("role", "gridcell");
-		row.childNodes[1].appendChild(newDiv());
-		row.childNodes[1].lastChild.className = "gantt_add";
-		row.childNodes[1].lastChild.setAttribute("role", "button");
-		row.childNodes[1].lastChild.setAttribute("aria-label", "New");
-		row.childNodes[1].lastChild.addEventListener("click", function() {
-			gantt.dialog.newD(data.name, rowNumber);
-		});
-	}
 	return row;
 }
 
