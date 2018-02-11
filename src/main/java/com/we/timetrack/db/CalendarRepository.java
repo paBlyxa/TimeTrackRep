@@ -77,4 +77,8 @@ public interface CalendarRepository {
 	 */
 	public void saveDays(List<Day> days);
 	
+	/**
+	 * Remove a Day's object.
+	 */
+	public void remove(Day day);
 }

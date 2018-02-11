@@ -17,32 +17,31 @@ import com.we.timetrack.model.DayStatus;
 
 /**
  * Manages database operations for WorkCalendar table.
+ * 
  * @author pablo
  */
-@Repository(value="hibernateCalendarRepository")
+@Repository(value = "hibernateCalendarRepository")
 @Transactional
 public class HibernateCalendarRepository implements CalendarRepository {
 
 	private SessionFactory sessionFactory;
-	
+
 	@Inject
-	public HibernateCalendarRepository(SessionFactory sessionFactory){
+	public HibernateCalendarRepository(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	
+
 	private Session currentSession() {
 		return sessionFactory.getCurrentSession();
 	}
-	
+
 	/**
 	 * Return day with mathichg date.
 	 */
 	@Override
 	public Day getDay(LocalDate date) {
-		
-		return (Day)currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("dateDay", date))
-				.uniqueResult();
+
+		return (Day) currentSession().createCriteria(Day.class).add(Restrictions.eq("dateDay", date)).uniqueResult();
 	}
 
 	/**
@@ -52,8 +51,7 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	@Override
 	public List<Day> getDays() {
 
-		return currentSession().createCriteria(Day.class)
-				.list();
+		return currentSession().createCriteria(Day.class).list();
 	}
 
 	/**
@@ -62,8 +60,7 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Day> getDays(LocalDate beginDate, LocalDate endDate) {
-		return currentSession().createCriteria(Day.class)
-				.add(Restrictions.between("dateDay", beginDate, endDate))
+		return currentSession().createCriteria(Day.class).add(Restrictions.between("dateDay", beginDate, endDate))
 				.list();
 	}
 
@@ -73,22 +70,19 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Day> getWeekends() {
-		return currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("status", DayStatus.Weekend))
-				.list();
+		return currentSession().createCriteria(Day.class).add(Restrictions.eq("status", DayStatus.Weekend)).list();
 	}
 
 	/**
-	 * Return list of weekend's days later than beginDate and early then endDate.
+	 * Return list of weekend's days later than beginDate and early then
+	 * endDate.
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Day> getWeekends(LocalDate beginDate, LocalDate endDate) {
-		
-		return currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("status", DayStatus.Weekend))
-				.add(Restrictions.between("dateDay", beginDate, endDate))
-				.list();
+
+		return currentSession().createCriteria(Day.class).add(Restrictions.eq("status", DayStatus.Weekend))
+				.add(Restrictions.between("dateDay", beginDate, endDate)).list();
 	}
 
 	/**
@@ -97,10 +91,8 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Day> getWeekends(int year) {
-		//TODO
-		return currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("status", DayStatus.Weekend))
-				.list();
+		// TODO
+		return currentSession().createCriteria(Day.class).add(Restrictions.eq("status", DayStatus.Weekend)).list();
 	}
 
 	/**
@@ -109,9 +101,7 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Day> getShortDays() {
-		return currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("status", DayStatus.Short))
-				.list();
+		return currentSession().createCriteria(Day.class).add(Restrictions.eq("status", DayStatus.Short)).list();
 	}
 
 	/**
@@ -120,10 +110,8 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Day> getShortDays(LocalDate beginDate, LocalDate endDate) {
-		return currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("status", DayStatus.Short))
-				.add(Restrictions.between("dateDay", beginDate, endDate))
-				.list();
+		return currentSession().createCriteria(Day.class).add(Restrictions.eq("status", DayStatus.Short))
+				.add(Restrictions.between("dateDay", beginDate, endDate)).list();
 	}
 
 	/**
@@ -132,10 +120,8 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Day> getShortDays(int year) {
-		//TODO
-		return currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("status", DayStatus.Short))
-				.list();
+		// TODO
+		return currentSession().createCriteria(Day.class).add(Restrictions.eq("status", DayStatus.Short)).list();
 	}
 
 	/**
@@ -143,7 +129,7 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	 */
 	@Override
 	public void saveDay(Day day) {
-		
+
 		currentSession().saveOrUpdate(day);
 	}
 
@@ -152,11 +138,11 @@ public class HibernateCalendarRepository implements CalendarRepository {
 	 */
 	@Override
 	public void saveDays(List<Day> days) {
-		
-		for (Day day : days){
+
+		for (Day day : days) {
 			Day dayTemp = (Day) currentSession().createCriteria(Day.class)
-				.add(Restrictions.eq("dateDay", day.getDateDay())).uniqueResult();
-			if (dayTemp != null){
+					.add(Restrictions.eq("dateDay", day.getDateDay())).uniqueResult();
+			if (dayTemp != null) {
 				dayTemp.setDateDay(day.getDateDay());
 				dayTemp.setStatus(day.getStatus());
 				currentSession().saveOrUpdate(dayTemp);
@@ -164,7 +150,15 @@ public class HibernateCalendarRepository implements CalendarRepository {
 				currentSession().saveOrUpdate(day);
 			}
 		}
-		
+
+	}
+
+	/**
+	 * Remove a Day's object.
+	 */
+	@Override
+	public void remove(Day day) {
+		currentSession().delete(day);
 	}
 
 }

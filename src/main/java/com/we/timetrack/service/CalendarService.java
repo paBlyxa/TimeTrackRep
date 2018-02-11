@@ -63,10 +63,29 @@ public class CalendarService {
 	public void saveCalendar(MultipartFile file){
 		
 		logger.debug("Try to extract weekends and short days");
-		List<Day> dayList = getShortAndWeekends(file);
+		List<Day> newDayList = getShortAndWeekends(file);
+		
+		List<Day> oldDayList = calendarRepository.getDays();
+		
+		logger.debug("Try to clear weekends and short days in database");
+		for (Day oldDay : oldDayList){
+			Day d = getDayFromList(newDayList, oldDay);
+			if (d != null){
+				if (oldDay.getStatus() != d.getStatus()){
+					logger.debug("Day {} have another status", d.getDateDay());
+					oldDay.setStatus(d.getStatus());
+					calendarRepository.saveDay(oldDay);
+				}
+				logger.debug("Remove day {} from list", d.getDateDay());
+				newDayList.remove(d);
+			} else {
+				logger.debug("Remove day {} from database", oldDay.getDateDay());
+				calendarRepository.remove(oldDay);
+			}
+		}
 		
 		logger.debug("Try to save weekends and short days in database");
-		calendarRepository.saveDays(dayList);
+		calendarRepository.saveDays(newDayList);
 	}
 	
 	/**
@@ -212,5 +231,17 @@ public class CalendarService {
 			i++;
 		}
 		return num;
+	}
+	
+	/**
+	 * Look for day in list with the same date
+	 */
+	private Day getDayFromList(List<Day> dayList, Day day){
+		for (Day d : dayList){
+			if (d.getDateDay().compareTo(day.getDateDay()) == 0){
+				return d;
+			}
+		}
+		return null;
 	}
 }
