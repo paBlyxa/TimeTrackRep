@@ -14,6 +14,8 @@
 <link href="<s:url value="/resources/datepicker.min.css"/>"
 	rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="<s:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
+
+<script src="<c:url value="/resources/script/clickableCell.js" />"></script>
 </head>
 
 <div class="timesheetForm">
@@ -119,13 +121,13 @@
 				varStatus="stat">
 				<c:choose>
 					<c:when test="${timesheetByDay.day.status == 'Work'}">
-						<c:set var="classDay" value="timesheet-work" />
+						<c:set var="classDay" value="dateCell timesheet-work" />
 					</c:when>
 					<c:when test="${timesheetByDay.day.status == 'Short'}">
-						<c:set var="classDay" value="timesheet-short" />
+						<c:set var="classDay" value="dateCell timesheet-short" />
 					</c:when>
 					<c:when test="${timesheetByDay.day.status == 'Weekend'}">
-						<c:set var="classDay" value="timesheet-weekend" />
+						<c:set var="classDay" value="dateCell timesheet-weekend" />
 					</c:when>
 				</c:choose>
 				<c:choose>
@@ -142,14 +144,17 @@
 							varStatus="status">
 							<tr class="${classRow}">
 								<c:if test="${status.index == 0}">
-									<td rowspan="${fn:length(timesheetByDay.timesheets)}" class="${classDay}"><fmt:parseDate
-											value="${timesheetByDay.day.dateDay}" pattern="yyyy-MM-dd"
-											var="parsedDate" type="date" /> <fmt:formatDate
-											pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
-											pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
+									<fmt:parseDate value="${timesheetByDay.day.dateDay}" pattern="yyyy-MM-dd"
+											var="parsedDate" type="date" />
+									<fmt:formatDate pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+									<td rowspan="${fn:length(timesheetByDay.timesheets)}" class="${classDay}" data-value="${dayDate}">
+										<fmt:formatDate pattern="EEEE" value="${parsedDate}" />
+										<br />
+										<c:out value="${dayDate}"/>
+									</td>
 								</c:if>
-								<td>${timesheet.project.name}</td>
-								<td>${timesheet.task.name}</td>
+								<td class="projectCell" data-value="${timesheet.project.projectId}">${timesheet.project.name}</td>
+								<td class="taskCell" data-value="${timesheet.task.taskId}">${timesheet.task.name}</td>
 								<td>
 									<form action="${modifyCountTimeUrl}" method="POST">
 										<input name="week" type="hidden" value="${param.week}" /> <input
@@ -206,10 +211,13 @@
 					</c:when>
 					<c:otherwise>
 						<tr class="${classRow}">
-							<td  class="${classDay}"><fmt:parseDate value="${timesheetByDay.day.dateDay}"
-									pattern="yyyy-MM-dd" var="parsedDate" type="date" /> <fmt:formatDate
-									pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
-									pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
+							<fmt:parseDate value="${timesheetByDay.day.dateDay}"
+									pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+							<fmt:formatDate
+									pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+							<td  class="${classDay}"  data-value="${dayDate}"> <fmt:formatDate
+									pattern="EEEE" value="${parsedDate}" /> <br />
+								<c:out value="${dayDate}" /></td>
 							<td></td>
 							<td></td>
 							<td></td>
