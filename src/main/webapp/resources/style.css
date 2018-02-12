@@ -118,6 +118,7 @@ article {margin-left: 210px;border-left: 1px solid gray;padding: 1em;overflow: h
 #typeAllItems, #typeAllItemsPrj {margin-top: 10px;padding-left: 10px;}
 .statPeriod {width: 100%;border: 0px;text-align: center;}
 .items {display: none;margin-top: 10px;border: solid 1px gray;}
+.colPercent{width: 5%;}
 
 /* Страница помощь */
 .nav--section {margin-bottom: 20px;}

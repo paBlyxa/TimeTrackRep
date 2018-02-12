@@ -57,6 +57,7 @@
 				<tr>
 					<th scope="col" class="colProject" id="colName">Проект</th>
 					<th scope="col" class="colCount">Часы</th>
+					<th scope="col" class="colPercent">%</th>
 				</tr>
 			</thead>
 			<tbody>

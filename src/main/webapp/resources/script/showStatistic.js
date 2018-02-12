@@ -30,6 +30,7 @@ function getStatistic(refresh, id, ctx1, ctx2, text1, text2){
 			
 			// Разбор полученных данных
 			function(data) {
+			console.log(data);
 				showStatistic(data, refresh, ctx1, ctx2, text1, text2);
 			}
 	);
@@ -51,19 +52,26 @@ function showStatistic(data, refresh, ctx1, ctx2, text1, text2) {
 		chart1.destroy();
 		chart2.destroy();
 	}
-	
-	//Перебираем полученные данные, и отображаем в таблице для типов 1 и 2, сохраняем данные в массивы
+	// Подсчитываем общие часы
+	var allHours = 0;
 	$.each(data, function(str, val){
+		allHours += val;
+	});
+	// Сортировка
+	var sortedData = sortProperties(data);
+	console.log(sortedData);
+	//Перебираем полученные данные, и отображаем в таблице для типов 1 и 2, сохраняем данные в массивы
+	$.each(sortedData, function(index, value){
 		if ($("#statType").val() != 3){
-			$("#tableStat tbody").append('<tr><td>' + str + '</td><td>' + val + '</td></tr>');
+			$("#tableStat tbody").append('<tr><td>' + value[0] + '</td><td>' + value[1] + '</td><td>' + (value[1] / allHours * 100).toFixed(1) + '</td></tr>');
 			if ($("#statType").val() == 1){
 				$("#colName").text(text1);
 			} else {
 				$("#colName").text(text2);
 			}
 		}
-		labels.push(str);
-		counts.push(val);
+		labels.push(value[0]);
+		counts.push(value[1]);
 	});
 	
 	//Для типов 1 и 2 (1 - по проектам, 2 - по задачам)
@@ -164,4 +172,20 @@ function showStatistic(data, refresh, ctx1, ctx2, text1, text2) {
 			}	
 		});
 	}
+}
+
+function sortProperties(obj)
+{
+  // convert object into array
+	var sortable=[];
+	for(var key in obj)
+		if(obj.hasOwnProperty(key))
+			sortable.push([key, obj[key]]); // each item is an array in format [key, value]
+	
+	// sort items by value
+	sortable.sort(function(a, b)
+	{
+	  return a[1]-b[1]; // compare numbers
+	});
+	return sortable; // array in format [ [ key1, val1 ], [ key2, val2 ], ... ]
 }
