@@ -89,5 +89,25 @@ public class Project {
 	public void setProjectLeaders(Set<UUID> projectLeaders) {
 		this.projectLeaders = projectLeaders;
 	}
+	
+	@Override
+	public boolean equals(Object obj){
+		if (obj == null){
+			return false;
+		}
+		if (obj instanceof Project){
+			Project pr = (Project) obj;
+			if (this.projectId == pr.projectId){
+				return true;
+			}
+			if ((this.name == pr.name)
+				&& (this.comment == pr.comment) 
+				&& (this.status == pr.status)
+				&& (this.contract == pr.contract)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

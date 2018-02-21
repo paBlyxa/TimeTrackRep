@@ -1,6 +1,8 @@
 package com.we.timetrack.db.hibernate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -87,6 +89,18 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 	}
 	
 	/**
+	 * Get map of uuid, employee
+	 */
+	public Map<UUID, Employee> getEmployeeMap() {
+		List<Employee> employees = getEmployees();
+		Map<UUID, Employee> employeeMap = new HashMap<UUID, Employee>();
+		for (Employee employee : employees) {
+			employeeMap.put(employee.getEmployeeId(), employee);
+		}
+		return employeeMap;
+	}
+	
+	/**
 	 * Get employee record with matching username
 	 * @param username
 	 * @return
@@ -101,4 +115,6 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 		throw new UsernameNotFoundException(
 				"User '" + username + "' not found.");
 	}*/
+	
+	
 }

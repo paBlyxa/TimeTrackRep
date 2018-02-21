@@ -71,4 +71,8 @@
 	<definition name="vacation" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/vacation.jsp" />
 	</definition>
+
+	<definition name="stat" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/stat.jsp" />
+	</definition>
 </tiles-definitions>

@@ -330,7 +330,7 @@ public class ProjectManager {
 
 	private List<ProjectInfo> getProjectInfoList(List<Project> projects) {
 		if (employeeMap == null || employeeMap.isEmpty()) {
-			getEmployeeMap();
+			employeeMap = employeeRepository.getEmployeeMap();
 		}
 		List<ProjectInfo> projectInfoList = new ArrayList<>();
 		// Convert all items of Project.class to ProjectInfo.class
@@ -369,18 +369,6 @@ public class ProjectManager {
 			result.put(name, (float) (double) array[1]);
 		}
 		return result;
-	}
-
-	/**
-	 * Get map of uuid, employee
-	 */
-	private void getEmployeeMap() {
-		List<Employee> employees = employeeRepository.getEmployees();
-		employeeMap = new HashMap<UUID, Employee>();
-		for (Employee employee : employees) {
-			employeeMap.put(employee.getEmployeeId(), employee);
-		}
-
 	}
 
 	/**

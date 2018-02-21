@@ -30,7 +30,6 @@ function getStatistic(refresh, id, ctx1, ctx2, text1, text2){
 			
 			// Разбор полученных данных
 			function(data) {
-			console.log(data);
 				showStatistic(data, refresh, ctx1, ctx2, text1, text2);
 			}
 	);
@@ -59,7 +58,6 @@ function showStatistic(data, refresh, ctx1, ctx2, text1, text2) {
 	});
 	// Сортировка
 	var sortedData = sortProperties(data);
-	console.log(sortedData);
 	//Перебираем полученные данные, и отображаем в таблице для типов 1 и 2, сохраняем данные в массивы
 	$.each(sortedData, function(index, value){
 		if ($("#statType").val() != 3){

@@ -142,6 +142,22 @@ public class HibernateTimesheetRepository implements TimesheetRepository {
 
 		return timesheets;
 	}
+
+	/**
+     * Returns list of all timesheet database records
+     * later task than beginDate and early then endDate.
+     */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Timesheet> getTimesheets(LocalDate beginDate, LocalDate endDate) {
+		List<Timesheet> timesheets = null;
+
+		timesheets = currentSession().createCriteria(Timesheet.class)
+				.add(Restrictions.between("dateTask", beginDate, endDate))
+				.list();
+
+		return timesheets;
+	}
 	
 	/**
 	 * Returns list of all timesheet database records.

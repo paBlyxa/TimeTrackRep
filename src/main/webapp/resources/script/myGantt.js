@@ -900,7 +900,7 @@ gantt.onWheel = function(e) {
 	  
 	  gantt.scroll(ver_scroll.scrollTop);
 	  e.preventDefault ? e.preventDefault() : (e.returnValue = false);
-	}
+}
 
 gantt.scroll = function(delta){
 	console.log(delta);

@@ -2,7 +2,9 @@ package com.we.timetrack.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,5 +245,28 @@ public class CalendarService {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Count working hours for period of days
+	 */
+	public float getWorkingHours(DateRange period){
+		//Working hours
+		List<Day> listDays = calendarRepository.getDays(period.getBegin(), period.getEnd());
+		Map<LocalDate, Day> mapDays = new HashMap<>();
+		for (Day day : listDays){
+			mapDays.put(day.getDateDay(), day);
+		}
+		LocalDate date = period.getBegin();
+		float hours = 0;
+		for (;!date.isAfter(period.getEnd()); date = date.plusDays(1)){
+			logger.debug("Date: {}", date);
+			if (mapDays.get(date) != null){
+				hours += mapDays.get(date).getStatus().getWorkingHours();
+			} else {
+				hours += 8;
+			}
+		}
+		return hours;
 	}
 }

@@ -50,6 +50,12 @@ public interface TimesheetRepository {
 			List<Integer> projects);
 	
 	/**
+     * Returns list of all timesheet database records
+     * later task than beginDate and early then endDate.
+     */
+	public List<Timesheet> getTimesheets(LocalDate beginDate, LocalDate endDate);	
+	
+	/**
 	 * Returns list of all timesheet database records.
 	 * For test only.
 	 */

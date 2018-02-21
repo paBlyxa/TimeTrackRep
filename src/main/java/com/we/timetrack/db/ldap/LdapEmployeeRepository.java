@@ -230,5 +230,17 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		}
 
 	}
+	
+	/**
+	 * Get map of uuid, employee
+	 */
+	public Map<UUID, Employee> getEmployeeMap() {
+		List<Employee> employees = getEmployees();
+		Map<UUID, Employee> employeeMap = new HashMap<UUID, Employee>();
+		for (Employee employee : employees) {
+			employeeMap.put(employee.getEmployeeId(), employee);
+		}
+		return employeeMap;
+	}
 
 }

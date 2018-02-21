@@ -1,6 +1,7 @@
 package com.we.timetrack.db;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.we.timetrack.model.Employee;
@@ -47,5 +48,10 @@ public interface EmployeeRepository {
 	 * @return List<Employee> - direct reports
 	 */
 	public List<Employee> getDirectReports(Employee employee);
+
+	/**
+	 * Get map of uuid, employee
+	 */
+	public Map<UUID, Employee> getEmployeeMap();
 
 }

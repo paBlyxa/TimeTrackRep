@@ -9,9 +9,12 @@
 	src="<c:url value="/resources/script/jquery.sumoselect.min.js" />"></script>
 <link href="<c:url value="/resources/sumoselect.css"/>" rel="stylesheet"
 	type="text/css">
-	<link rel="stylesheet" href="<c:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
-	<link href="<c:url value="/resources/calendar.css"/>" rel="stylesheet"
-		type="text/css">
+<link rel="stylesheet"
+	href="<c:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
+<link href="<c:url value="/resources/calendar.css"/>" rel="stylesheet"
+	type="text/css">
+<link href="<c:url value="/resources/summaryStyle.css"/>" rel="stylesheet"
+	type="text/css">
 </head>
 
 <div class="menuHelp-wrap" id="menuHelp-wrap">
@@ -100,6 +103,11 @@
 					<a href="#sub-section-8">Статистика проекта</a>
 				</h3>
 			</div>
+			<div class="nav--subsection">
+				<h3 class="nav--subsection-title">
+					<a href="#sub-section-9">Общая статистика</a>
+				</h3>
+			</div>
 		</div>
 		<div class="nav--section">
 			<h2 class="nav--section-title">
@@ -107,7 +115,7 @@
 			</h2>
 			<div class="nav--subsection">
 				<h3 class="nav--subsection-title">
-					<a href="#sub-section-9">Календарь отпусков</a>
+					<a href="#sub-section-10">Календарь отпусков</a>
 				</h3>
 			</div>
 		</div>
@@ -146,7 +154,10 @@
 					</div></li>
 				<li><a class="menuItem" href="#tasks">Задачи</a></li>
 				<li><a class="menuItem" href="#employees">Сотрудники</a></li>
-				<li><a class="menuItem" href="#stat">Статистика</a></li>
+				<li class="dropdown"><a class="menuItem" href="#stat">Статистика</a>
+					<div id="dropdown-content">
+						<a href="#sub-section-9">Общая статистика</a>
+					</div></li>
 				<li><a class="menuItem" href="#calendar">Календарь</a></li>
 				<li><a class="menuItem" href="#help">Помощь</a></li>
 				<li id="currentUser"><a class="menuItem" href="#account">sidorov</a></li>
@@ -215,9 +226,15 @@
 							<th scope="col" class="colDate">Дата</th>
 							<th scope="col" class="colProject">Проект</th>
 							<th scope="col" class="colTask">Задача</th>
-							<th scope="col" class="colCount"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Время выделенное на задачу, часы"></i></th>
-							<th scope="col" class="colHours"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Общее время работы за день, часы"></i></th>
-							<th scope="col" class="colOverHours"><i class="fa fa-clock-o fa-1x" aria-hidden="true" title="Переработки/опоздания за день, часы"></i></th>
+							<th scope="col" class="colCount"><i
+								class="fa fa-clock-o fa-1x" aria-hidden="true"
+								title="Время выделенное на задачу, часы"></i></th>
+							<th scope="col" class="colHours"><i
+								class="fa fa-clock-o fa-1x" aria-hidden="true"
+								title="Общее время работы за день, часы"></i></th>
+							<th scope="col" class="colOverHours"><i
+								class="fa fa-clock-o fa-1x" aria-hidden="true"
+								title="Переработки/опоздания за день, часы"></i></th>
 							<th scope="col" class="colComment">Комментарий</th>
 						</tr>
 					</thead>
@@ -299,7 +316,8 @@
 								onClick="return confirm('Удалить запись?')" /></td>
 						</tr>
 						<tr class="even">
-							<td rowspan="1" class="timesheet-weekend">суббота <br /> 31-12-2016
+							<td rowspan="1" class="timesheet-weekend">суббота <br />
+								31-12-2016
 							</td>
 							<td></td>
 							<td></td>
@@ -309,7 +327,8 @@
 							<td></td>
 						</tr>
 						<tr class="odd">
-							<td rowspan="1" class="timesheet-weekend">воскресенье <br /> 01-01-2017
+							<td rowspan="1" class="timesheet-weekend">воскресенье <br />
+								01-01-2017
 							</td>
 							<td></td>
 							<td></td>
@@ -322,12 +341,12 @@
 					<tfoot>
 						<tr>
 							<td style="text-align: right;" colspan="4">Общее количество
-					времени работы, ч:</td>
+								времени работы, ч:</td>
 							<td colspan="3">29.0</td>
 						</tr>
 						<tr>
 							<td style="text-align: right;" colspan="4">Общее количество
-					времени переработок, ч:</td>
+								времени переработок, ч:</td>
 							<td colspan="3">-10.0</td>
 						</tr>
 					</tfoot>
@@ -341,12 +360,13 @@
 		<p>Значение в первом столбце "Часы" доступно для изменения.
 			Необходимо выделить значение, ввести новое и нажать кнопку "Enter" на
 			клавиатуре, при успешном изменении значение обновится, и
-			пересчитаются значения во втором ("Общие часы") и втретьем (Переработки) столбцах.</p>
+			пересчитаются значения во втором ("Общие часы") и втретьем
+			(Переработки) столбцах.</p>
 		<p>Текст в столбце "Комментарий" также доступен для изменения.
-			Необходимо ввести новый текст, и после нажатия кнопки "Enter" на клавиатуре -
-			текст обновится.</p>
-		<p>Дата в первом столбце выделяется красным цветом, если этот день выходной. Желтым
-		если этот день короткий.</p>
+			Необходимо ввести новый текст, и после нажатия кнопки "Enter" на
+			клавиатуре - текст обновится.</p>
+		<p>Дата в первом столбце выделяется красным цветом, если этот день
+			выходной. Желтым если этот день короткий.</p>
 		<p>
 			Кнопка <input type="submit" value="Удалить"
 				onClick="return confirm('Удалить запись?')" /> позволяет удалить
@@ -354,8 +374,9 @@
 		</p>
 		<p>
 			Для сохранения записей учета за текущий* квартал в файл .xls
-			необходимо нажать кнопку <input type="submit" value="Сохранить квартал" /> и
-			откроется стандартное окно сохранения файла.
+			необходимо нажать кнопку <input type="submit"
+				value="Сохранить квартал" /> и откроется стандартное окно
+			сохранения файла.
 		</p>
 		<p>
 			Для перехода к предыдущей или следующей недели используйте ссылки <a
@@ -689,8 +710,8 @@
 			созданных задач с возможность удаления или изменения. Возможно
 			удалить только задачу не имеющую ни одной записи в учете. При попытке
 			удалить задачу с записями - приложение выдаст ошибку.</p>
-		<p>Возможность удаления или изменения задач доступно только сотрудникам с повышенным
-			уровнем доступа.</p>
+		<p>Возможность удаления или изменения задач доступно только
+			сотрудникам с повышенным уровнем доступа.</p>
 		<div class="divWithBorder">
 			<h3>Все задачи</h3>
 			<table class="mainTable">
@@ -784,8 +805,8 @@
 			Для создания новой задачи необходимо заполнить форму "Новая задача" и
 			нажать кнопку <input type="submit" class="buttonAdd" value="Добавить" />.
 		</p>
-		<p>Данная форма видна только сотрудникам с повышенным
-			уровнем доступа.</p>
+		<p>Данная форма видна только сотрудникам с повышенным уровнем
+			доступа.</p>
 		<div class="taskForm">
 			<h3>Новая задача</h3>
 			<form id="taskForm" action="#tasks" method="POST">
@@ -1130,37 +1151,217 @@
 		</div>
 	</article>
 
+	<article id="sub-section-9" class="help-article">
+		<h3>Общая статистика</h3>
+		<p>На данной странице отображается статистика в виде таблицы по
+			всем сотрудникам и проектам за выбранный период времени.</p>
+		<p>Статистика отображается за определенный период времени, который
+			возможно изменить в поле "Период".</p>
+		<p>Статистику можно сохранить в файл Excel, нажав кнопку "Сохранить статистику".</p>
+		<div id="paramsContainer">
+			<div id="filterContainer">
+				<div>
+					<div id="filterInnerContainer">
+						<label>Период: </label> <input id="statPeriod"
+							class="datepicker-here" type="text" data-position="bottom left"
+							data-range="true" data-multiple-dates-separator=" - "
+							name="statPeriod" value="01.02.2018 - 19.02.2018"
+							required="required" />
+						<button id="buttonRefresh">Обновить</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="saveStatistic">
+				<form action="stat/xls" method="GET">
+					<input name="statPeriod" value="01.02.2018 - 19.02.2018"
+						type="hidden" /> <input name="summaryData" value="" type="hidden" />
+					<input type="submit" value="Сохранить статистику" />
+				</form>
+			</div>
+		</div>
+
+		<div id="summary_here">
+			<div class="summaryContainer" style="height: 245px;width: 625px;">
+				<div class="summaryGrid" role="treegrid"
+					style="width: 200px; height: 245px;">
+					<div class="summaryGridScale" role="row"
+						style="width: 200px; height: 34px; line-height: 33px;">
+						<div class="summaryGridHeadCell summaryGridHeadText"
+							style="width: 200px;">Сотрудник</div>
+					</div>
+					<div class="summaryGridData" role="rowgroup"
+						style="width: 200px; height: 210px;">
+						<div class="summaryRow" role="row"
+							style="height: 35px; line-height: 35px;">
+							<div class="SummaryCell" role="gridcell">
+								<div class="summaryTreeContent">Андреев М. А.</div>
+							</div>
+						</div>
+						<div class="summaryRow" role="row"
+							style="height: 35px; line-height: 35px;">
+							<div class="SummaryCell" role="gridcell">
+								<div class="summaryTreeContent">Гулько А. Г.</div>
+							</div>
+						</div>
+						<div class="summaryRow" role="row"
+							style="height: 35px; line-height: 35px;">
+							<div class="SummaryCell" role="gridcell">
+								<div class="summaryTreeContent">Донцов О. А.</div>
+							</div>
+						</div>
+						<div class="summaryRow" role="row"
+							style="height: 35px; line-height: 35px;">
+							<div class="SummaryCell" role="gridcell">
+								<div class="summaryTreeContent">Иголкин С. А.</div>
+							</div>
+						</div>
+						<div class="summaryRow" role="row"
+							style="height: 35px; line-height: 35px;">
+							<div class="SummaryCell" role="gridcell">
+								<div class="summaryTreeContent">Линев А. О.</div>
+							</div>
+						</div>
+						<div class="summaryRow" role="row"
+							style="height: 35px; line-height: 35px;">
+							<div class="SummaryCell" role="gridcell">
+								<div class="summaryTreeContent">Соломон А. И.</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="summaryTask" style="width: 420px; height: 245px;">
+					<div class="summaryTaskScale" style="width: 420px; height: 34px;">
+						<div class="summaryScaleLine"
+							style="height: 34px; position: relative; line-height: 34px;">
+							<div class="summaryScaleCell" title="ПТК ИВС Армянская"
+								style="width: 70px; height: 34px; position: absolute; left: 0px;">ПТК
+								ИВС Армянская</div>
+							<div class="summaryScaleCell"
+								title="СКУ ЭЧ  эб 2 Калининской АЭС"
+								style="width: 70px; height: 34px; position: absolute; left: 70px;">СКУ
+								ЭЧ эб 2 Калининской АЭС</div>
+							<div class="summaryScaleCell" title="САЭС АХК"
+								style="width: 70px; height: 34px; position: absolute; left: 140px;">САЭС
+								АХК</div>
+							<div class="summaryScaleCell" title="ЛАЭС-2 СКУ СВ"
+								style="width: 70px; height: 34px; position: absolute; left: 210px;">ЛАЭС-2
+								СКУ СВ</div>
+							<div class="summaryScaleCell" title="АСКУ ЖРО Ленинградская АЭС"
+								style="width: 70px; height: 34px; position: absolute; left: 280px;">АСКУ
+								ЖРО Ленинградская АЭС</div>
+							<div class="summaryScaleCell" title="Итого"
+								style="width: 70px; height: 34px; position: absolute; left: 350px;">Итого</div>
+						</div>
+					</div>
+					<div class="summaryDataArea" style="width: 420px;">
+						<div class="summaryTaskBg" style="width: 420px;">
+							<div class="summaryTaskRow"
+								style="height: 35px; line-height: 35px;">
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 0px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 70px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 140px;">8.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 210px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 280px;">0.0</div>
+								<div class="summaryTaskCell summaryLastCell"
+									style="width: 70px; height: 34px; position: absolute; left: 350px;">8.0</div>
+							</div>
+							<div class="summaryTaskRow"
+								style="height: 35px; line-height: 35px;">
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 0px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 70px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 140px;">5.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 210px;">3.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 280px;">0.0</div>
+								<div class="summaryTaskCell summaryLastCell"
+									style="width: 70px; height: 34px; position: absolute; left: 350px;">8.0</div>
+							</div>
+							<div class="summaryTaskRow"
+								style="height: 35px; line-height: 35px;">
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 0px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 70px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 140px;">4.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 210px;">4.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 280px;">0.0</div>
+								<div class="summaryTaskCell summaryLastCell"
+									style="width: 70px; height: 34px; position: absolute; left: 350px;">8.0</div>
+							</div>
+							<div class="summaryTaskRow"
+								style="height: 35px; line-height: 35px;">
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 0px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 70px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 140px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 210px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 280px;">24.0</div>
+								<div class="summaryTaskCell summaryLastCell"
+									style="width: 70px; height: 34px; position: absolute; left: 350px;">24.0</div>
+							</div>
+							<div class="summaryTaskRow"
+								style="height: 35px; line-height: 35px;">
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 0px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 70px;">1.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 140px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 210px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 280px;">0.0</div>
+								<div class="summaryTaskCell summaryLastCell"
+									style="width: 70px; height: 34px; position: absolute; left: 350px;">1.0</div>
+							</div>
+							<div class="summaryTaskRow"
+								style="height: 35px; line-height: 35px;">
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 0px;">8.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 70px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 140px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 210px;">0.0</div>
+								<div class="summaryTaskCell" style="width: 70px; height: 34px; position: absolute; left: 280px;">0.0</div>
+								<div class="summaryTaskCell summaryLastCell"
+									style="width: 70px; height: 34px; position: absolute; left: 350px;">8.0</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</article>
+
 	<article id="calendar" class="help-article">
 		<h2>Календарь</h2>
 		<p>На данной странице отображен рабочий календарь на год.</p>
-		<p>Для сотрудником с повышенным уровнем доступа доступна форма для
-		обновления данных рабочего календаря. Актуальный календарь в формате CSV
-		вы можете скачать <a
-				href="http://data.gov.ru/opendata/7708660670-proizvcalendar">по ссылке</a>.</p>
+		<p>
+			Для сотрудником с повышенным уровнем доступа доступна форма для
+			обновления данных рабочего календаря. Актуальный календарь в формате
+			CSV вы можете скачать <a
+				href="http://data.gov.ru/opendata/7708660670-proizvcalendar">по
+				ссылке</a>.
+		</p>
 		<div class="calendar-update">
 			<h1>Обновление календаря</h1>
 			<form method="POST" action="#">
-				<input type="file" name="file" />
-				<br/>
-				<input type="submit" value="Обновить" />
+				<input type="file" name="file" /> <br /> <input type="submit"
+					value="Обновить" />
 			</form>
 		</div>
 	</article>
 
-	<article id="sub-section-9" class="help-article">
+	<article id="sub-section-10" class="help-article">
 		<h3>Календарь отпусков</h3>
 		<p>На данной странице отображен календарь отпусков.</p>
-		<p>Каждый сотрудник может создать новый, изменить или удалить ранее созданный отпуск.</p>
-		<p>Для создания нового отпуска необходимо нажать на кнопку "плюс" напротив своей фамилии. В открывшемся
-		окне заполнить поля: дата начала отпуска и количество дней. Нажать кнопку "Save" для сохранения, или
-		"Cancel" для отмены.</p>  
-		<p>Изменить отпуск можно несколькими способами: Двойным нажатием клавишей мыши на диаграмме отпуска, открыть окно
-		изменения отпуска, и в нем изменить необходимые параметры. Нажать кнопку "Save" для сохранения,
-		"Cancel" для отмены, или "Delete" для удаления.</p>
-		<p>Второй способ изменения отпуска - нажатием клавиши мыши на диаграмме, переместить или растянуть диаграмму отпуска.</p>
-		<p>Для сохранения изменений необхимо нажать кнопку "Сохранить" над диаграммой.</p>
+		<p>Каждый сотрудник может создать новый, изменить или удалить
+			ранее созданный отпуск.</p>
+		<p>Для создания нового отпуска необходимо нажать на кнопку "плюс"
+			напротив своей фамилии. В открывшемся окне заполнить поля: дата
+			начала отпуска и количество дней. Нажать кнопку "Save" для
+			сохранения, или "Cancel" для отмены.</p>
+		<p>Изменить отпуск можно несколькими способами: Двойным нажатием
+			клавишей мыши на диаграмме отпуска, открыть окно изменения отпуска, и
+			в нем изменить необходимые параметры. Нажать кнопку "Save" для
+			сохранения, "Cancel" для отмены, или "Delete" для удаления.</p>
+		<p>Второй способ изменения отпуска - нажатием клавиши мыши на
+			диаграмме, переместить или растянуть диаграмму отпуска.</p>
+		<p>Для сохранения изменений необхимо нажать кнопку "Сохранить" над
+			диаграммой.</p>
 	</article>
-		
+
 	<article id="help" class="help-article">
 		<h2>Помощь</h2>
 		<p>На данной странице отображено краткое описание системы.</p>
@@ -1225,11 +1426,20 @@
 		<h2>Обновления</h2>
 		<p>На данной странице отображены обновления в системе учета
 			рабочего времени.</p>
+		<h3>20.02.2018</h3>
+		<p>Добавлена <a href="#sub-section-9">общая статистика</a>.
+		<p>Добавлена возможность заполнения формы новой записи учета рабочего времени
+		по щелчку левой кнопку мыши на старых записях.</p>
 		<h3>09.10.2017</h3>
-		<p>Добавлен <a href="#sub-section-9">календарь отпусков</a>.</p>
-		<p>Добавлена возможность просмотра статистики по проектам для статистов.</p>
-		<p>Добавлено автоматическое обновление страницы в браузере каждый час.</p>
-		<p>Изменена функция кнопки сохранить на странице учета времени, теперь сохраняется текущий квартал.</p>
+		<p>
+			Добавлен <a href="#sub-section-10">календарь отпусков</a>.
+		</p>
+		<p>Добавлена возможность просмотра статистики по проектам для
+			статистов.</p>
+		<p>Добавлено автоматическое обновление страницы в браузере каждый
+			час.</p>
+		<p>Изменена функция кнопки сохранить на странице учета времени,
+			теперь сохраняется текущий квартал.</p>
 		<p>Добавлен расчет итогов за квартал при экспорте файла.</p>
 		<h3>20.06.2017</h3>
 		<p>Добавлен рабочий календарь.</p>

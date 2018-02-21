@@ -11,8 +11,6 @@
 <link rel="stylesheet" type="text/css"
 	href="<s:url value="/resources/style.css" />">
 <script src="<c:url value="/resources/script/jquery-3.0.0.min.js" />"></script>
-<link rel="shortcut icon"
- href="<c:url value="/resources/" />images/favicon.ico" />
  	
 <meta http-equiv="refresh" CONTENT="<%= session.getMaxInactiveInterval() %>;">
  

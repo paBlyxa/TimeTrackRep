@@ -1,0 +1,231 @@
+.summaryGridScale .summaryGridHeadCell {
+	border-top: none !important;
+	border-right: none !important
+}
+
+.summaryGridData .summaryCell {
+	border-right: none;
+	color: #454545
+}
+
+.summaryTaskLine {
+	bottom: -4px;
+	height: 16px;
+	margin-left: -8px;
+	width: 16px
+}
+
+.summaryTask .summaryTaskScale .summaryScaleCell {
+	border-right: 1px solid #b0b0b0
+}
+
+.summaryContainer {
+	font-family: Arial;
+	font-size: 13px;
+	border: 1px solid #b0b0b0;
+	position: relative;
+	white-space: nowrap
+}
+
+.summaryGrid {
+	border-right: 1px solid #cecece
+}
+
+.summaryTaskScroll {
+	overflow-x: scroll
+}
+
+.summaryTask {
+	position: relative
+}
+
+.summaryGrid, .summaryTask {
+	overflow-x: hidden;
+	overflow-y: hidden;
+	display: inline-block;
+	vertical-align: top
+}
+
+.summaryGridScale, .summaryTaskScale {
+	font-size: 12px;
+	border-bottom: 1px solid #cecece;
+	background-color: #fff
+}
+
+.summaryScaleLine {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	border-top: 1px solid #b0b0b0;
+	clear: both
+}
+
+.summaryScaleLine:first-child {
+	border-top: none
+}
+
+.summaryGridHeadCell {
+	display: inline-block;
+	vertical-align: top;
+	border-right: 1px solid #cecece;
+	text-align: center;
+	position: relative;
+	cursor: default;
+	height: 100%;
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	user-select: none;
+	overflow: hidden
+}
+
+.summaryGridData {
+	width: 100%;
+	overflow: hidden
+}
+
+.summaryRow {
+	position: relative;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-moz-user-select: -moz-none
+}
+
+/* .summaryGridData .summaryRow.odd:hover, .summaryGridData .summaryRow:hover, */ .summaryRowSelected, .summaryColumnSelected
+	{
+	background-color: #fff3a1
+}
+
+.summaryRow:not(.summaryRowSelected), .summaryTaskRow:not(.summaryRowSelected) {
+	border-bottom: 1px solid #b0b0b0;
+	background-color: #fff
+}
+
+.summaryRow.odd, .summaryTaskRow.odd {
+	background-color: #ebebeb
+}
+
+.summaryCell, .summaryGridHeadCell, .summaryRow, .summaryScaleCell,
+	.summaryTaskCell, .summaryTaskRow {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box
+}
+
+.summaryGridHeadCell, .summaryScaleCell, .summaryTaskCell {line-height: inherit;}
+
+.summaryCell {
+	display: inline-block;
+	vertical-align: top;
+	border-right: 1px solid #ebebeb;
+	padding-left: 6px;
+	padding-right: 6px;
+	height: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 13px
+}
+
+.summaryTreeContent {padding-left: 10px;} 
+
+.summaryGridData .summaryLastCell, .summaryGridScale .summaryLastCell,
+	.summaryTaskBg .summaryLastCell, .summaryTaskScale .summaryLastCell {
+/* 	border-right-width: 0 */
+	font-weight: bold;
+}
+
+.summaryTaskCell:not(.summaryNullValue){
+	font-weight: bold;
+}
+
+.summaryTaskBg {overflow: hidden}
+
+.summaryScaleCell {
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+	border-right: 1px solid #cecece;
+	text-align: center;
+	text-overflow: ellipsis;
+	height: 100%
+}
+
+.summaryTaskCell {
+	display: inline-block;
+	height: 100%;
+	border-right: 1px solid #b0b0b0;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+.summaryVerScroll {
+	width: 0;
+	background-color: transparent;
+	height: 1px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	display: none;
+	position: absolute;
+	right: 0
+}
+
+.summaryVerScroll>div {
+	width: 1px;
+	height: 1px
+}
+
+.summaryHorScroll {
+	height: 0;
+	background-color: transparent;
+	width: 100%;
+	clear: both;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	display: none
+}
+
+.summaryHorScroll>div {
+	width: 5000px;
+	height: 1px
+}
+
+.summaryDataArea div, .summaryGrid div {
+	-ms-touch-action: none;
+	-webkit-tap-highlight-color: transparent
+}
+
+.summaryDataArea {
+	position: relative;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	user-select: none
+}
+
+.summaryTaskLine {
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	position: absolute;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	background-color: #3db9d3;
+	border: 1px solid #2898b0;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-moz-user-select: -moz-none
+}
+
+
+.summaryGridData {
+	position: relative;
+}
+
+.summaryTaskScale {
+	position: relative;
+	z-index: 1;
+}
+
+.summaryGridScale {
+	position: relative;
+	z-index: 1;
+}

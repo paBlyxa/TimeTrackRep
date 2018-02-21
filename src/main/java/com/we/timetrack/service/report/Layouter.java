@@ -14,45 +14,30 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
-import com.we.timetrack.model.Employee;
-
 public class Layouter {
 
 	public final static String TITLE = "Учет рабочего времени";
 	public final static String HEADER = "Отчет сгенерирован в ";
-	public final static String HEADER_DATE_COLUMN = "Дата";
-	public final static String HEADER_PROJECT_COLUMN = "Проект";
-	public final static String HEADER_TASK_COLUMN = "Задача";
-	public final static String HEADER_HOURS_PER_TASK_COLUMN = "Часы";
-	public final static String HEADER_HOURS_PER_DAY_COLUMN = "Часы";
-	public final static String HEADER_OVER_NORM_COLUMN = "Переработки";
-	public final static String HEADER_LATE_COLUMN = "Опоздания";
-	public final static String HEADER_COMMENT_COLUMN = "Комментарий";
 	
 	/**
 	 * Builds the report layout
 	 */
-	public static void buildReport(HSSFSheet worksheet, Employee employee, int startRowIndex, int startColIndex){
+	public static void buildReport(HSSFSheet worksheet, String aboutHeader, int startRowIndex, int startColIndex, String[] headers, int[] columnWidths){
 		// Set column widths
-		worksheet.setColumnWidth(0, 5000);
-		worksheet.setColumnWidth(1, 5000);
-		worksheet.setColumnWidth(2, 5000);
-		worksheet.setColumnWidth(3, 3000);
-		worksheet.setColumnWidth(4, 3000);
-		worksheet.setColumnWidth(5, 3000);
-		worksheet.setColumnWidth(6, 3000);
-		worksheet.setColumnWidth(7, 10000);
+		for (int i = 0; i < columnWidths.length; i++){
+			worksheet.setColumnWidth(i, columnWidths[i]);
+		}
 		
 		// Build the title and date headers
-		buildTitle(worksheet, employee, startRowIndex, startColIndex);
+		buildTitle(worksheet, aboutHeader, startRowIndex, startColIndex);
 		// Build the column headers
-		buildHeaders(worksheet, startRowIndex, startColIndex);
+		buildHeaders(worksheet, startRowIndex, startColIndex, headers);
 	}
 	
 	/**
 	 * Builds the report title and the date header
 	 */
-	public static void buildTitle(HSSFSheet worksheet, Employee employee, int startRowIndex, int startColIndex){
+	public static void buildTitle(HSSFSheet worksheet, String aboutHeader, int startRowIndex, int startColIndex){
 		// Create font style for the report title
 		Font fontTitle = worksheet.getWorkbook().createFont();
 		fontTitle.setBold(true);
@@ -77,7 +62,7 @@ public class Layouter {
 		// Create about header
 		HSSFRow aboutTitle = worksheet.createRow((short) startRowIndex + 1);
 		HSSFCell cellAbout = aboutTitle.createCell(startColIndex);
-		cellAbout.setCellValue("Сотрудник: " + employee.getSurname() + " " + employee.getName());
+		cellAbout.setCellValue(aboutHeader);
 		
 		// Create fate header
 		HSSFRow dateTitle = worksheet.createRow((short) startRowIndex + 2);
@@ -88,7 +73,7 @@ public class Layouter {
 	/**
 	 * Builds the column headers
 	 */
-	public static void buildHeaders(HSSFSheet worksheet, int startRowIndex, int startColIndex){
+	public static void buildHeaders(HSSFSheet worksheet, int startRowIndex, int startColIndex, String[] headers){
 		// Create font style for the headers
 		Font font = worksheet.getWorkbook().createFont();
 		font.setBold(true);
@@ -107,7 +92,15 @@ public class Layouter {
 		HSSFRow rowHeader = worksheet.createRow((short) startRowIndex + 3);
 		rowHeader.setHeight((short) 500);
 		
-		// Date column
+		int index = 0;
+		for (String header : headers){
+			HSSFCell cell = rowHeader.createCell(startColIndex + index);
+			cell.setCellValue(header);
+			cell.setCellStyle(headerCellStyle);
+			index++;
+		}
+		
+		/*// Date column
 		HSSFCell cell1 = rowHeader.createCell(startColIndex + 0);
 		cell1.setCellValue(HEADER_DATE_COLUMN);
 		cell1.setCellStyle(headerCellStyle);
@@ -145,6 +138,6 @@ public class Layouter {
 		// Comment column
 		HSSFCell cell8 = rowHeader.createCell(startColIndex + 7);
 		cell8.setCellValue(HEADER_COMMENT_COLUMN);
-		cell8.setCellStyle(headerCellStyle);
+		cell8.setCellStyle(headerCellStyle);*/
 	}
 }

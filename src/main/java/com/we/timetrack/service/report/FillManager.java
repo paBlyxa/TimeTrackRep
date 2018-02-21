@@ -2,6 +2,7 @@ package com.we.timetrack.service.report;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -33,7 +34,7 @@ public class FillManager {
 		bodyCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 		bodyCellStyle.setWrapText(true);
 		// Create cell style for overtime and abovetime
-		HSSFFont font =  worksheet.getWorkbook().createFont();
+		HSSFFont font = worksheet.getWorkbook().createFont();
 		font.setBold(true);
 		HSSFCellStyle overTimeCellStyle = worksheet.getWorkbook().createCellStyle();
 		overTimeCellStyle.setAlignment(HorizontalAlignment.CENTER);
@@ -66,7 +67,7 @@ public class FillManager {
 		float countLateHours = 0.0f;
 		float countFirstTwoHours = 0.0f;
 		float countAfterTwoHours = 0.0f;
-		
+
 		// Create body
 		int rowIndex = startRowIndex;
 		for (TimesheetDay timesheetDay : datasource) {
@@ -77,7 +78,7 @@ public class FillManager {
 			HSSFCell cell1 = row.createCell(startColIndex + 0);
 			cell1.setCellValue(timesheetDay.getDay().getDateDay().format(dateFormat));
 			cell1.setCellStyle(bodyCellStyle);
-			
+
 			// Retrieve the count hours by day value
 			float hours = timesheetDay.getHours();
 			HSSFCell cell5 = row.createCell(startColIndex + 4);
@@ -90,9 +91,9 @@ public class FillManager {
 				float overHours = hours - timesheetDay.getDay().getStatus().getWorkingHours();
 				cell6.setCellValue(overHours);
 				cell6.setCellStyle(overTimeCellStyle);
-				if (timesheetDay.getDay().getStatus().isWeekend()){
+				if (timesheetDay.getDay().getStatus().isWeekend()) {
 					countWeekendsHours += overHours;
-				} else if (overHours <= 2){
+				} else if (overHours <= 2) {
 					countFirstTwoHours += overHours;
 				} else {
 					countFirstTwoHours += 2;
@@ -104,7 +105,7 @@ public class FillManager {
 			}
 			// Hours late norm
 			HSSFCell cell7 = row.createCell(startColIndex + 6);
-			if (hours < timesheetDay.getDay().getStatus().getWorkingHours()){
+			if (hours < timesheetDay.getDay().getStatus().getWorkingHours()) {
 				cell7.setCellValue(timesheetDay.getDay().getStatus().getWorkingHours() - hours);
 				cell7.setCellStyle(aboveTimeCellStyle);
 				countLateHours += timesheetDay.getDay().getStatus().getWorkingHours() - hours;
@@ -112,7 +113,7 @@ public class FillManager {
 				cell7.setCellValue(0);
 				cell7.setCellStyle(bodyCellStyle);
 			}
-			
+
 			boolean firstRow = true;
 			for (Timesheet timesheet : timesheetDay.getTimesheets()) {
 				if (!firstRow) {
@@ -134,9 +135,7 @@ public class FillManager {
 				cell4.setCellValue(timesheet.getCountTime());
 				cell4.setCellStyle(bodyCellStyle);
 
-				
 				firstRow = false;
-				
 
 				// Retrieve the comment value
 				HSSFCell cell8 = row.createCell(startColIndex + 7);
@@ -156,18 +155,18 @@ public class FillManager {
 			}
 
 		}
-		
+
 		// Save summary
 		HSSFRow row = worksheet.createRow((short) ++rowIndex);
-		HSSFCell cell = row.createCell(startColIndex );
+		HSSFCell cell = row.createCell(startColIndex);
 		cell.setCellValue("Общее количество часов опозданий:");
 		cell.setCellStyle(summaryCellStyleText);
 		cell = row.createCell(startColIndex + 5);
 		cell.setCellValue(countLateHours);
 		cell.setCellStyle(summaryCellStyleCount);
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
-		
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex + 5, startColIndex + 6));
+
 		row = worksheet.createRow((short) ++rowIndex);
 		cell = row.createCell(startColIndex);
 		cell.setCellValue("Общее количество часов переработок в выходные:");
@@ -175,9 +174,9 @@ public class FillManager {
 		cell = row.createCell(startColIndex + 5);
 		cell.setCellValue(countWeekendsHours);
 		cell.setCellStyle(summaryCellStyleCount);
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
-		
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex + 5, startColIndex + 6));
+
 		row = worksheet.createRow((short) ++rowIndex);
 		cell = row.createCell(startColIndex);
 		cell.setCellValue("Общее количество часов переработок в будние более 2х:");
@@ -185,9 +184,9 @@ public class FillManager {
 		cell = row.createCell(startColIndex + 5);
 		cell.setCellValue(countAfterTwoHours);
 		cell.setCellStyle(summaryCellStyleCount);
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
-		
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex + 5, startColIndex + 6));
+
 		row = worksheet.createRow((short) ++rowIndex);
 		cell = row.createCell(startColIndex);
 		cell.setCellValue("Общее количество часов переработок в будние менее 2х:");
@@ -195,7 +194,57 @@ public class FillManager {
 		cell = row.createCell(startColIndex + 5);
 		cell.setCellValue(countFirstTwoHours);
 		cell.setCellStyle(summaryCellStyleCount);
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex, startColIndex + 4));
-		worksheet.addMergedRegion(new CellRangeAddress(rowIndex,rowIndex, startColIndex + 5, startColIndex + 6));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex, startColIndex + 4));
+		worksheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, startColIndex + 5, startColIndex + 6));
+	}
+
+	/**
+	 * Fills the summary statistic with content
+	 */
+	public static void fillStatistic(HSSFSheet worksheet, int startRowIndex, int startColIndex,
+			Map<String, String[]> datasource) {
+		// Row offset
+		startRowIndex += 3;
+
+		// Create cell style for the body
+		HSSFCellStyle bodyCellStyle = worksheet.getWorkbook().createCellStyle();
+		bodyCellStyle.setAlignment(HorizontalAlignment.CENTER);
+		bodyCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+		bodyCellStyle.setWrapText(true);
+		// Create cell style for overtime and abovetime
+		HSSFFont font = worksheet.getWorkbook().createFont();
+		font.setBold(true);
+		HSSFCellStyle summaryCellStyleText = worksheet.getWorkbook().createCellStyle();
+		summaryCellStyleText.setAlignment(HorizontalAlignment.RIGHT);
+		summaryCellStyleText.setVerticalAlignment(VerticalAlignment.CENTER);
+		summaryCellStyleText.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		summaryCellStyleText.setWrapText(true);
+		summaryCellStyleText.setFont(font);
+
+		// Create body
+		int rowIndex = startRowIndex;
+		for (Map.Entry<String, String[]> entry : datasource.entrySet()) {
+
+			if (entry.getKey() != "&&&") {
+				
+				// Create a new row
+				HSSFRow row = worksheet.createRow(++rowIndex);
+
+				// Retrieve the employee name
+				HSSFCell cell1 = row.createCell(startColIndex + 0);
+				cell1.setCellValue(entry.getKey());
+				cell1.setCellStyle(bodyCellStyle);
+
+				// Retrieve the project hours
+				int index = 1;
+				for (String value : entry.getValue()){
+					HSSFCell cell = row.createCell(startColIndex + index);
+					cell.setCellValue(value);
+					cell.setCellStyle(bodyCellStyle);
+					index++;
+				}
+				
+			} 
+		}
 	}
 }
