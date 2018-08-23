@@ -137,7 +137,15 @@ public class Employee implements UserDetails {
 	 * Compare two Employee objects by fields
 	 * without field employeeId
 	 */
-	public boolean isEqual(Employee employee){
+	@Override
+	public boolean equals(Object object){
+		if ((object == null) || !(object instanceof Employee)){
+			return false;
+		}
+		Employee employee = (Employee) object;
+		if ((employeeId != null) && employeeId.equals(employee.getEmployeeId())){
+			return true;
+		}
 		return (surname !=  null) && surname.equals(employee.getSurname()) &&
 				(name != null) && name.equals(employee.getName()) &&
 				(mail != null) && mail.equals(employee.getMail()) &&
@@ -145,7 +153,15 @@ public class Employee implements UserDetails {
 				(post != null) && post.equals(employee.getPost()) &&
 				(department != null) && department.equals(employee.getDepartment()) &&
 				(username != null) && username.equals(employee.getUsername());
-				
+	}
+	
+	/**
+	 * Returns a hash code for this Employee
+	 * (hash code for emloyeeId).
+	 */
+	@Override
+	public int hashCode(){
+		return employeeId.hashCode();
 	}
 	
 	@Override
