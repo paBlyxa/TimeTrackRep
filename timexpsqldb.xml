@@ -144,6 +144,44 @@
 			)
 			);
 			-- needs symbol
+			
+			CREATE TABLE Role
+			(
+			roleId serial,
+			name VARCHAR(255) NOT NULL UNIQUE,
+			CONSTRAINT role_pk PRIMARY KEY(roleId)
+			);
+			
+			CREATE TABLE Privilege
+			(
+			privilegeId serial,
+			name VARCHAR(255) NOT NULL UNIQUE,
+			CONSTRAINT privilege_pk PRIMARY KEY(privilegeId)
+			);
+			
+			CREATE TABLE rolesprivileges
+			(
+			id serial,
+			roleId integer NOT NULL,
+			privilegeId integer NOT NULL,
+			CONSTRAINT rolesprivileges_pk PRIMARY KEY(id),
+			CONSTRAINT rolesprivileges_roleId_fk FOREIGN KEY(roleId) REFERENCES
+			Role(roleId),
+			CONSTRAINT rolesprivileges_privilegeId_fk FOREIGN KEY(privilegeId) REFERENCES
+			Privilege(privilegeId)
+			);
+			
+			CREATE TABLE employeesroles
+			(
+			id serial,
+			roleId integer NOT NULL,
+			employeeId UUID NOT NULL,
+			CONSTRAINT employeesroles_pk PRIMARY KEY(id),
+			CONSTRAINT employeesroles_roleId_fk FOREIGN KEY(roleId) REFERENCES
+			Role(roleId),
+			CONSTRAINT employeesroles_employeeId_fk FOREIGN KEY(employeeId) REFERENCES
+			Employee(employeeId)
+			);
 			</sql>
 	</target>
 
