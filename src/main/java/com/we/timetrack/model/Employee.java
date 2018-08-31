@@ -4,6 +4,7 @@
 package com.we.timetrack.model;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -12,12 +13,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 /**
  * @author fakadey
@@ -34,8 +39,6 @@ public class Employee implements UserDetails {
 	
 	@Id
 	@Column(name = "employeeid")
-	//@GenericGenerator(name = "uuid-gen", strategy = "uuid2")
-	//@GeneratedValue(generator = "uuid-gen")
 	@Type(type="pg-uuid")
 	private UUID employeeId;	
 	@NotNull(message = "Фамилия должна быть задана")
@@ -58,11 +61,18 @@ public class Employee implements UserDetails {
 	@NotNull(message = "Имя пользователя должно быть задано")
 	@Size(max = 64, message = "Имя пользователя не более 64 символа")
 	private String username;
-	@NotNull(message = "Пароль должен быть задан")
-	@Size(max = 64, message = "Пароль не более 64 символа")
-	private String password;
+/*	@NotNull(message = "Пароль должен быть задан")
+	@Size(max = 64, message = "Пароль не более 64 символа")*/
 	@Transient
-	private Collection<? extends GrantedAuthority> authorities;
+	private String password;
+	@ManyToMany
+	@JoinTable(
+			name = "employeesroles",
+			joinColumns = @JoinColumn(
+					name = "employeeid", referencedColumnName = "employeeid"),
+			inverseJoinColumns = @JoinColumn(
+					name = "roleid", referencedColumnName = "roleid"))
+	private Collection<Role> roles;
 	@Transient
 	private List<Employee> directReports;
 	
@@ -118,12 +128,8 @@ public class Employee implements UserDetails {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	@Override
 	public String getPassword() {
 		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	public String getShortName() {
 		String[] str = {"", ""};
@@ -133,7 +139,7 @@ public class Employee implements UserDetails {
 		return (surname != null ? surname : "NoName") + " " + str[0].charAt(0) + ". " + (str.length > 1 ? str[1].charAt(0) : "") + ".";
 	}
 	
-	/*
+	/**
 	 * Compare two Employee objects by fields
 	 * without field employeeId
 	 */
@@ -164,13 +170,19 @@ public class Employee implements UserDetails {
 		return employeeId.hashCode();
 	}
 	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
+	public void setRoles(Collection<Role> roles) {
+		this.roles = roles;
 	}
 	
-	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-		this.authorities = authorities;
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		for (Role role : roles) {
+			for (Privilege privilege : role.getPrivileges()) {
+				authorities.add(new SimpleGrantedAuthority(privilege.getName()));
+			}
+		}
+		return authorities;
 	}
 	
 	public List<Employee> getDirectReports() {
