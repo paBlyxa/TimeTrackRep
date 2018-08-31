@@ -1,6 +1,5 @@
 package com.we.timetrack.config;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
@@ -10,13 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.ldap.support.LdapUtils;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.security.web.csrf.CsrfFilter;
@@ -28,7 +25,7 @@ import com.we.timetrack.model.Employee;
 
 @Configuration
 @EnableWebSecurity
-@Profile("securityConfigDevelopment")
+@Profile("securityConfigDevelopment, LdapEmployees")
 public class TestSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	private static Logger logger = Logger.getLogger(TestSecurityConfig.class);
@@ -95,7 +92,6 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter{
 			employee.setEmployeeId(UUID.fromString("12a24625-9f35-4d33-f7af-0ad444f9e5ee"));
 			employee.setMail(context.getStringAttribute("mail"));
 			employee.setPost(context.getStringAttribute("title"));
-			employee.setAuthorities(loadUserAuthorities(context));
 			logger.debug("'memberOf' attribute values: " + Arrays.asList(employee.getAuthorities()));
 			return employee;
 		}
@@ -105,30 +101,7 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter{
 			// TODO Auto-generated method stub
 			
 		}
-		
-		private Collection<? extends GrantedAuthority> loadUserAuthorities(DirContextOperations ctx) {
-			String[] groups = ctx.getStringAttributes("memberOf");
-			
-			if (groups == null) {
-				logger.debug("No values for 'memberOf' attribute.");
-			
-				ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-				authorities.add(new SimpleGrantedAuthority("Операторы архива Projects"));
-				return authorities;
-			}
-			
-			if (logger.isDebugEnabled()) {
-				logger.debug("'memberOf' attribute values: " + Arrays.asList(groups));
-			}
-			
-			ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(groups.length);
-			
-			for (String group : groups) {
-				authorities.add(new SimpleGrantedAuthority(LdapUtils.getStringValue(LdapUtils.newLdapName(group), "CN")));
-			}
-			
-			return authorities;
-		}
+
 	
 	}
 }

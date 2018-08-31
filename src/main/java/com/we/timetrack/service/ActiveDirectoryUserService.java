@@ -11,7 +11,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +31,6 @@ public class ActiveDirectoryUserService implements UserDetailsService, Authentic
 	private static final String userSuffix = "@we.ru";
 
 	@Autowired
-	@Qualifier("ldapEmployeeRepository")
 	private EmployeeRepository employeeRepository;
 
 	public Employee loadUserByUsername(String username) throws UsernameNotFoundException {
