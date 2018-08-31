@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import com.we.timetrack.model.Employee;
  * @author pablo
  */
 @Repository(value="hibernateEmployeeRepository")
+@Profile("DBEmployees")
 @Transactional
 public class HibernateEmployeeRepository implements EmployeeRepository {
 
@@ -98,6 +100,15 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 			employeeMap.put(employee.getEmployeeId(), employee);
 		}
 		return employeeMap;
+	}
+	
+	/**
+	 * Either save(Object) or update(Object) the given instance,
+	 * depending upon resolution of the unsaved-value checks
+	 * (see the manual for discussion of unsaved-value checking). 
+	 */
+	public void saveOrUpdate(Employee employee) {
+		currentSession().saveOrUpdate(employee);
 	}
 	
 	/**
