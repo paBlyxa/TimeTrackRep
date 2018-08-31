@@ -73,8 +73,6 @@ public class Employee implements UserDetails {
 			inverseJoinColumns = @JoinColumn(
 					name = "roleid", referencedColumnName = "roleid"))
 	private Collection<Role> roles;
-	@Transient
-	private List<Employee> directReports;
 	@ManyToMany
 	@JoinTable(
 			name = "employeeproperty",
@@ -193,14 +191,6 @@ public class Employee implements UserDetails {
 			}
 		}
 		return authorities;
-	}
-	
-	public List<Employee> getDirectReports() {
-		return directReports;
-	}
-	
-	public void setDirectReports(List<Employee> directReports) {
-		this.directReports = directReports;
 	}
 	
 	@Override
