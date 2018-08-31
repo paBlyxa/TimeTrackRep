@@ -170,6 +170,10 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		return contextMapper;
 	}
 	
+	public void setContextMapper(ContextMapper<Employee> contextMapper){
+		this.contextMapper = contextMapper;
+	}
+	
 	/**
 	 * Get map of uuid, employee
 	 */

@@ -54,4 +54,9 @@ public interface EmployeeRepository {
 	 */
 	public Map<UUID, Employee> getEmployeeMap();
 
+	
+	public default void updateAll() {
+		//default nothing
+	}
+
 }
