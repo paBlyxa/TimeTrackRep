@@ -75,7 +75,14 @@ public class Employee implements UserDetails {
 	private Collection<Role> roles;
 	@Transient
 	private List<Employee> directReports;
-	
+	@ManyToMany
+	@JoinTable(
+			name = "employeeproperty",
+			joinColumns = @JoinColumn(
+					name = "employeeid", referencedColumnName = "employeeid"),
+			inverseJoinColumns = @JoinColumn(
+					name = "propertyid", referencedColumnName = "propertyid"))
+	private Collection<EmployeeProperty> properties;
 
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq_gen")
 //	@SequenceGenerator(name = "employee_seq_gen", sequenceName = "employee_employeeid_seq", allocationSize = 1)
@@ -216,5 +223,11 @@ public class Employee implements UserDetails {
 		return true;
 	}
 
+	public Collection<EmployeeProperty> getProperties(){
+		return properties;
+	}
+	public void setProperties(Collection<EmployeeProperty> properties) {
+		this.properties = properties;
+	}
 	
 }

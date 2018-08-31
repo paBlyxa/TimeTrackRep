@@ -182,6 +182,29 @@
 			CONSTRAINT employeesroles_employeeId_fk FOREIGN KEY(employeeId) REFERENCES
 			Employee(employeeId)
 			);
+			
+
+			CREATE TABLE EmployeeProperty
+			(
+			propertyId serial,
+			name VARCHAR(255) NOT NULL UNIQUE,
+			value VARCHAR(255) NOT NULL,
+			CONSTRAINT employeeproperty_pk PRIMARY KEY(propertyId)
+			);
+			
+			CREATE TABLE employeesproperty
+			(
+			id serial,
+			propertyId integer NOT NULL,
+			employeeId UUID NOT NULL,
+			CONSTRAINT employeesproperty_pk PRIMARY KEY(id),
+			CONSTRAINT employeesproperty_propertyId_fk FOREIGN KEY(propertyId) REFERENCES
+			EmployeeProperty(propertyId),
+			CONSTRAINT employeesproperty_employeeId_fk FOREIGN KEY(employeeId) REFERENCES
+			Employee(employeeId)
+			);
+			
+			
 			</sql>
 	</target>
 
