@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
@@ -34,9 +33,6 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 
 	private final static String BASE = "dc=we,dc=ru";
 	private final static String MAIN_GROUP = "cn=Timex пользователи,ou=Группы,dc=we,dc=ru";
-
-	@Autowired
-	private ContextMapper<Employee> contextMapper;
 
 	/**
 	 * Get employee with matching employeeId from ActiveDirectory
@@ -67,7 +63,7 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		List<Employee> employees = getLdapTemplate().search(
 				query().base(BASE).filter(
 						"(&(objectClass=person)(sAMAccountName=" + username + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"),
-				getContextMapper());
+				getContextMapperWithAuth());
 		if (employees.isEmpty()){
 			logger.warn("No employee with matching username = [{}]", username);
 		}
@@ -81,12 +77,22 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	 */
 	@Override
 	public List<Employee> getEmployees() {
-		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))");
-		
-		List<Employee> employeeList = getLdapTemplate().search(query, getContextMapper());
+		List<Employee> employeeList = getEmployees(getContextMapper()); 
 		employeeList.sort(new EmployeeComparator());
 		return employeeList;
 	}
+	
+	/**
+	 * Get any models from ActiveDirectory
+	 * @param contextMapper - custom ContextMapper
+	 * @return
+	 */
+	public <T> List<T> getEmployees(ContextMapper<T> contextMapper){
+		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))");
+		List<T> employeeList = getLdapTemplate().search(query, contextMapper);
+		return employeeList;
+	}
+	
 	
 	/**
 	 * Get employees from ActiveDirectory with matching Group
@@ -95,7 +101,8 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	 */
 	@Override
 	public List<Employee> getEmployees(String group) {
-		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + ")(memberOf:1.2.840.113556.1.4.1941:=" + group + "))");
+		String name = "cn=" + group + ",ou=" + group + ","+ BASE;
+		LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + ")(memberOf:1.2.840.113556.1.4.1941:=" + name + "))");
 		
 		List<Employee> employeeList = getLdapTemplate().search(query, getContextMapper());
 		employeeList.sort(new EmployeeComparator());
@@ -167,11 +174,11 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 	}
 
 	private ContextMapper<Employee> getContextMapper() {
-		return contextMapper;
+		return new EmployeeContextMapper();
 	}
 	
-	public void setContextMapper(ContextMapper<Employee> contextMapper){
-		this.contextMapper = contextMapper;
+	private ContextMapper<Employee> getContextMapperWithAuth(){
+		return new EmployeeAuthorityContextMapper();
 	}
 	
 	/**

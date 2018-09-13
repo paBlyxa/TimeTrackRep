@@ -20,11 +20,12 @@ import com.we.timetrack.model.Employee;
 import com.we.timetrack.config.DataConfig;
 import com.we.timetrack.db.EmployeeRepository;
 import com.we.timetrack.db.hibernate.HibernateEmployeeRepository;
+import com.we.timetrack.db.ldapHibernate.LdapAndDBEmployeeRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DataConfig.class)
 @WebAppConfiguration
-@ActiveProfiles("dataSourceProduction")
+@ActiveProfiles({"dataSourceProduction", "LdapAndDBEmployees"})
 public class EmployeeRepositoryTest {
 
 	@Autowired
@@ -48,6 +49,26 @@ public class EmployeeRepositoryTest {
 	public void testGetAllEmployees() {
 		EmployeeRepository employeeRepository = new HibernateEmployeeRepository(sessionFactory);
 		List<Employee> employees = employeeRepository.getEmployees();
+		printResult(employees);
+	}
+	
+
+	@Test
+	@Transactional
+	public void testUpdateAll() {
+		EmployeeRepository employeeRepository = new LdapAndDBEmployeeRepository(sessionFactory);
+		employeeRepository.updateAll();
+	}
+	
+	@Test
+	@Transactional
+	public void testGetByGroup() {
+		EmployeeRepository employeeRepository = new LdapAndDBEmployeeRepository(sessionFactory);
+		List<Employee> employees = employeeRepository.getEmployees("ОПИК");
+		printResult(employees);
+	}
+	
+	private void printResult(List<Employee> employees) {
 		assertNotNull(employees);
 		System.out.println(">>>>>>>>>Количество сотрдуников: " + employees.size());
 		for(Employee employee: employees){

@@ -9,7 +9,6 @@ import javax.naming.NamingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.support.LdapUtils;
@@ -20,7 +19,6 @@ import com.we.timetrack.model.Privilege;
 import com.we.timetrack.model.Role;
 
 @Component
-@Profile("LdapEmployees")
 public class EmployeeAuthorityContextMapper extends EmployeeContextMapper {
 
 	private final static Logger logger = LoggerFactory.getLogger(EmployeeAuthorityContextMapper.class);

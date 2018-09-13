@@ -9,12 +9,14 @@ import javax.inject.Inject;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.we.timetrack.db.EmployeeRepository;
 import com.we.timetrack.model.Employee;
+import com.we.timetrack.service.model.EmployeeComparator;
 
 /**
  * Manages database operations for Employee table.
@@ -74,7 +76,7 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 		
 		employees = (List<Employee>)currentSession().createCriteria(Employee.class)
 					.list();
-		
+		employees.sort(new EmployeeComparator());
 		return employees;
 	}
 
@@ -84,10 +86,17 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Employee> getEmployees(String group) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Employee> employees = null;
+		
+		employees = (List<Employee>)currentSession().createCriteria(Employee.class)
+					.add(Restrictions.ilike("department", group))
+					.add(Restrictions.eq("active", Boolean.TRUE))
+					.list();
+		employees.sort(new EmployeeComparator());
+		return employees;
 	}
 	
 	/**

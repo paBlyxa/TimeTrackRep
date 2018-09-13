@@ -1,6 +1,7 @@
 package com.we.timetrack.test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
@@ -66,9 +67,10 @@ public class ActiveDirectoryTest {
 
 	@Test
 	public void getByGroup() {
-		String group = "cn=ОПИК,ou=ОПИК,dc=we,dc=ru";
+		String group = "ОПИК";
 		LdapEmployeeRepository employeeRepository = new LdapEmployeeRepository();
 		List<Employee> employeeList = employeeRepository.getEmployees(group);
+		assertTrue(employeeList.size() > 0);
 		for (Employee employee : employeeList){
 			System.out.println("Employee: " + employee.getSurname() + " " + employee.getName() + " " 
 					+ employee.getUsername() + " " + employee.getPost() + " " + employee.getDepartment());

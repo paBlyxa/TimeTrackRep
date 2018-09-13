@@ -74,6 +74,7 @@
 			department VARCHAR(255) ,
 			username VARCHAR(64) NOT NULL UNIQUE,
 			password VARCHAR(32) ,
+			active BOOLEAN,
 			CONSTRAINT employee_pk PRIMARY KEY(employeeId),
 			CONSTRAINT employee_chief_fk FOREIGN KEY(chief) REFERENCES Employee(employeeId)
 			);

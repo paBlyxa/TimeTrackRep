@@ -6,9 +6,12 @@ package com.we.timetrack.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -16,6 +19,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -50,8 +55,11 @@ public class Employee implements UserDetails {
 	//@NotNull(message = "Адрес почты должен быть задан")
 	//@Size(max = 64, message = "Адрес почты не более 64 символа")
 	private String mail;
-	@Type(type="pg-uuid")
-	private UUID chief;
+	@ManyToOne(cascade= {CascadeType.ALL})
+	@JoinColumn(name="chief")
+	private Employee manager;
+	@OneToMany(mappedBy="manager")
+	private Set<Employee> subordinates = new HashSet<Employee>();
 	//@NotNull(message = "Должность должна быть задана")
 	//@Size(max = 64, message = "Должность не более 64 символа")
 	private String post;
@@ -82,6 +90,7 @@ public class Employee implements UserDetails {
 					name = "propertyid", referencedColumnName = "propertyid"))
 	private Collection<EmployeeProperty> properties;
 
+	private Boolean active;
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_seq_gen")
 //	@SequenceGenerator(name = "employee_seq_gen", sequenceName = "employee_employeeid_seq", allocationSize = 1)
 	public UUID getEmployeeId() {
@@ -109,11 +118,11 @@ public class Employee implements UserDetails {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-	public UUID getChief() {
-		return chief;
+	public Employee getManager() {
+		return manager;
 	}
-	public void setChief(UUID chief) {
-		this.chief = chief;
+	public void setManager(Employee manager) {
+		this.manager = manager;
 	}
 	public String getPost() {
 		return post;
@@ -160,7 +169,7 @@ public class Employee implements UserDetails {
 		return (surname !=  null) && surname.equals(employee.getSurname()) &&
 				(name != null) && name.equals(employee.getName()) &&
 				(mail != null) && mail.equals(employee.getMail()) &&
-				(chief != null) && chief.equals(employee.getChief()) &&
+				(manager != null) && manager.equals(employee.getManager()) &&
 				(post != null) && post.equals(employee.getPost()) &&
 				(department != null) && department.equals(employee.getDepartment()) &&
 				(username != null) && username.equals(employee.getUsername());
@@ -219,5 +228,13 @@ public class Employee implements UserDetails {
 	public void setProperties(Collection<EmployeeProperty> properties) {
 		this.properties = properties;
 	}
-	
+	public Set<Employee> getSubordinates() {
+		return subordinates;
+	}
+	public Boolean isActive() {
+		return active;
+	}
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 }

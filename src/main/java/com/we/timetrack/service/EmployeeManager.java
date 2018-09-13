@@ -1,5 +1,6 @@
 package com.we.timetrack.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,7 +11,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ import com.we.timetrack.model.Employee;
 import com.we.timetrack.model.Project;
 import com.we.timetrack.model.Task;
 import com.we.timetrack.service.model.DateRange;
+import com.we.timetrack.service.model.EmployeePropertyForm;
 
 @Service
 public class EmployeeManager {
@@ -37,7 +38,6 @@ public class EmployeeManager {
 	@Autowired
 	private TaskRepository taskRepository;
 	@Autowired
-	@Qualifier("ldapEmployeeRepository")
 	private EmployeeRepository employeeRepository;
 	
 	/**
@@ -198,6 +198,16 @@ public class EmployeeManager {
 			projects.add(project);
 		}
 		return projects;
+	}
+
+	public Map<Employee, List<LocalDate>> getNotReadyEmployees(DateRange dateRange) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<EmployeePropertyForm> getEmployeesInListRemember() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/**

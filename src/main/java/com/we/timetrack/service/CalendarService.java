@@ -151,7 +151,7 @@ public class CalendarService {
 		
 		List<VacationForm> result = new ArrayList<VacationForm>();
 		
-		String group = "cn=ОПИК,ou=ОПИК,dc=we,dc=ru";
+		String group = "ОПИК";
 		List<Employee> employeeList = employeeRepository.getEmployees(group);
 		
 		for(Employee employee : employeeList){
