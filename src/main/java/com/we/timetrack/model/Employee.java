@@ -104,13 +104,21 @@ public class Employee implements UserDetails {
 		return surname;
 	}
 	public void setSurname(String surname) {
-		this.surname = surname;
+		if (surname != null) {
+			this.surname = surname;
+		} else {
+			this.surname = "";
+		}
 	}
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
-		this.name = name;
+		if (name != null) {
+			this.name = name;
+		} else {
+			this.name = "";
+		}
 	}
 	public String getMail() {
 		return mail;
@@ -146,11 +154,13 @@ public class Employee implements UserDetails {
 		return password;
 	}
 	public String getShortName() {
-		String[] str = {"", ""};
-		if (name != null){
+		String[] str;
+		if (name != null && !name.isEmpty() && name.contains(" ")){
 			str = name.split(" ");
+			return (surname != null ? surname : "NoName") + " " + str[0].charAt(0) + ". " + (str.length > 1 ? str[1].charAt(0) : "") + ".";
 		}
-		return (surname != null ? surname : "NoName") + " " + str[0].charAt(0) + ". " + (str.length > 1 ? str[1].charAt(0) : "") + ".";
+		return (surname != null ? surname : "NoName");
+		
 	}
 	
 	/**
