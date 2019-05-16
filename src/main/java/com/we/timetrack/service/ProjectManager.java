@@ -359,7 +359,12 @@ public class ProjectManager {
 			}
 			if (array[0] instanceof UUID) {
 				Employee employee = employeeRepository.getEmployee((UUID) array[0]);
-				name = employee.getSurname() + " " + employee.getName();
+				if (employee != null) {
+					name = employee.getSurname() + " " + employee.getName();
+				} else {
+					logger.error("No employee with matching employeeId = [{}]", array[0]);
+					name = "Unknown: " + array[0];
+				}
 			}
 			if (array[0] instanceof LocalDate) {
 				name = ((LocalDate) array[0]).toString();
