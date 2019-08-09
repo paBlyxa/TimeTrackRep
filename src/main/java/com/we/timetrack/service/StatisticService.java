@@ -102,7 +102,13 @@ public class StatisticService {
 				employeeSummary[projectList.size() + 1] = String.format("%.1f", count);
 				employeeSummary[projectList.size() ] = String.format("%.1f", (count - workingHours));
 				Employee employee = employeeMap.get(uuid);
-				result.put(employee.getShortName(), employeeSummary);
+				if (employee != null) {
+					result.put(employee.getShortName(), employeeSummary);
+				} else {
+					logger.error("Can't find user with uuid [{}]", uuid);
+					result.put("Unknown: "+ uuid, employeeSummary);
+				}
+				
 			}
 			String[] prSummary = new String[projectList.size() + 2];
 			float countAllPr = 0;
