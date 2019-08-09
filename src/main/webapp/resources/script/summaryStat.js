@@ -195,7 +195,7 @@ function showLoadImage(here){
 	$(here).empty();
 	var w = window.innerWidth, h = window.innerHeight;
 	var imageDiv = newDiv("loadImage", 250, 250);
-	imageDiv.style.backgroundImage = 'url(/TimeTrack/resources/images/lg.triple-gears-loading-icon.gif';
+	imageDiv.style.backgroundImage = 'url(/resources/images/lg.triple-gears-loading-icon.gif';
 	here.appendChild(newDiv("loadImageContainer", w, h));
 	here.lastChild.appendChild(imageDiv);
 }
