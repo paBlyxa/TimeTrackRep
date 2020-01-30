@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.jboss.logging.Logger;
-
+import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import com.we.timetrack.db.CalendarRepository;
 import com.we.timetrack.db.ProjectRepository;
@@ -35,7 +35,7 @@ import com.we.timetrack.service.model.TimesheetForm;
 @Service
 public class TimesheetManager {
 
-	private static Logger logger = Logger.getLogger("service");
+	private static Logger logger = LoggerFactory.getLogger(TimesheetManager.class);
 
 	@Autowired
 	private TimesheetRepository timesheetRepository;
@@ -59,47 +59,20 @@ public class TimesheetManager {
 	 * @param model
 	 *            - model where info will be save
 	 */
-	public void getTimesheetsByDays(int week, Model model) {
+	public List<TimesheetDay>  getTimesheetsByDays(int week) {
 
 		// Current user
 		Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-		getTimesheetsByDays(employee.getEmployeeId(), week, model);
+		return getTimesheetsByDays(employee.getEmployeeId(), week);
 
 	}
 	
 	@Transactional(readOnly = true)
-	public void getTimesheetsByDays(UUID employeeId, int week, Model model) {
-		// Last day in last week (Sunday)
+	public List<TimesheetDay> getTimesheetsByDays(UUID employeeId, int week) {
 		LocalDate dateEarly = LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue() - 1).minusWeeks(week);		
 		
-		List<TimesheetDay> timesheetsByDays = getTimesheetsByDays(employeeId, new DateRange(dateEarly, dateEarly.plusDays(6)));
-
-		List<Project> projects = projectRepository.getProjects(ProjectStatus.Active);
-
-		List<Task> tasks = taskRepository.getTasks(TaskStatus.Active);
-
-		// if call redirect, model's already had timesheetform
-		if (model.asMap().get("timesheetForm") == null) {
-			TimesheetForm timesheetForm;
-			timesheetForm = new TimesheetForm();
-			model.addAttribute(timesheetForm);
-		}
-		
-		// Count all hours in week
-		float countTime = 0;
-		float countOverTime = 0;
-		for (TimesheetDay timesheetDay : timesheetsByDays) {
-			countTime += timesheetDay.getHours();
-			countOverTime += (timesheetDay.getHours() - timesheetDay.getDay().getStatus().getWorkingHours());
-		}
-				
-		model.addAttribute("timesheetsByDays", timesheetsByDays);
-		model.addAttribute("countTime", countTime);
-		model.addAttribute("countOverTime", countOverTime);
-
-		model.addAttribute("projectList", projects);
-		model.addAttribute("taskList", tasks);
+		return getTimesheetsByDays(employeeId, new DateRange(dateEarly, dateEarly.plusDays(6)));
 	}
 	
 	@Transactional(readOnly = true)
@@ -191,10 +164,35 @@ public class TimesheetManager {
 	 * @param model
 	 *            - not use
 	 */
-	public void deleteTimesheet(int timesheetId, Model model) {
+	public void deleteTimesheet(int timesheetId) {
 
 		Timesheet timesheet = new Timesheet();
 		timesheet.setId(timesheetId);
 		timesheetRepository.deleteTimesheet(timesheet);
+	}
+
+	/**
+	 * Get list of all active projects with initialized tasks.
+	 * @return
+	 */
+	@Transactional
+	public List<Project> getProjects() {
+		List<Project> projects = projectRepository.getProjects(ProjectStatus.Active);
+		for (Project prj : projects) {
+			Hibernate.initialize(prj.getTasks());
+		}
+		return projects;
+	}
+	
+	/**
+	 * Get list of all active tasks free of projects.
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<Task> getTasks() {
+		// Current user
+		Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		logger.debug("Get tasks for employee {}, department {}", employee.getShortName(), employee.getDepartment());
+		return taskRepository.getFreeTasks(TaskStatus.Active, employee.getDepartment());
 	}
 }

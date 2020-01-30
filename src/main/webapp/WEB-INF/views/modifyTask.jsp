@@ -8,38 +8,37 @@
 </head>
 
 <c:url var="modifyUrl" value="/tasks/new" />
+<c:url var="deleteUrl" value="/tasks/delete" />
 
-<sec:authorize access="hasAuthority('Операторы архива Projects')">
-	<div class="taskForm">
-		<h1>Изменить задачу</h1>
-		<form:form method="POST" modelAttribute="taskForm" action="${modifyUrl}">
-			<form:input type="hidden" path="taskId"/>
-			<table class="newRecordTable">
-				<thead>
-					<tr>
-						<th class="colTaskName">Задача</th>
-						<th class="colTaskActive">Статус</th>
-						<th class="colTaskComment">Комментарий</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><form:input class="input" type="text" path="name" /></td>
-						<td><form:select class="selectStatus" path="status"
-							multiple="false">
-							<form:options items="${taskStatusList}" itemLabel="name"/>
-						</form:select></td>
-						<td><form:input class="input" type="text" path="comment" /></td>
-					</tr>
-				</tbody>
-				<tfoot></tfoot>
-			</table>
-			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" />
-			<input type="submit" class="buttonAdd" value="Обновить" />
+<div class="projectForm">
+	<h1>Изменить задачу</h1>
+	<form:form id="formChange" method="POST" modelAttribute="taskForm" action="${modifyUrl}">
+		<form:input type="hidden" path="taskId"/>
+		<label for="pname">Наименование задачи</label>
+		<form:input id="pname" required="required" class="input" type="text" path="name" />
+		<label for="status">Статус</label>
+		<form:select id="status" class="selectStatus" path="status"	multiple="false">
+			<form:options items="${taskStatusList}" itemLabel="name"/>
+		</form:select>
+		<label for="projects">Проект</label>
+		<form:select id="projects" class="selectProjects" path="projects"	multiple="true">
+			<form:options items="${projects}" itemLabel="name" itemValue="projectId"/>
+		</form:select>
+		<label for="selectDepartments">Отделы</label>
+		<form:select id="selectDepartments" class="selectDepartments" path="departments" multiple="true">
+			<form:options items="${departmentList}" itemLabel="name" itemValue="departmentId"/>
+		</form:select>
+		<label for="comment">Комментарий</label>
+		<form:input id="comment" class="input" type="text" path="comment" />
+<%-- 	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> --%>
 		</form:form>
-	</div>
-</sec:authorize>
+		<input type="submit" form="formChange" class="buttonAdd" value="Обновить" />
+		<form id="formDelete" action="${deleteUrl}" method="POST" style="float: right;">
+			<input name="taskId" type="hidden" value="${taskForm.taskId}" />
+			<input type="submit" form="formDelete" class="buttonAdd" value="Удалить" onClick="return confirm('Удалить задачу?')" />
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		</form>
+</div>
 
 
 <script type="text/javascript">
@@ -48,6 +47,18 @@
 			placeholder: 'Выберите из списка',
 			search: true,
 			searchText: 'Введите статус...'
+			});
+
+		$('.selectDepartments').SumoSelect({
+			placeholder: 'Выберите из списка',
+			search: true,
+			searchText: 'Введите наименование...'
+			});
+
+		$('.selectProjects').SumoSelect({
+			placeholder: 'Выберите из списка',
+			search: true,
+			searchText: 'Введите наименование...'
 			});
 	});
 </script>

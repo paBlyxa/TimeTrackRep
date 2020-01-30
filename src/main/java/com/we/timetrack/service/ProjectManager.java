@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,15 @@ import org.springframework.ui.Model;
 
 import com.we.timetrack.db.EmployeeRepository;
 import com.we.timetrack.db.ProjectRepository;
+import com.we.timetrack.db.TaskRepository;
 import com.we.timetrack.db.TimesheetRepository;
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Employee;
 import com.we.timetrack.model.Project;
 import com.we.timetrack.model.ProjectInfo;
 import com.we.timetrack.model.ProjectStatus;
 import com.we.timetrack.model.Task;
+import com.we.timetrack.model.TaskStatus;
 import com.we.timetrack.model.Timesheet;
 import com.we.timetrack.service.model.DateRange;
 import com.we.timetrack.service.model.EmployeeComparator;
@@ -52,6 +56,8 @@ public class ProjectManager {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	@Autowired
+	private TaskRepository taskRepository;
+	@Autowired
 	private SessionFactory sessionFactory;
 
 	private Map<UUID, Employee> employeeMap;
@@ -66,8 +72,54 @@ public class ProjectManager {
 	@Transactional
 	public Project getProject(int projectId) {
 		Project project = projectRepository.getProject(projectId);
-		Hibernate.initialize(project.getProjectLeaders());
 		return project;
+	}
+
+	/**
+	 * Get project with matching projectId and initialized project's leaders
+	 */
+	@Transactional
+	public Project getProjectWithLeaders(int projectId) {
+		Project project = projectRepository.getProject(projectId);
+		Hibernate.initialize(project.getProjectLeaders());
+		Hibernate.initialize(project.getTasks());
+		return project;
+	}
+
+	/**
+	 * Get task
+	 * 
+	 * @param model
+	 */
+	@Transactional
+	public void getTask(Model model, int taskId) {
+		Task task = getTask(taskId);
+		Hibernate.initialize(task.getDepartments());
+		model.addAttribute("taskStatusList", TaskStatus.values());
+		model.addAttribute("taskForm", task);
+		model.addAttribute("departmentList", getDepartments());
+	}
+
+	/**
+	 * Get task
+	 * 
+	 * @param model
+	 */
+	@Transactional
+	public Task getTask(int taskId) {
+		Task task = taskRepository.getTask(taskId);
+		Hibernate.initialize(task.getProjects());
+		logger.debug("tasks.getProjects: {}", task.getProjects().toArray());
+		return task;
+	}
+
+	/**
+	 * Get all active projects
+	 */
+	@Transactional(readOnly = true)
+	public void getActiveProjects(Model model) {
+		List<Project> projects = projectRepository.getProjects(ProjectStatus.Active);
+		model.addAttribute("projects", projects);
 	}
 
 	/**
@@ -132,16 +184,16 @@ public class ProjectManager {
 
 		// Get current employee
 		Employee employee = (Employee) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
+
 		List<Project> projects;
-		
-		if (employee.getAuthorities().contains(new SimpleGrantedAuthority("Timex статисты"))) {
-			logger.debug("Employee [{}] has Timex статисты authority", employee.getShortName());
+
+		if (employee.getAuthorities().contains(new SimpleGrantedAuthority("statistic"))) {
+			logger.debug("Employee [{}] has statistic authority", employee.getShortName());
 			projects = projectRepository.getProjects();
 		} else {
 			projects = projectRepository.getProjects(employee.getEmployeeId());
 		}
-		
+
 		List<ProjectInfo> projectInfoList = getProjectInfoList(projects);
 
 		model.addAttribute("projectList", projectInfoList);
@@ -249,8 +301,7 @@ public class ProjectManager {
 			}
 			break;
 		case 3:
-			criteria.setProjection(Projections.projectionList()
-					.add(Projections.groupProperty("dateTask"))
+			criteria.setProjection(Projections.projectionList().add(Projections.groupProperty("dateTask"))
 					.add(Projections.sum("countTime")));
 			criteria.addOrder(Order.asc("dateTask"));
 			break;
@@ -299,7 +350,7 @@ public class ProjectManager {
 			employeeList.add(employee);
 		}
 		employeeList.sort(new EmployeeComparator());
-		for (Employee employee : employeeList){
+		for (Employee employee : employeeList) {
 			result.put(employee.getSurname() + " " + employee.getName(), employee.getEmployeeId().toString());
 		}
 		return result;
@@ -314,8 +365,8 @@ public class ProjectManager {
 
 		@SuppressWarnings("unchecked")
 		List<Task> tasks = query.list();
-		tasks.sort(new Comparator<Task>(){
-			public int compare(Task task1, Task task2){
+		tasks.sort(new Comparator<Task>() {
+			public int compare(Task task1, Task task2) {
 				return task1.getName().compareTo(task2.getName());
 			}
 		});
@@ -383,5 +434,80 @@ public class ProjectManager {
 			employeeMap.put(employee.getEmployeeId(), employee);
 		}
 
+	}
+
+	/**
+	 * Save task with binding projects
+	 * 
+	 * @param taskForm
+	 */
+	@Transactional
+	public void saveTask(Task taskForm) {
+
+		if (taskForm.getTaskId() != null) {
+			Task task = taskRepository.getTask(taskForm.getTaskId());
+			Hibernate.initialize(task.getProjects());
+			Hibernate.initialize(task.getDepartments());
+			task.setComment(taskForm.getComment());
+			task.setName(taskForm.getName());
+			task.setStatus(taskForm.getStatus());
+			task.getDepartments().clear();
+			if (taskForm.getDepartments() != null) {
+				taskForm.getDepartments().forEach(dep -> {
+					task.getDepartments().add(dep);
+				});
+			}
+
+			List<Project> oldPrjs = new ArrayList<>();
+			for (Project prj1 : task.getProjects()) {
+				boolean find = false;
+				if (taskForm.getProjects() != null) {
+					Iterator<Project> iterator = taskForm.getProjects().iterator();
+					while (iterator.hasNext()) {
+						Project prj2 = iterator.next();
+						if (prj1.equals(prj2)) {
+							find = true;
+							iterator.remove();
+							continue;
+						}
+					}
+				}
+				if (!find)
+					oldPrjs.add(prj1);
+			}
+			if (taskForm.getProjects() != null) {
+				for (Project prj : taskForm.getProjects()) {
+					prj = getProject(prj.getProjectId());
+					task.getProjects().add(prj);
+					prj.getTasks();
+					prj.getTasks().add(taskForm);
+				}
+			}
+			for (Project prj : oldPrjs) {
+				task.getProjects().remove(prj);
+				prj.getTasks().remove(task);
+			}
+		} else {
+			taskRepository.saveTask(taskForm);
+		}
+	}
+
+	/**
+	 * Get list of all active tasks
+	 * 
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	public List<Task> getActiveTasks() {
+
+		return taskRepository.getTasks(TaskStatus.Active);
+	}
+
+	/**
+	 * Get list of all departments
+	 */
+	@Transactional(readOnly = true)
+	public List<Department> getDepartments() {
+		return employeeRepository.getDepartments();
 	}
 }

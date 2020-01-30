@@ -26,6 +26,7 @@ import com.we.timetrack.service.model.DateRange;
 public class StatisticService {
 
 	private final static Logger logger = LoggerFactory.getLogger(StatisticService.class);
+	public final static String COLUMN_NAMES = "columnNames";
 	
 	@Autowired
 	private TimesheetRepository timesheetRepository;
@@ -45,8 +46,8 @@ public class StatisticService {
 			Employee curEmployee = (Employee)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			logger.debug("Start get statistic for {}", curEmployee.getShortName());
 			List<Timesheet> timesheets;
-			if (curEmployee.getAuthorities().contains(new SimpleGrantedAuthority("Timex статисты"))) {
-				logger.debug("Employee [{}] has Timex статисты authority", curEmployee.getShortName());
+			if (curEmployee.getAuthorities().contains(new SimpleGrantedAuthority("statistic"))) {
+				logger.debug("Employee [{}] has statistic authority", curEmployee.getShortName());
 				timesheets = timesheetRepository.getTimesheets(period.getBegin(), period.getEnd());
 			} else {
 				List<Employee> employeeList = employeeRepository.getDirectReports(curEmployee);
@@ -128,7 +129,7 @@ public class StatisticService {
 			}
 			columnName[projectList.size() + 1] = "Переработки";
 			columnName[projectList.size() + 2] = "Итого";
-			result.put("&&&", columnName);
+			result.put(COLUMN_NAMES, columnName);
 			logger.debug("Finish get statistic");
 			return result;
 		}

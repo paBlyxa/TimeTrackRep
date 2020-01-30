@@ -108,4 +108,5 @@ public interface TimesheetRepository {
 	 * @return
 	 */
 	public Map<String, Float> getEmployeeSummaryByTime(UUID employeeId, LocalDate beginDate, LocalDate endDate);
+
 }

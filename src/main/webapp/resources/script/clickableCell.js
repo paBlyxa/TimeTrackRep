@@ -1,7 +1,7 @@
 /**
  * 
  */
-$(document).ready(function() {
+function dbClick(datepicker){
 		$('.dateCell').dblclick(function() {
 			var dataValue = dateFromStr($(this).attr("data-value"));
 			var notInArray = true;
@@ -22,7 +22,7 @@ $(document).ready(function() {
 		$('.taskCell').dblclick(function() {
 			$('#selectTask')[0].sumo.selectItem($(this).attr("data-value"));
 		});
-	});
+}
 
 function dateFromStr(str){
 	var parts = str.split('.');

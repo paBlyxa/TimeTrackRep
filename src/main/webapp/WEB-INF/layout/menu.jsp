@@ -40,7 +40,7 @@
 				</c:otherwise>
 			</c:choose>
 		href="<c:url value="/projects" />">Проекты</a> <sec:authorize
-			access="hasAuthority('Timex руководители')">
+			access="hasAuthority('modify')">
 			<div id="dropdown-content">
 				<a href="<c:url value="/projects/new" />">Новый проект</a>
 				<%-- 					<a href="<c:url value="/projects" />">Мои проекты</a> --%>
@@ -91,7 +91,7 @@
 			</c:choose>
 		href="<c:url value="/calendar" />">Календарь</a>
 		<div id="dropdown-content">
-			<a href="<c:url value="/calendar/vacation" />">Отпусков</a>
+			<a href="https://west-e.bitrix24.ru/timeman">Отпусков</a>
 		</div>
 	</li>
 	<li><a
@@ -104,6 +104,22 @@
 				</c:otherwise>
 			</c:choose>
 		href="<c:url value="/help" />">Помощь</a></li>
+	<sec:authorize access="hasAuthority('administration')">
+		<li class="dropdown"><a
+			<c:choose>
+				<c:when test="${fn:contains(currentUrl, 'properties')}">
+					class="activeMenuItem"
+				</c:when>
+				<c:otherwise>
+					class="menuItem" 
+				</c:otherwise>
+			</c:choose>
+			href="<c:url value="/properties" />">Настройки</a>
+			<div id="dropdown-content">
+			<a href="<c:url value="/properties/users" />">Пользователи</a>
+			</div>
+		</li>
+	</sec:authorize>
 	<li id="currentUser"><a
 		<c:choose>
 				<c:when test="${fn:contains(currentUrl, 'account')}">

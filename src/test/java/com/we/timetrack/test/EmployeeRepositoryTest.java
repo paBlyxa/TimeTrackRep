@@ -16,10 +16,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.we.timetrack.model.Employee;
-
+import com.we.timetrack.model.Task;
+import com.we.timetrack.model.TaskStatus;
 import com.we.timetrack.config.DataConfig;
 import com.we.timetrack.db.EmployeeRepository;
 import com.we.timetrack.db.hibernate.HibernateEmployeeRepository;
+import com.we.timetrack.db.hibernate.HibernateTaskRepository;
 import com.we.timetrack.db.ldapHibernate.LdapAndDBEmployeeRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -66,6 +68,22 @@ public class EmployeeRepositoryTest {
 		EmployeeRepository employeeRepository = new LdapAndDBEmployeeRepository(sessionFactory);
 		List<Employee> employees = employeeRepository.getEmployees("ОПИК");
 		printResult(employees);
+	}
+
+
+	@Test
+	@Transactional
+	public void testGetTasks() {
+		EmployeeRepository employeeRepository = new LdapAndDBEmployeeRepository(sessionFactory);
+		List<Employee> employees = employeeRepository.getEmployees();
+		HibernateTaskRepository taskRepository = new HibernateTaskRepository(sessionFactory);
+		System.out.println("Seach tasks for department " + employees.get(0).getDepartment().getName());
+		List<Task> tasks = taskRepository.getFreeTasks(TaskStatus.Active, employees.get(0).getDepartment());
+		System.out.println(">>>>>>>>");
+		System.out.println(">>>>>>>>");
+		tasks.forEach(task -> {
+			System.out.println(task.getName());
+		});
 	}
 	
 	private void printResult(List<Employee> employees) {

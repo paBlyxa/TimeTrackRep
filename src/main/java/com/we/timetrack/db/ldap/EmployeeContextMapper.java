@@ -6,6 +6,7 @@ import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.stereotype.Component;
 
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Employee;
 import com.we.timetrack.util.UuidUtils;
 
@@ -29,7 +30,12 @@ public class EmployeeContextMapper implements ContextMapper<Employee> {
 		employee.setName(context.getStringAttribute(NAME_ATTRIBUTE));
 		employee.setSurname(context.getStringAttribute(SURNAME_ATTRIBUTE));
 		employee.setUsername(context.getStringAttribute(USERNAME_ATTRIBUTE));
-		employee.setDepartment(context.getStringAttribute(DEPARTMENT_ATTRIBUTE));
+		String departmentName = context.getStringAttribute(DEPARTMENT_ATTRIBUTE);
+		if (departmentName != null) {
+			Department department = new Department();
+			department.setName(departmentName);
+			employee.setDepartment(department);
+		}
 		byte[] guid = (byte[]) context.getObjectAttribute(GUID_ATTRIBUTE);
 		employee.setEmployeeId(UuidUtils.asUuid(guid));
 		employee.setMail(context.getStringAttribute(EMAIL_ATTRIBUTE));

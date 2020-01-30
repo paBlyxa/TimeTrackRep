@@ -11,6 +11,9 @@ public class ProjectInfo extends Project{
 		this.setProjectId(project.getProjectId());
 		this.setStatus(project.getStatus());
 		this.setContract(project.getContract());
+		this.setStartDate(project.getStartDate());
+		this.setEndDate(project.getEndDate());
+		this.setTasks(project.getTasks());
 	}
 	
 	private Set<Employee> managers = new HashSet<>();

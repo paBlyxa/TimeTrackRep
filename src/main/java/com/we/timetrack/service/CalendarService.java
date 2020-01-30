@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.we.timetrack.db.CalendarRepository;
-import com.we.timetrack.db.EmployeeRepository;
 import com.we.timetrack.db.VacationRepository;
 import com.we.timetrack.model.Day;
 import com.we.timetrack.model.DayStatus;
@@ -33,7 +33,7 @@ public class CalendarService {
 	@Autowired
 	private VacationRepository vacationRepository;
 	@Autowired
-	private EmployeeRepository employeeRepository;
+	private EmployeeManager employeeManager;
 	
 	/**
 	 * Return weekends and short days in this year
@@ -151,23 +151,35 @@ public class CalendarService {
 		
 		List<VacationForm> result = new ArrayList<VacationForm>();
 		
-		String group = "ОПИК";
-		List<Employee> employeeList = employeeRepository.getEmployees(group);
+		Map<UUID, VacationForm> map = new HashMap<>();
 		
-		for(Employee employee : employeeList){
-			VacationForm vacationForm = new VacationForm(employee);
-			result.add(vacationForm);
-		}
+		//String group = "ОПИК";
+		//List<Employee> employeeList = employeeRepository.getActiveEmployees();
+		
+		//for(Employee employee : employeeList){
+		//	VacationForm vacationForm = new VacationForm(employee);
+		//	result.add(vacationForm);
+			
+		//}
 		
 		for (Vacation vacation : vacationList){
 			logger.info(vacation.toString());
-			for (VacationForm vacationForm : result){
-				if (vacationForm.getEmployeeId().compareTo(vacation.getEmployeeId()) == 0){
-					vacationForm.addVacation(vacation);
-					break;
-				}
+			VacationForm vacationForm = map.get(vacation.getEmployeeId());
+			if (vacationForm == null) {
+				vacationForm = new VacationForm(employeeManager.getEmployee(vacation.getEmployeeId()));
+				map.put(vacation.getEmployeeId(), vacationForm);
+				result.add(vacationForm);
 			}
+			
+			vacationForm.addVacation(vacation);
+			
 		}
+		
+		Employee currentUser = employeeManager.getCurrentEmployee();
+		if (!map.containsKey(currentUser.getEmployeeId())){
+			result.add(new VacationForm(currentUser));
+		}
+		
 		
 		return result;
 		
@@ -195,7 +207,7 @@ public class CalendarService {
 				}
 			}
 			if (!vacationFormExist){
-				VacationForm vacationForm = new VacationForm(employeeRepository.getEmployee(vacation.getEmployeeId()));
+				VacationForm vacationForm = new VacationForm(employeeManager.getEmployee(vacation.getEmployeeId()));
 				vacationForm.addVacation(vacation);
 				result.add(vacationForm);
 			}

@@ -7,46 +7,94 @@
 	prefix="sec"%>
 <%-- <%@ page session="false" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%> --%>
 <head>
-<script src="<c:url value="/resources/script/clickableRow.js" />">
-	</script>
+	<script src="<c:url value="/resources/script/clickableRow.js" />"></script>
+	<script src="<c:url value="/resources/script/tabs.js" />"></script>
+	<script src="<c:url value="/resources/script/FilterTable.js" />"></script>
+<style type="text/css">
+	.divWithBorder {min-width: 930px;}
+</style>
 </head>
 
 <div class="divWithBorder">
-	<c:url var="deleteUrl" value="/projects/delete" />
-	<h1>Мои проекты</h1>
-
-	<table class="mainTable">
-		<thead>
-			<tr>
-				<th class="colProjectName">Проект</th>
-				<th class="colProjectContract">Номер договора</th>
-				<th class="colProjectActive">Статус</th>
-				<th class="colProjectLeaders">Ведущие сотрудники</th>
-				<th class="colProjectComment">Комментарий</th>
-			</tr>
-		</thead>
-		<tbody>
-			<c:forEach var="project" items="${projectList}" varStatus="status">
-				<tr class="clickable-row"
-					data-url="<c:url value="/"/>projects/project?id=<c:out value="${project.projectId}" />">
-					<td>${project.name}</td>
-					<td>${project.contract}</td>
-					<td>${project.status.name}</td>
-					<td><c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach></td>
-					<td><c:out value="${project.comment}" /></td>
-					<%-- <td id="colLast">
-						<form action="${deleteUrl}" method="POST">
-							<input name="projectId" type="hidden"
-								value="${project.projectId}" /> <input type="submit"
-								value="Удалить" onClick="return confirm('Удалить проект?')" /> <input
-								type="hidden" name="${_csrf.parameterName}"
-								value="${_csrf.token}" />
-						</form>
-					</td> --%>
+	<button class="tablink" onclick="openPage('now', this)" id="defaultOpen">Текущие проекты</button>
+	<button class="tablink" onclick="openPage('old', this)">Завершенные проекты</button>	
+	<div class="tablink"></div>
+	<div class="input-group">
+		<i class="fa fa-search" aria-hidden="true"></i>
+		<input type="search" class="light-table-filter" data-table="order-table" placeholder="Поиск">
+	</div>
+	<div id="now" class="tabcontent">
+		<table class="order-table table">
+			<thead>
+				<tr>
+					<th class="colProjectName">Проект</th>
+					<th class="colProjectContract">Номер договора</th>
+					<th class="colProjectDate">Дата заключения</th>
+					<th class="colProjectDate">Дата окончания</th>
+					<th class="colProjectLeaders">Ведущие сотрудники</th>
+					<th class="colProjectComment">Комментарий</th>
 				</tr>
-			</c:forEach>
-		</tbody>
-		<tfoot></tfoot>
-	</table>
-
+			</thead>
+			<tbody>
+				<c:forEach var="project" items="${projectList}" varStatus="status">
+					<c:if test="${project.isActive()}">
+						<tr class="clickable-d-row" data-url-d="<c:url value="/"/>projects/project?id=<c:out value="${project.projectId}" />">
+							<td>${project.name}</td>
+							<td>${project.contract}</td>
+							<fmt:parseDate value="${project.startDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+							<fmt:formatDate pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+							<td data-value="${dayDate}">
+								<c:out value="${dayDate}"/>
+							</td>
+							<fmt:parseDate value="${project.endDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+							<fmt:formatDate pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+							<td data-value="${dayDate}">
+								<c:out value="${dayDate}"/>
+							</td>
+							<td><c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach></td>
+							<td><c:out value="${project.comment}" /></td>
+						</tr>
+					</c:if>
+				</c:forEach>
+			</tbody>
+			<tfoot></tfoot>
+		</table>
+	</div>
+	<div id="old" class="tabcontent">
+		<table class="order-table table">
+			<thead>
+				<tr>
+					<th class="colProjectName">Проект</th>
+					<th class="colProjectContract">Номер договора</th>
+					<th class="colProjectDate">Дата заключения</th>
+					<th class="colProjectDate">Дата окончания</th>
+					<th class="colProjectLeaders">Ведущие сотрудники</th>
+					<th class="colProjectComment">Комментарий</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="project" items="${projectList}" varStatus="status">
+					<c:if test="${!project.isActive()}">
+						<tr class="clickable-d-row" data-url-d="<c:url value="/"/>projects/project?id=<c:out value="${project.projectId}" />">
+							<td>${project.name}</td>
+							<td>${project.contract}</td>
+							<fmt:parseDate value="${project.startDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+							<fmt:formatDate pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+							<td data-value="${dayDate}">
+								<c:out value="${dayDate}"/>
+							</td>
+							<fmt:parseDate value="${project.endDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+							<fmt:formatDate pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+							<td data-value="${dayDate}">
+								<c:out value="${dayDate}"/>
+							</td>
+							<td><c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach></td>
+							<td><c:out value="${project.comment}" /></td>
+						</tr>
+					</c:if>
+				</c:forEach>
+			</tbody>
+			<tfoot></tfoot>
+		</table>	
+	</div>
 </div>

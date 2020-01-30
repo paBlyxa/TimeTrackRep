@@ -11,6 +11,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "employeeproperty")
 public class EmployeeProperty {
@@ -24,8 +26,8 @@ public class EmployeeProperty {
 	private String value;
 
 	@ManyToMany(mappedBy = "properties")
+	@JsonIgnore
 	private Collection<Employee> employees;
-	
 	
 	public String getName() {
 		return name;
@@ -48,6 +50,12 @@ public class EmployeeProperty {
 			return this.propertyId == ep.propertyId;
 		}
 		return false;
+	}
+	
+	public static enum PROPERTIES {
+
+		remember, autoSave;
+		
 	}
 }
 

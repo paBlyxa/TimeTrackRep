@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextOperations;
@@ -17,6 +18,7 @@ import org.springframework.ldap.query.LdapQuery;
 import org.springframework.stereotype.Repository;
 
 import com.we.timetrack.db.EmployeeRepository;
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Employee;
 import com.we.timetrack.service.model.EmployeeComparator;
 import com.we.timetrack.util.UuidUtils;
@@ -33,7 +35,15 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 
 	private final static String BASE = "dc=we,dc=ru";
 	private final static String MAIN_GROUP = "cn=Timex пользователи,ou=Группы,dc=we,dc=ru";
+	private final static String FIRED_GROUP = "cn=Бывшие сотрудники,ou=Группы,dc=we,dc=ru";
 
+	@Value("${ldap.user}")
+	private String ldapUser;
+	@Value("${ldap.password}")
+	private String ldapPassword;
+	@Value("${ldap.domain}")
+	private String ldapDomain;
+	
 	/**
 	 * Get employee with matching employeeId from ActiveDirectory
 	 * 
@@ -64,6 +74,25 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 				query().base(BASE).filter(
 						"(&(objectClass=person)(sAMAccountName=" + username + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"),
 				getContextMapperWithAuth());
+		if (employees.isEmpty()){
+			logger.warn("No employee with matching username = [{}]", username);
+		}
+		return employees.isEmpty() ? null : employees.get(0);
+	}
+	
+
+	/**
+	 * Get employee with matching username from ActiveDirectory and 
+	 * custom contextMapper
+	 * 
+	 * @param username - employee's username
+	 * @return Employee if exist, otherwise null
+	 */
+	public <T> T getEmployee(String username, ContextMapper<T> contextMapper) {
+		List<T> employees = getLdapTemplate().search(
+				query().base(BASE).filter(
+						"(&(objectClass=person)(sAMAccountName=" + username + ")" + "(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + "))"),
+				contextMapper);
 		if (employees.isEmpty()){
 			logger.warn("No employee with matching username = [{}]", username);
 		}
@@ -109,6 +138,21 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		return employeeList;
 	}
 
+	/**
+	 * Get all active employees.
+	 * 
+	 * @return list of employees
+	 */
+	@Override
+	public List<Employee> getActiveEmployees() {
+LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=" + MAIN_GROUP + ")(!(memberOf:1.2.840.113556.1.4.1941:=" + FIRED_GROUP + ")))");
+		
+		List<Employee> employeeList = getLdapTemplate().search(query, getContextMapper());
+		employeeList.sort(new EmployeeComparator());
+		return employeeList;
+	}
+	
+	
 	/**
 	 * Get employee by dn from ActiveDirectory
 	 * 
@@ -158,9 +202,9 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		LdapContextSource contextSource = new LdapContextSource();
 		Map<String, Object> props = new HashMap<>();
 		props.put("java.naming.ldap.attributes.binary", "objectGUID");
-		contextSource.setUrl("ldap://we.ru");
-		contextSource.setUserDn("addrbook@we.ru");
-		contextSource.setPassword("123addrbook321");
+		contextSource.setUrl("ldap://" + ldapDomain);
+		contextSource.setUserDn(ldapUser + "@" + ldapDomain);
+		contextSource.setPassword(ldapPassword);
 		contextSource.setReferral("follow");
 		contextSource.setBaseEnvironmentProperties(props);
 		try {
@@ -193,4 +237,23 @@ public class LdapEmployeeRepository implements EmployeeRepository {
 		return employeeMap;
 	}
 
+	@Override
+	public List<Department> getDepartments() {
+		
+		return new ArrayList<>();
+	}
+
+	public void setLdapUser(String ldapUser) {
+		this.ldapUser = ldapUser;
+	}
+
+	public void setLdapPassword(String ldapPassword) {
+		this.ldapPassword = ldapPassword;
+	}
+
+	public void setLdapDomain(String ldapDomain) {
+		this.ldapDomain = ldapDomain;
+	}
+
+	
 }

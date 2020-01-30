@@ -21,6 +21,7 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Employee;
 
 @Configuration
@@ -87,7 +88,10 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter{
 			employee.setName(context.getStringAttribute("givenName"));
 			employee.setSurname(context.getStringAttribute("sn"));
 			employee.setUsername(context.getStringAttribute("sAMAccountName"));
-			employee.setDepartment(context.getStringAttribute("department"));
+			String departmentName = context.getStringAttribute("department");
+			Department department = new Department();
+			department.setName(departmentName);
+			employee.setDepartment(department);
 			//employee.setChief(context.getStringAttribute("manager"));
 			employee.setEmployeeId(UUID.fromString("12a24625-9f35-4d33-f7af-0ad444f9e5ee"));
 			employee.setMail(context.getStringAttribute("mail"));

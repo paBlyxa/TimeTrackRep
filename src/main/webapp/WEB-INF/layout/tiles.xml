@@ -75,4 +75,12 @@
 	<definition name="stat" extends="base">
 		<put-attribute name="body" value="/WEB-INF/views/stat.jsp" />
 	</definition>
+
+	<definition name="users" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/users.jsp" />
+	</definition>
+
+	<definition name="properties" extends="base">
+		<put-attribute name="body" value="/WEB-INF/views/properties.jsp" />
+	</definition>
 </tiles-definitions>

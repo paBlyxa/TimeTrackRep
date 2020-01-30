@@ -1,7 +1,4 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
-<%@ page session="false" pageEncoding="UTF-8"
-	contentType="text/html; charset=UTF-8"%>
 <!DOCTYPE HTML>
 
 <div class="login-container">
@@ -13,10 +10,17 @@
 				class="form-horizontal">
 				<c:if test="${param.error != null}">
 					<div class="alert alert-danger">
-						<p>Invalid username and password.</p>
+						<c:choose>
+						    <c:when test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
+						       <p>${SPRING_SECURITY_LAST_EXCEPTION.message}</p>
+						    </c:when>    
+						    <c:otherwise>
+						       <p>Invalid username or password.</p>
+						    </c:otherwise>
+						</c:choose>
 					</div>
 				</c:if>
-				<c:if test="${param.logout != null}">       3
+				<c:if test="${param.logout != null}">       
 					<div class="alert alert-danger">
 						<p>You have been logged out.</p>
 					</div>

@@ -1,5 +1,6 @@
 package com.we.timetrack.config;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,15 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-/*import org.quartz.CronScheduleBuilder;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.impl.StdSchedulerFactory;*/
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -30,9 +22,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
+import com.we.timetrack.service.AutoWiringSpringBeanJobFacotry;
 import com.we.timetrack.service.model.ScheduleType;
 import com.we.timetrack.service.schedule.RememberJob;
+import com.we.timetrack.service.schedule.UpdateAllEmployeesTask;
 
 @Configuration
 @PropertySource({ "classpath:timex.properties" })
@@ -49,23 +44,33 @@ public class ScheduleConfiguration {
 	public void init() {
 		logger.info("Create schedule configuration");
 	}
-
+	
 	@Bean
-	public SchedulerFactoryBean schedulerFactoryBean() {
-		SchedulerFactoryBean scheduler = new SchedulerFactoryBean();
-		scheduler.setTriggers(triggerEveryMonthBean().getObject(), triggerEveryWeekBean().getObject(),
-				triggerEveryQuarterBean().getObject());
-		return scheduler;
+	public SpringBeanJobFactory springBeanJobFactory() {
+		AutoWiringSpringBeanJobFacotry jobFactory = new AutoWiringSpringBeanJobFacotry();
+		logger.debug("Configuring job factory");
+		
+		jobFactory.setApplicationContext(applicationContext);
+		return jobFactory;
 	}
-
+	
 	@Bean
-	public CronTriggerFactoryBean triggerEveryWorkDayBean() {
+	public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
+		SchedulerFactoryBean factory = new SchedulerFactoryBean();
+		factory.setJobFactory(springBeanJobFactory());
+		factory.setTriggers(triggerEveryWeekBean().getObject(), triggerEveryMonthBean().getObject(),
+				triggerEveryQuarterBean().getObject(), triggerUpdateAllEmployeesTask().getObject());
+		return factory;
+	}
+	
+	@Bean
+	public CronTriggerFactoryBean triggerUpdateAllEmployeesTask() {
 		CronTriggerFactoryBean stFactory = new CronTriggerFactoryBean();
-		stFactory.setJobDetail(jobDetailFactoryBeanWeek().getObject());
+		stFactory.setJobDetail(jobDetailFactoryBeanUpdate().getObject());
 		stFactory.setStartDelay(3000);
-		stFactory.setName("triggerEveryWeek");
+		stFactory.setName("triggerEveryMonday");
 		stFactory.setGroup("myGroup");
-		stFactory.setCronExpression("0 0 6 ? * 2");// Fire at 6:00 every Monday [0 0 6 ? * MON]
+		stFactory.setCronExpression("0 0 21 ? * 2");// Fire at 21:00 every Monday [0 0 21 ? * MON]
 		return stFactory;
 	}
 
@@ -103,6 +108,15 @@ public class ScheduleConfiguration {
 		return stFactory;
 	}
 
+	@Bean
+	public JobDetailFactoryBean jobDetailFactoryBeanUpdate() {
+		JobDetailFactoryBean factory = new JobDetailFactoryBean();
+		factory.setJobClass(UpdateAllEmployeesTask.class);
+		factory.setGroup("myGroup");
+		factory.setName("UpdateAllEmployeesTask");
+		return factory;
+	}
+	
 	@Bean
 	public JobDetailFactoryBean jobDetailFactoryBeanWeek() {
 		JobDetailFactoryBean factory = new JobDetailFactoryBean();

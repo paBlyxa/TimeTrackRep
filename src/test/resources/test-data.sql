@@ -6,11 +6,11 @@ INSERT INTO Project (name)
         VALUES ('LAES2 SAU DG');
 
 INSERT INTO Employee (surname, name, mail, post, department, username, password)
-       VALUES ('Idolov', 'Michael', 'm.idolov@west-e.ru', 'Leading engineer', 'Scheme', 'm.idolov', '123idolov');
+       VALUES ('Sidorov', 'Michael', 'm.sidorov@mail.com', 'Leading engineer', 'Scheme', 'm.sidorov', '123sidorov');
 INSERT INTO Employee (surname, name, mail, post, department, username, password)
-       VALUES ('Muhutdinov', 'Roman', 'r.muhutdinov@west-e.ru', 'Menedger', 'Menedgers', 'r.muhutdinov', '123muhutdinov');
+       VALUES ('Petrov', 'Roman', 'r.petrov@mail.ru', 'Manager', 'Managers', 'r.petrov', '123petrov');
 INSERT INTO Employee (surname, name, mail, post, department, username, password)
-       VALUES ('Fakadey', 'Pavel', 'p.fakadey@west-e.ru', 'Leading programmer', 'Programmeers', 'p.fakadey', '123fakadey');
+       VALUES ('Sobolev', 'Pavel', 'p.sobolev@mail.ru', 'Leading programmer', 'Programmers', 'p.sobolev', '123sobolev');
  
 
 INSERT INTO Task (name)

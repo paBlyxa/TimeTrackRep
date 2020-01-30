@@ -7,43 +7,34 @@
 <head>
 	<script src="<c:url value="/resources/script/jquery.sumoselect.min.js" />"></script>
 	<link href="<s:url value="/resources/sumoselect.css"/>" rel="stylesheet" type="text/css">
-	<script src="<c:url value="/resources/script/clickableRow.js" />"></script>
+	<script src="<c:url value="/resources/script/myContextMenu.js" />"></script>
+	<script src="<c:url value="/resources/script/FilterTable.js" />"></script>
 </head>
 
 
 <div class="projectForm">
 	<h1>Новый проект</h1>
 	<form:form method="POST" modelAttribute="projectForm">
-		<table class="newRecordTable">
-			<thead>
-				<tr>
-					<th class="colProjectName">Проект</th>
-					<th class="colProjectContract">Номер договора</th>
-					<th class="colProjectActive">Статус</th>
-					<th class="colProjectLeaders">Ведущие сотрудники</th>
-					<th class="colProjectComment">Комментарий</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><input required="required" class="input" type="text"
-						name="name" /></td>
-					<td><input class="input" type="text"
-						name="contract" /></td>
-					<td><form:select class="selectStatus" path="status"
-							multiple="false">
-							<form:options items="${statusList}" itemLabel="name"/>
-						</form:select></td>
-					<td><form:select class="selectManagers" path="projectLeaders"
-							multiple="true">
-							<form:options items="${employeeList}" />
-						</form:select></td>
-					<td><form:input class="input" type="text" path="comment" /></td>
-				</tr>
-			</tbody>
-			<tfoot></tfoot>
-		</table>
-		<input type="submit" value="Добавить" class="buttonAdd" />
+		<label for="pname">Наименование проекта</label>
+		<input id="pname" required="required" class="input" type="text" name="name" />
+		<label for="contract">Номер договора</label>
+		<input id="contract" class="input" type="text" name="contract" />
+		<label for="startDate">Дата заключения</label>
+		<input id="startDate" class="input" type="date" name="startDate" />
+		<label for="endDate">Дата окончания</label>
+		<input id="endDate" class="input" type="date" name="endDate" />
+		<label for="status">Статус</label>
+		<form:select id="status" class="selectStatus" path="status"	multiple="false">
+			<form:options items="${statusList}" itemLabel="name"/>
+		</form:select>
+		<label for="selectManagers">Ведущие сотрудники</label>
+		<form:select id="selectManagers" class="selectManagers" path="projectLeaders" multiple="true">
+			<form:options items="${employeeList}" />
+		</form:select>
+		<label for="comment">Комментарий</label>
+		<input id="comment" class="input" type="text" name="comment" />
+
+		<input type="submit" value="Создать" class="buttonAdd" />
 	</form:form>
 </div>
 
@@ -52,11 +43,17 @@
 	
 	<h1>Все проекты</h1>
 
-	<table class="mainTable">
+	<div class="input-group">
+		<i class="fa fa-search" aria-hidden="true"></i>
+		<input type="search" class="light-table-filter" data-table="order-table" placeholder="Поиск">
+	</div>
+	<table class="order-table table">
 		<thead>
 			<tr>
 				<th class="colProjectName">Проект</th>
 				<th class="colProjectContract">Номер договора</th>
+				<th class="colProjectDate">Дата заключения</th>
+				<th class="colProjectDate">Дата окончания</th>
 				<th class="colProjectActive">Статус</th>
 				<th class="colProjectLeaders">Ведущие сотрудники</th>
 				<th class="colProjectComment">Комментарий</th>
@@ -64,34 +61,36 @@
 		</thead>
 		<tbody>
 			<c:forEach var="project" items="${projectList}" varStatus="status">
-				<tr>
-					<c:url var="statUrl" value="/projects/project?id=${project.projectId}" />
-					<td class="clickable-row" data-url="${statUrl}">${project.name}</td>
-					<td class="clickable-row" data-url="${statUrl}">${project.contract}</td>
-					<td class="clickable-row" data-url="${statUrl}">${project.status.name}</td>
-					<td class="clickable-row" data-url="${statUrl}">
+				<c:url var="statUrl" value="/projects/project?id=${project.projectId}" />
+				<c:url value="/projects/${project.projectId}/modify" var="updateUrl" />
+				<tr class="clickable-m-row" data-url-stat="${statUrl}" data-url-change="${updateUrl}" data-projectid="${project.projectId}">
+					<td>${project.name}</td>
+					<td>${project.contract}</td>
+					<fmt:parseDate value="${project.startDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+					<fmt:formatDate pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+					<td data-value="${dayDate}">
+						<c:out value="${dayDate}"/>
+					</td>
+					<fmt:parseDate value="${project.endDate}" pattern="yyyy-MM-dd" var="parsedDate" type="date" />
+					<fmt:formatDate pattern="dd.MM.yyyy" value="${parsedDate}" var="dayDate"/>
+					<td data-value="${dayDate}">
+						<c:out value="${dayDate}"/>
+					</td>
+					<td>${project.status.name}</td>
+					<td>
 						<c:forEach var="leader" items="${project.managers}" varStatus="stat"><c:if test="${stat.index > 0}">, </c:if><c:out value="${leader.shortName}"/></c:forEach>
 					</td>
-					<td class="clickable-row" data-url="${statUrl}">${project.comment}</td>
-					<td id="colLast">
-						<c:url value="/projects/${project.projectId}/modify" var="updateUrl" />
-						<button class="btn btn-primary" onclick="location.href='${updateUrl}'">Изменить</button>
-					</td>
-					
-					<td id="colLast">
-						<form action="${deleteUrl}" method="POST">
-							<input name="projectId" type="hidden"
-								value="${project.projectId}" /> <input type="submit"
-								value="Удалить" onClick="return confirm('Удалить проект?')" /> <input
-								type="hidden" name="${_csrf.parameterName}"
-								value="${_csrf.token}" />
-						</form>
-					</td>
+					<td>${project.comment}</td>
 				</tr>
 			</c:forEach>
 		</tbody>
 		<tfoot></tfoot>
 	</table>
+	
+	<form id="formDelete" action="${deleteUrl}" method="POST" style="display: none;">
+		<input id="projectId" name="projectId" type="hidden" value="" />
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+	</form>
 
 </div>
 
@@ -107,5 +106,30 @@
 			search: true,
 			searchText: 'Введите статус...'
 			});
+		myContextMenu.create([
+			{
+				name : "<i class='fa fa-pie-chart'></i>Статистика", action : function() {
+					window.document.location = $(myContextMenu.element).data("url-stat");
+				}
+			},
+			{
+				name : "<i class='fa fa-pencil fa-fw'></i>Изменить", action : function() {
+					window.document.location = $(myContextMenu.element).data("url-change");
+				}
+			},
+			{
+				name : "<i class='fa fa-trash-o fa-fw'></i>Удалить", action : function() {
+					if (confirm('Удалить проект?')) {
+						$("#projectId")[0].setAttribute("value", $(myContextMenu.element).data("projectid"));
+						$("#formDelete").submit();
+					}
+				}
+			}
+		]);
+		
+		$(".clickable-m-row").dblclick(function(e) {
+			myContextMenu.element = this;
+			myContextMenu.setPosition(e.pageY, e.pageX);
+		});
 	});
 </script>

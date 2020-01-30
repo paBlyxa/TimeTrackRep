@@ -4,11 +4,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.jboss.logging.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class Writer {
 
-	private static Logger logger = Logger.getLogger("service");
+	private static Logger logger = LoggerFactory.getLogger(Writer.class);
 	
 	/**
 	 * Writes the report to the output stream

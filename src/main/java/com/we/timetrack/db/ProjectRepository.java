@@ -39,4 +39,13 @@ public interface ProjectRepository {
 	 * with matching employee as leader
 	 */
 	public List<Project> getProjects(UUID employeeId);
+
+	/**
+	 * Returns list of project database records
+     * with matching ProjectStatus and initialized tasks
+     * by fetch join query
+	 * @param status
+	 * @return
+	 */
+	public List<Project> getProjectsFJ(ProjectStatus status);
 }

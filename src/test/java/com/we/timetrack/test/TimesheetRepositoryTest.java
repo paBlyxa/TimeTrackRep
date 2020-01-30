@@ -24,7 +24,7 @@ import com.we.timetrack.model.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RootConfig.class)
 @WebAppConfiguration
-@ActiveProfiles("dataSourceProduction")
+@ActiveProfiles({"dataSourceProduction", "LdapAndDBEmployees"})
 public class TimesheetRepositoryTest{
 
 	private final static UUID EMPLOYEE_ID = UUID.fromString("12a24625-9f35-4d33-f7af-0ad444f9e5ee");

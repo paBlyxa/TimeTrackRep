@@ -1,14 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <head>
 	<style type="text/css">
-		.logo {
-			float: left;
-			margin: 10px;
-		}
-		.mailto {
-			float: right;
-			margin-top: 2px;
-		}
+		.logo {float: left;margin: 10px;}
+		.mailto {float: right;margin-top: 2px;}
 		.mailto a {
 			box-sizing: border-box;
     		text-decoration: none;

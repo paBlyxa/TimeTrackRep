@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
-import com.we.timetrack.db.EmployeeRepository;
+import com.we.timetrack.service.schedule.UpdateAllEmployeesTask;
 
 @Component
 @Profile("LdapAndDBEmployees")
@@ -18,11 +19,16 @@ public class EventListenerBean {
 	public static int counter = 0;
 	
 	@Autowired
-	private EmployeeRepository employeeRepository;
+	private UpdateAllEmployeesTask updateAllEmployeesTask;
+	@Autowired
+	private TaskExecutor taskExecutor;
 	
 	@EventListener
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		logger.info("Application event {}", counter);
-		employeeRepository.updateAll();
+		logger.info("Application event {}, counter={}",event.getApplicationContext().getId(), counter++);
+		//employeeRepository.updateAll();
+		if (!event.getApplicationContext().getDisplayName().contains("dispatcher")) {
+			taskExecutor.execute(updateAllEmployeesTask);
+		}
 	}
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.we.timetrack.db.TaskRepository;
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Task;
 import com.we.timetrack.model.TaskStatus;
 
@@ -48,8 +49,8 @@ public class HibernateTaskRepository implements TaskRepository {
 	public List<Task> getTasks(){
 		
 		List<Task> tasks = null;
-
-		tasks = currentSession().createQuery("from Task t ORDER BY t.name")
+		
+		tasks = currentSession().createQuery("select distinct t from Task t LEFT JOIN FETCH t.departments ORDER BY t.name")
 					.list();
 		
 		return tasks;
@@ -69,6 +70,35 @@ public class HibernateTaskRepository implements TaskRepository {
 				.setParameter("status", status)
 					.list();
 		
+		return tasks;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	/**
+	 * Returns list of task database records
+	 * with matching TaskStatus, Department, and free of projects.
+	 */
+	public List<Task> getFreeTasks(TaskStatus status, Department department){
+		
+		List<Task> tasks = null;
+		
+		if (department != null) {
+			tasks = currentSession().createQuery("from Task t "
+					+ "WHERE (size(t.departments) = 0 "
+					+ "or :dep in elements(t.departments)) "
+					+ "and t.status = :status "
+					+ "and size(t.projects) = 0 "
+					+ "ORDER BY t.name")
+					.setParameter("status", status)
+					.setParameter("dep", department)
+						.list();
+		} else {
+
+			tasks = currentSession().createQuery("from Task t WHERE t.status =:status ORDER BY t.name")
+					.setParameter("status", status)
+						.list();
+		}
 		return tasks;
 	}
 	

@@ -1,6 +1,7 @@
 package com.we.timetrack.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -15,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.we.timetrack.converter.LocalDateAttributeConverter;
@@ -30,6 +33,8 @@ public class Timesheet {
 	private LocalDate dateTask;
 	private float countTime;
 	private String comment;
+	private LocalDateTime createDateTime;
+	private LocalDateTime updateDateTime;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "timesheet_seq_gen")
@@ -88,6 +93,22 @@ public class Timesheet {
 	}
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+	@CreationTimestamp
+	@Column(name = "creationtimestamp")
+	public LocalDateTime getCreateDateTime() {
+		return createDateTime;
+	}
+	public void setCreateDateTime(LocalDateTime createDateTime) {
+		this.createDateTime = createDateTime;
+	}
+	@UpdateTimestamp
+	@Column(name = "updatetimestamp")
+	public LocalDateTime getUpdateDateTime() {
+		return updateDateTime;
+	}
+	public void setUpdateDateTime(LocalDateTime updateDateTime) {
+		this.updateDateTime = updateDateTime;
 	}
 	
 }

@@ -2,19 +2,17 @@ package com.we.timetrack.service.model;
 
 import java.util.Comparator;
 
-import com.we.timetrack.model.Timesheet;
-
-public class TimesheetComparator implements Comparator<Timesheet> {
+public class TimesheetComparator implements Comparator<TimesheetView> {
 
 	@Override
-	public int compare(Timesheet t1, Timesheet t2) {
+	public int compare(TimesheetView t1, TimesheetView t2) {
 		
-		int compareProjectName = t1.getProject().getName().compareTo(t2.getProject().getName());
+		int compareProjectName = t1.getProject().compareTo(t2.getProject());
 		if (compareProjectName != 0){
 			return compareProjectName;
 		}
 		
-		int compareTaskName = t1.getTask().getName().compareTo(t2.getTask().getName());
+		int compareTaskName = t1.getTask().compareTo(t2.getTask());
 		if (compareTaskName != 0){
 			return compareTaskName;
 		}

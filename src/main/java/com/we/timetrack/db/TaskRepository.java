@@ -2,6 +2,7 @@ package com.we.timetrack.db;
 
 import java.util.List;
 
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Task;
 import com.we.timetrack.model.TaskStatus;
 
@@ -32,4 +33,11 @@ public interface TaskRepository {
      * Deletes Task record 
      */
 	public void deleteTask(Task task);
+
+	
+	/**
+	 * Returns list of task database records
+	 * with matching TaskStatus, Department, and free of projects.
+	 */
+	public List<Task> getFreeTasks(TaskStatus status, Department department);
 }

@@ -1,17 +1,18 @@
 package com.we.timetrack.service;
 
 import java.util.Properties;
-import java.util.logging.Level;
 
-import java.util.logging.Logger;
-
+import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,13 +27,14 @@ import com.we.timetrack.model.Employee;
 @Service
 public class ActiveDirectoryUserService implements UserDetailsService, AuthenticationProvider {
 
-	private static final Logger logger = Logger.getLogger(ActiveDirectoryUserService.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(ActiveDirectoryUserService.class);
 	private static final String ldapUrl = "ldap://we.ru";
 	private static final String userSuffix = "@we.ru";
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
 
+	@Override
 	public Employee loadUserByUsername(String username) throws UsernameNotFoundException {
 
 		Employee employee = employeeRepository.getEmployee(username);
@@ -40,7 +42,7 @@ public class ActiveDirectoryUserService implements UserDetailsService, Authentic
 			return employee;
 		} else {
 			UsernameNotFoundException ex = new UsernameNotFoundException("User '" + username + "' not found.");
-			logger.log(Level.SEVERE, "Could not login", ex);
+			logger.warn("Could not login", ex);
 			throw ex;
 		}
 
@@ -50,24 +52,26 @@ public class ActiveDirectoryUserService implements UserDetailsService, Authentic
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		final String name = authentication.getName();
 		final String password = authentication.getCredentials().toString();
-		logger.log(Level.FINE,
-				"Performing login into AD with credentials '" + name + "'/'" + password.replaceAll(".", "*") + "'");
+		logger.debug("Performing login into AD with credentials '{}'/'{}'", name, password.replaceAll(".", "*"));
 
 		DirContext ctx = null;
 		try {
 			ctx = getDirContext(name + userSuffix, password);
-			logger.log(Level.FINE, "User '" + name + "' has been successfully logged on");
+			logger.debug("User '{}' has been successfully logged on", name);
 			final Employee employee = loadUserByUsername(name);
 			return new UsernamePasswordAuthenticationToken(employee, password, employee.getAuthorities());
+		} catch (CommunicationException e) {
+			logger.warn("Could not connect to '" + ldapUrl + "'", e);
+			throw new AuthenticationServiceException("Could not connect to '" + ldapUrl + "'.");
 		} catch (NamingException ex) {
-			logger.log(Level.SEVERE, "Could not login into '" + ldapUrl + "'", ex);
-			throw new BadCredentialsException(ex.getMessage());
+			logger.warn("Could not login into '" + ldapUrl + "'", ex);
+			throw new BadCredentialsException("Invalid username or password.");
 		} finally {
 			if (ctx != null) {
 				try {
 					ctx.close();
 				} catch (NamingException ex) {
-					logger.log(Level.WARNING, "Could not close DirContext", ex);
+					logger.warn("Could not close DirContext", ex);
 				}
 			}
 		}

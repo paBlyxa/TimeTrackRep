@@ -56,12 +56,12 @@ public class CalendarController {
 
 		if (file.isEmpty()) {
 			logger.warn("File to be uploaded is empty");
-			redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
+			redirectAttributes.addFlashAttribute("messageText", "Please select a file to upload");
 			return "redirect:/calendar";
 		}
 
 		calendarService.saveCalendar(file);
-		redirectAttributes.addFlashAttribute("message",
+		redirectAttributes.addFlashAttribute("messageText",
 				"You successfully uploaded '" + file.getOriginalFilename() + "'");
 
 		return "redirect:/calendar";

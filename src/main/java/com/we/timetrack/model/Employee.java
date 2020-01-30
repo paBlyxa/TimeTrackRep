@@ -59,13 +59,16 @@ public class Employee implements UserDetails {
 	@JoinColumn(name="chief")
 	private Employee manager;
 	@OneToMany(mappedBy="manager")
+	@Transient
 	private Set<Employee> subordinates = new HashSet<Employee>();
 	//@NotNull(message = "Должность должна быть задана")
 	//@Size(max = 64, message = "Должность не более 64 символа")
 	private String post;
 	//@NotNull(message = "Отдел должен быть задан�")
 	//@Size(max = 64, message = "Отдел не более 255 символов")
-	private String department;
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="departmentid")
+	private Department department;
 	@NotNull(message = "Имя пользователя должно быть задано")
 	@Size(max = 64, message = "Имя пользователя не более 64 символа")
 	private String username;
@@ -80,10 +83,10 @@ public class Employee implements UserDetails {
 					name = "employeeid", referencedColumnName = "employeeid"),
 			inverseJoinColumns = @JoinColumn(
 					name = "roleid", referencedColumnName = "roleid"))
-	private Collection<Role> roles;
+	private Collection<Role> roles = new ArrayList<>();
 	@ManyToMany
 	@JoinTable(
-			name = "employeeproperty",
+			name = "employeesproperty",
 			joinColumns = @JoinColumn(
 					name = "employeeid", referencedColumnName = "employeeid"),
 			inverseJoinColumns = @JoinColumn(
@@ -138,10 +141,10 @@ public class Employee implements UserDetails {
 	public void setPost(String post) {
 		this.post = post;
 	}
-	public String getDepartment() {
+	public Department getDepartment() {
 		return department;
 	}
-	public void setDepartment(String department) {
+	public void setDepartment(Department department) {
 		this.department = department;
 	}
 	public String getUsername() {
@@ -214,7 +217,7 @@ public class Employee implements UserDetails {
 	
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return active;
 	}
 
 	@Override

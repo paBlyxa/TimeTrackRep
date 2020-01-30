@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -18,18 +19,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.we.timetrack.controller.binder.DateRangeEditor;
 import com.we.timetrack.model.Project;
 import com.we.timetrack.model.ProjectStatus;
+import com.we.timetrack.model.Task;
 import com.we.timetrack.service.ProjectManager;
 import com.we.timetrack.service.model.DateRange;
+import com.we.timetrack.service.model.Message;
 
 @Controller
 @RequestMapping("/projects")
 public class ProjectController {
 
-	private static Logger logger = Logger.getLogger("controller");
+	private static Logger logger = Logger.getLogger(ProjectController.class);
 
 	@Autowired
 	private ProjectManager projectManager;
@@ -57,20 +61,31 @@ public class ProjectController {
 
 	@RequestMapping(value = "/{id}/modify", method = RequestMethod.GET)
 	public String showProject(@PathVariable("id") int id, Model model) {
-		Project project = projectManager.getProject(id);
+		Project project = projectManager.getProjectWithLeaders(id);
 		Map<String, String> employeeList = projectManager.getEmployees();
 
 		model.addAttribute("statusList", ProjectStatus.values());
 		model.addAttribute("project", project);
 		model.addAttribute("employeeList", employeeList);
+		model.addAttribute("tasks", projectManager.getActiveTasks());
 		return "modifyProject";
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public String deleteProject(@RequestParam(value = "projectId") int projectId, Model model) {
+	public String deleteProject(@RequestParam(value = "projectId") int projectId, Model model, RedirectAttributes redirectAttributes) {
 
-		projectManager.deleteProject(projectId);
-		return "redirect:/projects";
+		try {
+			projectManager.deleteProject(projectId);
+		} catch(DataIntegrityViolationException e) {
+			logger.error("Can't delete project", e);
+			Message message = new Message();
+			message.setName("Ошибка");
+			message.setText("Невозможно удалить проект (projectId = " + projectId + ")");
+			message.setType("ERROR");
+			message.setInfo(e.getMostSpecificCause().getMessage());
+			redirectAttributes.addFlashAttribute("message", message);
+		}
+		return "redirect:/projects/new";
 	}
 
 	@RequestMapping(value = "/project", method = RequestMethod.GET)
@@ -136,6 +151,26 @@ public class ProjectController {
 					return id;
 				} else
 					return null;
+			}
+		});
+		binder.registerCustomEditor(Set.class, "tasks", new CustomCollectionEditor(Set.class) {
+			@Override
+			protected Object convertElement(Object element) {
+				Task task = null;
+				if (element instanceof String && !((String) element).equals("")) {
+					// From the JSP 'element' will be a String
+					try {
+						int taskId = Integer.parseInt((String) element);
+						task = new Task();
+						task.setTaskId(taskId);
+					} catch (NumberFormatException e) {
+						e.printStackTrace();
+					}
+				} else if (element instanceof UUID) {
+					// From the database 'element' will be a Task
+					task = (Task) element;
+				}
+				return task;
 			}
 		});
 		binder.registerCustomEditor(DateRange.class, new DateRangeEditor());

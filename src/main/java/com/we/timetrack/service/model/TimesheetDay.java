@@ -22,7 +22,7 @@ public class TimesheetDay {
 	private Day day;
 	private float hours;
 	
-	private SortedSet<Timesheet> timesheets;
+	private SortedSet<TimesheetView> timesheets;
 
 	public Day getDay() {
 		return day;
@@ -32,11 +32,11 @@ public class TimesheetDay {
 		this.day = day;
 	}
 
-	public SortedSet<Timesheet> getTimesheets() {
+	public SortedSet<TimesheetView> getTimesheets() {
 		return timesheets;
 	}
 
-	public void setTimesheets(SortedSet<Timesheet> timesheets) {
+	public void setTimesheets(SortedSet<TimesheetView> timesheets) {
 		this.timesheets = timesheets;
 	}
 
@@ -56,18 +56,18 @@ public class TimesheetDay {
 	 */
 	public static List<TimesheetDay> getTimesheetsByDays(List<Timesheet> timesheets, LocalDate beginDate, LocalDate endDate, List<Day> weekends){
 		
-		Map<LocalDate, SortedSet<Timesheet>> timesheetsByDays = new HashMap<>();
+		Map<LocalDate, SortedSet<TimesheetView>> timesheetsByDays = new HashMap<>();
 		
 		// Create map by days with empty lists
 		for (LocalDate date = beginDate; !date.isAfter(endDate); date = date.plusDays(1)){
-			timesheetsByDays.put(date, new TreeSet<Timesheet>(new TimesheetComparator()));
+			timesheetsByDays.put(date, new TreeSet<TimesheetView>(new TimesheetComparator()));
 		}
 				
 		// Fill map
 		for(Timesheet timesheet : timesheets){
-			SortedSet<Timesheet> timesheetList = timesheetsByDays.get(timesheet.getDateTask());
+			SortedSet<TimesheetView> timesheetList = timesheetsByDays.get(timesheet.getDateTask());
 			if (timesheetList != null) {
-				timesheetList.add(timesheet);
+				timesheetList.add(new TimesheetView(timesheet));
 			} else {
 				logger.error("Timesheet's date [" + timesheet.getDateTask() + "] is out of range: [" + beginDate + " - " + endDate + "]");
 			}
@@ -88,10 +88,10 @@ public class TimesheetDay {
 			}
 			logger.debug("Date {} has status {}", newDay.getDateDay(), newDay.getStatus());
 			timesheetDay.setDay(newDay);
-			SortedSet<Timesheet> tss = timesheetsByDays.get(date);
+			SortedSet<TimesheetView> tss = timesheetsByDays.get(date);
 			float countHours = 0;
 			// Sum hours
-			for (Timesheet ts : tss){
+			for (TimesheetView ts : tss){
 				countHours += ts.getCountTime();
 			}
 			timesheetDay.setTimesheets(tss);

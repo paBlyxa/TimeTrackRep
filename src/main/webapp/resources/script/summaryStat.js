@@ -16,11 +16,11 @@ const CONTAINER_CLASS = "summaryContainer";
 summary.create = function(summaryHere, data){
 	$(summaryHere).empty();
 	var w = window.innerWidth;
-	summary.numberColumns = getSize(data["&&&"]) - 1;
+	summary.numberColumns = getSize(data["columnNames"]) - 1;
 	summary.height = window.innerHeight - summary.heightOffset;
 	summary.data = data;
 	summary.area = newDiv(CONTAINER_CLASS);
-	summary.scroollByWheel();
+	summary.scrollByWheel();
 	// 1.1 - Create grid
 	summary.area.appendChild(summary.createGrid());
 	// 1.2 - Create tasks field
@@ -84,7 +84,7 @@ summary.createTaskField = function(width, height) {
 
 	summaryTaskScale.appendChild(summaryScaleLine);
 	
-	$.each(summary.data["&&&"], function(index, value){
+	$.each(summary.data["columnNames"], function(index, value){
 		if (index != 0){
 			summaryScaleLine.appendChild(summary.createScaleCell(value,
 					(index - 1) * summary.cellWidth, summary.cellWidth));
@@ -120,7 +120,7 @@ summary.init = function() {
 	console.log("Fill data: " + getSize(summary.data));
 	// 2.2 - Fill grid
 	$.each(summary.data, function(key, value){
-		if (key != "&&&"){
+		if (key != "columnNames"){
 			summary.gridAppend(summary.createGridRow(key));
 		}
 	});
@@ -130,7 +130,7 @@ summary.init = function() {
 	var bg = newDiv("summaryTaskBg", widthBg);
 	$.each(summary.data, function(key, value){
 		// 2.3.1.1 - Creata data bg row
-		if (key != "&&&"){
+		if (key != "columnNames"){
 			bg.appendChild(summary.createTaskRow(value,widthBg));
 		}
 	});
@@ -230,7 +230,7 @@ function showStatistic(data) {
 	
 	//Перебираем полученные данные, и отображаем в таблице
 	$.each(data, function(key, value){
-		if (key != "&&&"){
+		if (key != "columnNames"){
 			// Формируем тело таблицы
 			$("#tableSummaryStat tbody").append('<tr>');
 			$("#tableSummaryStat tbody").append('<td class="colSumEmployee">' + key + '</td>');
@@ -312,7 +312,7 @@ summary.resize = function() {
 	}
 };
 
-summary.scroollByWheel = function(){
+summary.scrollByWheel = function(){
 	var elem = summary.area;
 	if (elem.addEventListener) {
 		  if ('onwheel' in document) {

@@ -16,10 +16,10 @@
 </div>
 <div id="calendar-here"></div>
 
-<sec:authorize access="hasAuthority('Timex руководители')">
+<sec:authorize access="hasAuthority('modify')">
 <div class="calendar-update">
 	<h1>Обновление календаря</h1>
-	<c:if test="${message != null}" ><h2>Message : ${message}</h2></c:if>
+	<c:if test="${messageText != null}" ><h2>Message : ${messageText}</h2></c:if>
 
 	<c:url var="uploadUrl" value="/calendar/uploadFile" />
 	<form:form method="POST" action="${uploadUrl}"

@@ -1,11 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <head>
-	<link rel="stylesheet" href="<s:url value="/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css"/>">
+	<meta name="_csrf" content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta name="_csrf_header" content="${_csrf.headerName}"/>
+	<script src="<c:url value="/resources/script/timesheet.js" />"></script>
+	<script src="<c:url value="/resources/script/myFunctions.js" />"></script>
 </head>
 
 
@@ -18,21 +18,28 @@
 
 <div class="listTimesheet">
 	<div>
-		<div style="float: left;">
-			<h2>
-				<fmt:parseDate value="${timesheetsByDays[0].day.dateDay}"
-					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
-				<fmt:formatDate pattern="w" value="${parsedDate}" />
-				неделя
-				<fmt:formatDate pattern="y" value="${parsedDate}" />
-				года:
-				<fmt:formatDate pattern="dd MMMM" value="${parsedDate}" />
-				-
-				<fmt:parseDate value="${timesheetsByDays[6].day.dateDay}"
-					pattern="yyyy-MM-dd" var="parsedDate" type="date" />
-				<fmt:formatDate value="${parsedDate}" pattern="dd MMMM" />
+		<div id="moreUrl">
+			<button class="btnWithIcon" onclick="lastWeek()">
+				<i class="fa fa-arrow-circle-left fa-2x" aria-hidden="true"></i>
+			</button>
+		</div>
+		<div id="moreUrl">
+			<button class="btnWithIcon" onclick="nextWeek()" style="float: right;">
+				<i class="fa fa-arrow-circle-right fa-2x" aria-hidden="true"></i>
+			</button>
+		</div>
+		<div style="float: left;padding:5px;">
+			<h2 id="dateRange">
 			</h2>
 		</div>
+		<%-- <div id="saveCurrentTimesheet">
+			<form action="employees/xls" method="GET">
+				<input name="id" value="${employee.employeeId}" type="hidden" />
+				<button type="submit" class="btnWithIcon">
+                    <i class="fa fa-download fa-2x"></i>
+                </button>
+			</form>
+		</div> --%>
 	</div>
 	<table class="timesheetTable">
 		<thead>
@@ -47,107 +54,28 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach var="timesheetByDay" items="${timesheetsByDays}"
-				varStatus="stat">
-				<c:choose>
-					<c:when test="${timesheetByDay.day.status == 'Work'}">
-						<c:set var="classDay" value="timesheet-work" />
-					</c:when>
-					<c:when test="${timesheetByDay.day.status == 'Short'}">
-						<c:set var="classDay" value="timesheet-short" />
-					</c:when>
-					<c:when test="${timesheetByDay.day.status == 'Weekend'}">
-						<c:set var="classDay" value="timesheet-weekend" />
-					</c:when>
-				</c:choose>
-				<c:choose>
-					<c:when test="${stat.index % 2 == 0}">
-						<c:set var="classRow" value="odd" />
-					</c:when>
-					<c:otherwise>
-						<c:set var="classRow" value="even" />
-					</c:otherwise>
-				</c:choose>
-				<c:choose>
-					<c:when test="${fn:length(timesheetByDay.timesheets) gt 0}">
-						<c:forEach var="timesheet" items="${timesheetByDay.timesheets}"
-							varStatus="status">
-							<tr class="${classRow}">
-								<c:if test="${status.index == 0}">
-									<td rowspan="${fn:length(timesheetByDay.timesheets)}" class="${classDay}"><fmt:parseDate
-											value="${timesheetByDay.day.dateDay}" pattern="yyyy-MM-dd"
-											var="parsedDate" type="date" /> <fmt:formatDate
-											pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
-											pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
-								</c:if>
-								<td><c:out value="${timesheet.project.name}" /></td>
-								<td><c:out value="${timesheet.task.name}" /></td>
-								<td><c:out value="${timesheet.countTime}" /></td>
-								<c:if test="${status.index == 0}">
-									<td rowspan="${fn:length(timesheetByDay.timesheets)}"><c:out
-											value="${timesheetByDay.hours}" /></td>
-									
-									<c:set var="countOverHoursPerDay" value="${timesheetByDay.hours - timesheetByDay.day.status.workingHours}" />
-									<c:choose>
-										<c:when test="${countOverHoursPerDay > 0}">
-											<c:set var="classOverHoursPerDay" value="timesheet-overcount" />
-										</c:when>
-										<c:when test="${countOverHoursPerDay < 0}">
-											<c:set var="classOverHoursPerDay" value="timesheet-abovecount" />
-										</c:when>
-										<c:otherwise>
-											<c:set var="classOverHoursPerDay" value="timesheet-normcount" />
-										</c:otherwise>
-									</c:choose>
-									<td rowspan="${fn:length(timesheetByDay.timesheets)}" class="${classOverHoursPerDay}">
-
-										<input class="input" type="number" step="0.5"
-											min="0.5" max="24" readonly="readonly" value="${countOverHoursPerDay}" />
-									</td>
-								</c:if>
-								<td><c:out value="${timesheet.comment}" /></td>
-							</tr>
-						</c:forEach>
-					</c:when>
-					<c:otherwise>
-						<tr class="${classRow}">
-							<td class="${classDay}"><fmt:parseDate value="${timesheetByDay.day.dateDay}"
-									pattern="yyyy-MM-dd" var="parsedDate" type="date" /> <fmt:formatDate
-									pattern="EEEE" value="${parsedDate}" /> <br /> <fmt:formatDate
-									pattern="dd-MM-yyyy" value="${parsedDate}" /></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</c:otherwise>
-				</c:choose>
-
-			</c:forEach>
 		</tbody>
 		<tfoot>
 			<tr>
-				<td style="text-align: right;" colspan="4">Общее количество
-					часов:</td>
-				<td colspan="3"><c:out value="${countTime}" /></td>
+				<td style="text-align: right;" colspan="4">Общее количество	времени работы, ч:</td>
+				<td colspan="3">
+					<input id= "countTime" class="input" type="number" step="0.5" style="text-align: left;" 
+											min="0.5" max="24" readonly="readonly"/></td>
 			</tr>
 			<tr>
-				<td style="text-align: right;" colspan="4">Общее количество
-					времени переработок, ч:</td>
-				<td colspan="3"><input class="input" type="number" step="0.5"
-											min="0.5" max="24" readonly="readonly" value="${countOverTime}" /></td>
+				<td style="text-align: right;" colspan="4">Общее количество	времени переработок, ч:</td>
+				<td colspan="3">
+					<input id="countOverTime" class="input" type="number" step="0.5" style="text-align: left;" 
+											min="0.5" max="24" readonly="readonly"/></td>
 			</tr>
 		</tfoot>
 	</table>
 
-	<div id="moreUrl">
-		<s:url value="/employees/${employee.employeeId}/?week=${param.week + 1}"
-			var="more_url" />
-		<a href="${more_url}">Предыдующая неделя</a>
-		<s:url value="/employees/${employee.employeeId}/?week=${param.week - 1}"
-			var="less_url" />
-		<a style="float: right;" href="${less_url}">Следующая неделя</a>
-	</div>
 </div>
+<script type="text/javascript">
+var week = "<c:out value="${param.week}"/>";
+var employeeId = "<c:out value="${employee.employeeId}"/>";
+$(document).ready(function() {
+	getDate(week);
+});
+</script>

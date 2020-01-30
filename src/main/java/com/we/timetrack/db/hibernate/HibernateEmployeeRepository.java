@@ -10,11 +10,14 @@ import javax.inject.Inject;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.we.timetrack.db.EmployeeRepository;
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Employee;
 import com.we.timetrack.service.model.EmployeeComparator;
 
@@ -27,6 +30,8 @@ import com.we.timetrack.service.model.EmployeeComparator;
 @Transactional
 public class HibernateEmployeeRepository implements EmployeeRepository {
 
+	private final static Logger logger = LoggerFactory.getLogger(HibernateEmployeeRepository.class);
+	
 	private SessionFactory sessionFactory;
 	
 	@Inject
@@ -90,9 +95,13 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 	@Override
 	public List<Employee> getEmployees(String group) {
 		List<Employee> employees = null;
+			
+		Department department = (Department)currentSession().createCriteria(Department.class)
+				.add(Restrictions.eq("name", group))
+				.uniqueResult();
 		
 		employees = (List<Employee>)currentSession().createCriteria(Employee.class)
-					.add(Restrictions.ilike("department", group))
+					.add(Restrictions.eq("department", department))
 					.add(Restrictions.eq("active", Boolean.TRUE))
 					.list();
 		employees.sort(new EmployeeComparator());
@@ -117,8 +126,77 @@ public class HibernateEmployeeRepository implements EmployeeRepository {
 	 * (see the manual for discussion of unsaved-value checking). 
 	 */
 	public void saveOrUpdate(Employee employee) {
+		logger.debug("SaveOrUpdate employee {}", employee.getShortName());
+		boolean forceFlush = false;
+		if ((employee.getDepartment() != null)
+				&& (employee.getDepartment().getDepartmentId() == null)) {
+			Department department = (Department) currentSession().createCriteria(Department.class)
+					.add(Restrictions.eq("name", employee.getDepartment().getName()))
+					.uniqueResult();
+			if (department != null) {
+				employee.setDepartment(department);
+				
+			} else {
+				forceFlush = true;
+			}
+		}
 		currentSession().saveOrUpdate(employee);
+		if (forceFlush) {
+			currentSession().flush();
+		}
 	}
+
+	/**
+	 * Gets department list
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Department> getDepartments(){
+		
+		List<Department> departments = null;
+		
+		departments = (List<Department>)currentSession().createCriteria(Department.class)
+					.list();
+		return departments;
+	}
+	
+	/**
+	 * Get map of departments
+	 */
+	public Map<String, Department> getDepartmentMap() {
+		List<Department> departments = getDepartments();
+		Map<String, Department> map = new HashMap<>();
+		for (Department department : departments) {
+			map.put(department.getName(), department);
+		}
+		return map;
+	}
+
+	/**
+	 * Get department with matching name.
+	 */
+	public Department getDeparment(String name) {
+		Department department = null;
+		
+		department = (Department)currentSession().createQuery("from department where name = :name")
+					.setParameter("name", name)
+					.uniqueResult();
+
+		return department;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Employee> getActiveEmployees() {
+		List<Employee> employees = null;
+		
+		employees = (List<Employee>)currentSession().createCriteria(Employee.class)
+					.add(Restrictions.eq("active", Boolean.TRUE))
+					.list();
+		employees.sort(new EmployeeComparator());
+		return employees;
+	}
+	
+	
 	
 	/**
 	 * Get employee record with matching username

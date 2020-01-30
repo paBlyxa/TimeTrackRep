@@ -15,8 +15,9 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
-import com.we.timetrack.model.Timesheet;
+import com.we.timetrack.service.StatisticService;
 import com.we.timetrack.service.model.TimesheetDay;
+import com.we.timetrack.service.model.TimesheetView;
 
 public class FillManager {
 
@@ -115,19 +116,19 @@ public class FillManager {
 			}
 
 			boolean firstRow = true;
-			for (Timesheet timesheet : timesheetDay.getTimesheets()) {
+			for (TimesheetView timesheet : timesheetDay.getTimesheets()) {
 				if (!firstRow) {
 					row = worksheet.createRow((short) ++rowIndex);
 				}
 
 				// Retrieve the project's name value
 				HSSFCell cell2 = row.createCell(startColIndex + 1);
-				cell2.setCellValue(timesheet.getProject().getName());
+				cell2.setCellValue(timesheet.getProject());
 				cell2.setCellStyle(bodyCellStyle);
 
 				// Retrieve the task's name value
 				HSSFCell cell3 = row.createCell(startColIndex + 2);
-				cell3.setCellValue(timesheet.getTask().getName());
+				cell3.setCellValue(timesheet.getTask());
 				cell3.setCellStyle(bodyCellStyle);
 
 				// Retrieve the count hours value
@@ -225,7 +226,7 @@ public class FillManager {
 		int rowIndex = startRowIndex;
 		for (Map.Entry<String, String[]> entry : datasource.entrySet()) {
 
-			if (entry.getKey() != "&&&") {
+			if (entry.getKey() != StatisticService.COLUMN_NAMES) {
 				
 				// Create a new row
 				HSSFRow row = worksheet.createRow(++rowIndex);

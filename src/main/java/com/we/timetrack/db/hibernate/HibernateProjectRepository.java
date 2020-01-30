@@ -104,4 +104,23 @@ public class HibernateProjectRepository implements ProjectRepository {
 				.list();
 		return projects;
 	}
+
+	/**
+	 * Returns list of project database records
+     * with matching ProjectStatus and initialized tasks
+     * by fetch join query
+	 * @param status
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Project> getProjectsFJ(ProjectStatus status) {
+		List<Project> projects = null;
+
+		projects = currentSession().createQuery("from Project p JOIN FETCH p.tasks WHERE p.status =:status ORDER BY p.name")
+				.setParameter("status", status)
+				.list();
+		
+		return projects;
+	}
 }

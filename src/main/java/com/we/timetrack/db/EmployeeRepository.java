@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.we.timetrack.model.Department;
 import com.we.timetrack.model.Employee;
 
 /**
@@ -58,5 +59,18 @@ public interface EmployeeRepository {
 	public default void updateAll() {
 		//default nothing
 	}
+
+	/**
+	 * Get list of all departments
+	 * @return
+	 */
+	public List<Department> getDepartments();
+
+	/**
+	 * Get all active employees
+	 * 
+	 * @return list of employees
+	 */
+	List<Employee> getActiveEmployees();
 
 }
