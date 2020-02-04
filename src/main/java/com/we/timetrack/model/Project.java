@@ -134,7 +134,7 @@ public class Project {
 	}
 
 	@Column(name = "startdate")
-	@DateTimeFormat(pattern = "dd.MM.YYYY")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Convert(converter = LocalDateAttributeConverter.class)
 	public LocalDate getStartDate() {
 		return startDate;
@@ -145,7 +145,7 @@ public class Project {
 	}
 
 	@Column(name = "enddate")
-	@DateTimeFormat(pattern = "dd.MM.YYYY")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Convert(converter = LocalDateAttributeConverter.class)
 	public LocalDate getEndDate() {
 		return endDate;
