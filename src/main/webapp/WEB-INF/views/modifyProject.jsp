@@ -11,6 +11,7 @@
 	<h1>Изменить проект</h1>
 	<form:form method="POST" modelAttribute="project" action="${modifyUrl}">
 		<form:input type="hidden" path="projectId"/>
+		<form:input type="hidden" path="createDateTime"/>
 		<label for="pname">Наименование проекта</label>
 		<form:input id="pname" required="required" class="input" type="text" path="name" />
 		<label for="contract">Номер договора</label>
@@ -33,7 +34,6 @@
 		</form:select>
 		<label for="comment">Комментарий</label>
 		<form:input id="comment" class="input" type="text" path="comment" />
-
 		<input type="submit" value="Обновить" class="buttonAdd" />
 	</form:form>
 </div>

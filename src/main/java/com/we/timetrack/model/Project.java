@@ -34,7 +34,7 @@ import javax.persistence.ManyToMany;
 @Table(name = "project")
 public class Project {
 
-	private int projectId;
+	private Integer projectId;
 	private String name;
 	private String comment;
 	private ProjectStatus status;
@@ -50,11 +50,11 @@ public class Project {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "project_seq_gen")
 	@SequenceGenerator(name = "project_seq_gen", sequenceName = "project_projectid_seq", allocationSize = 1)
 	@Column(name = "projectid")
-	public int getProjectId() {
+	public Integer getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(int projectId) {
+	public void setProjectId(Integer projectId) {
 		this.projectId = projectId;
 	}
 
