@@ -16,7 +16,7 @@
 </head>
 
 <div class="divWithBorder">
-	<button class="tablink" onclick="openPage('now', this)" id="defaultOpen">Текущие проекты</button>
+	<button class="tablink defaultOpen" onclick="openPage('now', this)">Текущие проекты</button>
 	<button class="tablink" onclick="openPage('old', this)">Завершенные проекты</button>	
 	<div class="tablink"></div>
 	<div class="input-group">

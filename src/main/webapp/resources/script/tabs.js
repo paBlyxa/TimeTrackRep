@@ -4,13 +4,13 @@
 function openPage(pageName, elmnt) {
 	  // Hide all elements with class="tabcontent" by default */
 	  var i, tabcontent, tablinks;
-	  tabcontent = document.getElementsByClassName("tabcontent");
+	  tabcontent = elmnt.parentNode.getElementsByClassName("tabcontent");
 	  for (i = 0; i < tabcontent.length; i++) {
 	    tabcontent[i].style.display = "none";
 	  }
 
 	  // Remove the background color of all tablinks/buttons
-	  tablinks = document.getElementsByClassName("tablink");
+	  tablinks = elmnt.parentNode.getElementsByClassName("tablink");
 	  for (i = 0; i < tablinks.length; i++) {
 	    tablinks[i].style.backgroundColor = "";
 	    tablinks[i].style.color = "";
@@ -28,5 +28,8 @@ function openPage(pageName, elmnt) {
 
 $(document).ready(function() {
 	// Get the element with id="defaultOpen" and click on it
-	document.getElementById("defaultOpen").click();
+	var tablinks = document.getElementsByClassName("defaultOpen");
+	for (i = 0; i< tablinks.length; i++) {
+		tablinks[i].click();
+	}
 });

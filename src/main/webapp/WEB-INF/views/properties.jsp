@@ -33,11 +33,11 @@
 
 
 <div class="container">
-	<article id="roles" class="help-article">
+	<article id="roles" class="help-article" title="Роли">
 		<div class="propertyContainer">
 			<h2>Роли</h2>
-			<div class="subSection">
-				<h3 id="sub-section-1">Новая роль</h3>
+			<div class="subSection" id="sub-section-1" title="Новая роль">
+				<h3>Новая роль</h3>
 				<div class="divContainer">
 					<div>
 						<span class="inline">
@@ -52,8 +52,8 @@
 					</div>						
 				</div>
 			</div>
-			<div class="subSection">
-				<h3 id="sub-section-2">Удалить роль</h3>
+			<div class="subSection" id="sub-section-2" title="Удалить роль">
+				<h3>Удалить роль</h3>
 				<div>
 					 <span class="inline">
 							<select class="selectRoles" multiple="multiple"></select>
@@ -63,8 +63,8 @@
 					</span>
 				</div>
 			</div>
-			<div class="subSection">
-				<h3 id="sub-section-3">Назначить привелегии</h3>
+			<div class="subSection" id="sub-section-3" title="Назначить привилегии">
+				<h3>Назначить привелегии</h3>
 				<div>
 					<span class="inline">
 						<select class="selectRoles2"></select>
@@ -81,11 +81,11 @@
 			</div>
 		</div>
 	</article>
-	<article id="privileges" class="help-article">
+	<article id="privileges" class="help-article" title="Привилегии">
 		<div class="propertyContainer">
-			<h2>Привелегии</h2>
-			<div class="subSection">
-				<h3 id="sub-section-4">Новая привелегия</h3>
+			<h2>Привилегии</h2>
+			<div class="subSection" id="sub-section-4" title="Новая привилегия">
+				<h3>Новая привилегия</h3>
 				<div class="divContainer">
 					<div>
 						<span class="inline">
@@ -101,8 +101,8 @@
 					</div>						
 				</div>
 			</div>
-			<div class="subSection">
-				<h3 id="sub-section-5">Удалить привелегию</h3>
+			<div class="subSection" id="sub-section-5" title="Удалить привилегию">
+				<h3>Удалить привилегию</h3>
 				<div>
 					<span class="inline">
 						<select class="selectPrivileges2" multiple="multiple">
@@ -115,7 +115,7 @@
 			</div>
 		</div>
 	</article>
-	<article id="other" class="help-article">
+	<article id="other" class="help-article" title="Разное">
 		<div class="propertyContainer">
 			<h2>Разное</h2>
 		</div>

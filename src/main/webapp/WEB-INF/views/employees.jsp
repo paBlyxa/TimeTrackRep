@@ -12,7 +12,7 @@
 
 
 <div class="divWithBorder">
-	<button class="tablink" onclick="openPage('now', this)" id="defaultOpen">Текущие сотрудники</button>
+	<button class="tablink defaultOpen" onclick="openPage('now', this)">Текущие сотрудники</button>
 	<button class="tablink" onclick="openPage('old', this)">Бывшие сотрудники</button>	
 	<div class="tablink"></div>
 	<div class="input-group">
