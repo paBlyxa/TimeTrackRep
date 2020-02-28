@@ -5,6 +5,8 @@
 <script src="<c:url value="/resources/script/myContextMenu.js" />"></script>
 <script src="<c:url value="/resources/script/tabs.js" />"></script>
 <script src="<c:url value="/resources/script/FilterTable.js" />"></script>
+<script src="<c:url value="/resources/script/datepicker.min.js" />"></script>
+<link href="<c:url value="/resources/datepicker.min.css"/>" rel="stylesheet" type="text/css">
 <style type="text/css">
 	.divWithBorder {min-width: 930px;}
 </style>
@@ -35,7 +37,7 @@
 					<c:if test="${e.isActive()}">
 						<c:url var="showTimesheetUrl" value="/employees/${e.employeeId}/" />
 						<c:url var="statUrl" value="/employees/stat?id=${e.employeeId}" />
-						<tr class="clickable-m-row" data-url-view="${showTimesheetUrl}" data-url-stat="${statUrl}">
+						<tr class="clickable-m-row" data-url-view="${showTimesheetUrl}" data-url-stat="${statUrl}" data-employeeid="${e.employeeId}">
 							<td><c:out value="${e.surname}" /></td>
 							<td><c:out value="${e.name}" /></td>
 							<td><c:out value="${e.mail}" /></td>
@@ -63,7 +65,8 @@
 					<c:if test="${!e.isActive()}">
 						<c:url var="showTimesheetUrl" value="/employees/${e.employeeId}/" />
 						<c:url var="statUrl" value="/employees/stat?id=${e.employeeId}" />
-						<tr class="clickable-m-row" data-url-view="${showTimesheetUrl}" data-url-stat="${statUrl}">
+						<tr class="clickable-m-row" data-url-view="${showTimesheetUrl}" data-url-stat="${statUrl}"
+							data-employeeId="${e.employeeId}">
 							<td><c:out value="${e.surname}" /></td>
 							<td><c:out value="${e.name}" /></td>
 							<td><c:out value="${e.mail}" /></td>
@@ -77,7 +80,41 @@
 	</div>
 </div>
 
+	<div id="saveWindow" class="modal">
+	  <!-- Modal content -->
+		  <div class="modal-content">
+			  <div class="modal-header">
+			    <span class="close closeSaveWindow">&times;</span>
+			    	<h2 id="header" >Сохранить отчет</h2>
+			  </div>
+			  <div class="modal-body" >
+				  <form action="employees/download" method="GET" style="margin: 10px;">
+						<div id="saveInnerContainer">
+						<label   style="font-size:12pt;">Период: </label>
+						<input name="id" id="fieldEmployeeid" type="hidden" />
+						<input type="text"  style="font-size:12pt;min-width: 180px;"
+							class="datepicker-here" data-position="bottom left"
+							data-range="true" data-multiple-dates-separator=" - "
+							name="period" required="required" />
+						<input type="submit" value="сохранить"   style="font-size:12pt;"/>
+						</div>
+					</form>
+			  </div>	  
+		  </div>
+	</div>
+	
 <script type="text/javascript">
+var saveWindow = document.getElementById("saveWindow");
+
+document.getElementsByClassName("closeSaveWindow")[0].onclick = function(){
+	saveWindow.style.display = "none";
+}
+window.onclick = function(event) {
+	if (event.target == modal) {
+		saveWindow.style.display = "none";
+	}
+}
+
 $(document).ready(function() {
 	myContextMenu.create([
 	{name : "<i class='fa fa-table'></i>Учет", action : function() {
@@ -85,6 +122,11 @@ $(document).ready(function() {
 	} },
 	{name : "<i class='fa fa-pie-chart'></i>Статистика", action : function() {
 		window.document.location = $(myContextMenu.element).data("url-stat");
+	}},
+	{name : "<i class='fa fa-download'></i>Сохранить", action : function() {
+		console.log($(myContextMenu.element).data("employeeid"));
+		document.getElementById("fieldEmployeeid").value = $(myContextMenu.element).data("employeeid");
+		saveWindow.style.display = "block";
 	}}]);
 	
 	$(".clickable-m-row").dblclick(function(e) {
