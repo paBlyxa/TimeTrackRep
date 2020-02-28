@@ -199,6 +199,7 @@ LdapQuery query = query().base(BASE).filter("(&(objectClass=person)(memberOf:1.2
 	}
 
 	private LdapTemplate getLdapTemplate() {
+		logger.debug("Create LdapTemplate with user={}@{}", ldapUser, ldapDomain);
 		LdapContextSource contextSource = new LdapContextSource();
 		Map<String, Object> props = new HashMap<>();
 		props.put("java.naming.ldap.attributes.binary", "objectGUID");

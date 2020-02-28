@@ -59,7 +59,6 @@ public class Employee implements UserDetails {
 	@JoinColumn(name="chief")
 	private Employee manager;
 	@OneToMany(mappedBy="manager")
-	@Transient
 	private Set<Employee> subordinates = new HashSet<Employee>();
 	//@NotNull(message = "Должность должна быть задана")
 	//@Size(max = 64, message = "Должность не более 64 символа")

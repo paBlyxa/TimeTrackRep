@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.we.timetrack.service.schedule.UpdateAllEmployeesTask;
 
 @Component
-@Profile("LdapAndDBEmployees")
+@Profile("!test")
 public class EventListenerBean {
 
 	private final static Logger logger = LoggerFactory.getLogger(EventListenerBean.class);

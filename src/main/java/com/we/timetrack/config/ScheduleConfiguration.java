@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.task.TaskExecutor;
@@ -55,6 +56,7 @@ public class ScheduleConfiguration {
 	}
 	
 	@Bean
+	@Profile("!test")
 	public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
 		SchedulerFactoryBean factory = new SchedulerFactoryBean();
 		factory.setJobFactory(springBeanJobFactory());
@@ -64,6 +66,7 @@ public class ScheduleConfiguration {
 	}
 	
 	@Bean
+	@Profile("!test")
 	public CronTriggerFactoryBean triggerUpdateAllEmployeesTask() {
 		CronTriggerFactoryBean stFactory = new CronTriggerFactoryBean();
 		stFactory.setJobDetail(jobDetailFactoryBeanUpdate().getObject());
@@ -75,6 +78,7 @@ public class ScheduleConfiguration {
 	}
 
 	@Bean
+	@Profile("!test")
 	public CronTriggerFactoryBean triggerEveryWeekBean() {
 		CronTriggerFactoryBean stFactory = new CronTriggerFactoryBean();
 		stFactory.setJobDetail(jobDetailFactoryBeanWeek().getObject());
@@ -86,6 +90,7 @@ public class ScheduleConfiguration {
 	}
 
 	@Bean
+	@Profile("!test")
 	public CronTriggerFactoryBean triggerEveryMonthBean() {
 		CronTriggerFactoryBean stFactory = new CronTriggerFactoryBean();
 		stFactory.setJobDetail(jobDetailFactoryBeanMonth().getObject());
@@ -97,6 +102,7 @@ public class ScheduleConfiguration {
 	}
 
 	@Bean
+	@Profile("!test")
 	public CronTriggerFactoryBean triggerEveryQuarterBean() {
 		CronTriggerFactoryBean stFactory = new CronTriggerFactoryBean();
 		stFactory.setJobDetail(jobDetailFactoryBeanQuarter().getObject());

@@ -2,6 +2,7 @@ package com.we.timetrack.test;
 
 import static org.junit.Assert.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,23 +21,24 @@ import com.we.timetrack.model.Task;
 import com.we.timetrack.model.TaskStatus;
 import com.we.timetrack.config.DataConfig;
 import com.we.timetrack.db.EmployeeRepository;
-import com.we.timetrack.db.hibernate.HibernateEmployeeRepository;
 import com.we.timetrack.db.hibernate.HibernateTaskRepository;
-import com.we.timetrack.db.ldapHibernate.LdapAndDBEmployeeRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DataConfig.class)
 @WebAppConfiguration
-@ActiveProfiles({"dataSourceProduction", "LdapAndDBEmployees"})
+@ActiveProfiles({"dataSourceProduction", "LdapAndDBEmployees", "test"})
 public class EmployeeRepositoryTest {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Autowired
+	private EmployeeRepository employeeRepository;
+	
 	@Test
 	@Transactional
 	public void testGetEmployeeById() {
-		EmployeeRepository employeeRepository = new HibernateEmployeeRepository(sessionFactory);
+		assertNotNull(employeeRepository);
 		List<Employee> employees = employeeRepository.getEmployees();
 		UUID employeeId = employees.get(0).getEmployeeId();
 		Employee employee = employeeRepository.getEmployee(employeeId);
@@ -49,7 +51,7 @@ public class EmployeeRepositoryTest {
 	@Test
 	@Transactional
 	public void testGetAllEmployees() {
-		EmployeeRepository employeeRepository = new HibernateEmployeeRepository(sessionFactory);
+		assertNotNull(employeeRepository);
 		List<Employee> employees = employeeRepository.getEmployees();
 		printResult(employees);
 	}
@@ -58,14 +60,14 @@ public class EmployeeRepositoryTest {
 	@Test
 	@Transactional
 	public void testUpdateAll() {
-		EmployeeRepository employeeRepository = new LdapAndDBEmployeeRepository(sessionFactory);
+		assertNotNull(employeeRepository);
 		employeeRepository.updateAll();
 	}
 	
 	@Test
 	@Transactional
 	public void testGetByGroup() {
-		EmployeeRepository employeeRepository = new LdapAndDBEmployeeRepository(sessionFactory);
+		assertNotNull(employeeRepository);
 		List<Employee> employees = employeeRepository.getEmployees("ОПИК");
 		printResult(employees);
 	}
@@ -74,7 +76,7 @@ public class EmployeeRepositoryTest {
 	@Test
 	@Transactional
 	public void testGetTasks() {
-		EmployeeRepository employeeRepository = new LdapAndDBEmployeeRepository(sessionFactory);
+		assertNotNull(employeeRepository);
 		List<Employee> employees = employeeRepository.getEmployees();
 		HibernateTaskRepository taskRepository = new HibernateTaskRepository(sessionFactory);
 		System.out.println("Seach tasks for department " + employees.get(0).getDepartment().getName());
@@ -86,12 +88,30 @@ public class EmployeeRepositoryTest {
 		});
 	}
 	
-	private void printResult(List<Employee> employees) {
+	@Test
+	@Transactional
+	public void testGetSubordinates() {
+		List<Employee> employees = employeeRepository.getEmployees();
+		for (Employee employee : employees) {
+			System.out.println(employee.getShortName() + " has subordinates: ");
+			printResult(employee.getSubordinates());
+		}
+		System.out.println();
+	}
+	
+	private void printResult(Collection<Employee> employees) {
 		assertNotNull(employees);
 		System.out.println(">>>>>>>>>Количество сотрдуников: " + employees.size());
 		for(Employee employee: employees){
 			assertNotNull(employee);
-			System.out.println(">>>>>>>>Сотрудник: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName());
+			printEmployee(employee);
 		}
+	}
+
+	private void printEmployee(Employee employee) {
+		if (employee != null)
+			System.out.println(">>>>>>>>Сотрудник: " + employee.getEmployeeId() + " " + employee.getSurname() + " " + employee.getName());
+		else
+			System.out.println("null");
 	}
 }

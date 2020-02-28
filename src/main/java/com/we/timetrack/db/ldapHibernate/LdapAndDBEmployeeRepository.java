@@ -122,6 +122,7 @@ public class LdapAndDBEmployeeRepository extends HibernateEmployeeRepository {
 					Employee employeeDB = listEmployeeFromDB.get(listEmployeeFromDB.indexOf(employee.employee));
 					employee.employee = merge(employee, employeeDB);
 				} else {
+					logger.info("Find new employee: {}", employee.employee);
 					newEmployees.add(employee.employee);
 				}
 				if (employee.employee.getDepartment() != null
@@ -177,31 +178,47 @@ public class LdapAndDBEmployeeRepository extends HibernateEmployeeRepository {
 	private Employee merge(EmployeeWrap employeeLdap, Employee employeeDB) {
 		if (employeeLdap.employee.getDepartment() != null
 				&& !employeeLdap.employee.getDepartment().equals(employeeDB.getDepartment())) {
+			logger.debug("Find difference in 'department' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.getDepartment(), employeeLdap.employee.getDepartment());
 			employeeDB.setDepartment(employeeLdap.employee.getDepartment());
 		}
 		if (employeeLdap.employee.getMail() != null && !employeeLdap.employee.getMail().equals(employeeDB.getMail())) {
+			logger.debug("Find difference in 'mail' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.getMail(), employeeLdap.employee.getMail());
 			employeeDB.setMail(employeeLdap.employee.getMail());
 		}
 		if (employeeLdap.employee.getName() != null && !employeeLdap.employee.getName().equals(employeeDB.getName())) {
+			logger.debug("Find difference in 'name' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.getName(), employeeLdap.employee.getName());
 			employeeDB.setName(employeeLdap.employee.getName());
 		}
 		if (employeeLdap.employee.getPost() != null && !employeeLdap.employee.getPost().equals(employeeDB.getPost())) {
+			logger.debug("Find difference in 'post' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.getPost(), employeeLdap.employee.getPost());
 			employeeDB.setPost(employeeLdap.employee.getPost());
 		}
 		if (employeeLdap.employee.getSurname() != null
 				&& !employeeLdap.employee.getSurname().equals(employeeDB.getSurname())) {
+			logger.debug("Find difference in 'surname' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.getSurname(), employeeLdap.employee.getSurname());
 			employeeDB.setSurname(employeeLdap.employee.getSurname());
 		}
 		if (employeeLdap.employee.getUsername() != null
 				&& !employeeLdap.employee.getUsername().equals(employeeDB.getUsername())) {
+			logger.debug("Find difference in 'username' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.getUsername(), employeeLdap.employee.getUsername());
 			employeeDB.setUsername(employeeLdap.employee.getUsername());
 		}
 		if (employeeLdap.employee.getManager() != null
 				&& !employeeLdap.employee.getManager().equals(employeeDB.getManager())) {
+			logger.debug("Find difference in 'manager' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.getManager(), employeeLdap.employee.getManager());
 			employeeDB.setManager(employeeLdap.employee.getManager());
 		}
 		if (employeeLdap.employee.isActive() != null
 				&& !employeeLdap.employee.isActive().equals(employeeDB.isActive())) {
+			logger.debug("Find difference in 'active' for {}, old: {}, new: {}", employeeLdap.employee.getShortName(), 
+					employeeDB.isActive(), employeeLdap.employee.isActive());
 			employeeDB.setActive(employeeLdap.employee.isActive());
 		}
 		return employeeDB;
